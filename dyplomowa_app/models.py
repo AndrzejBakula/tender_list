@@ -65,6 +65,7 @@ class Status(models.Model):
 class Project(models.Model):
     project_name = models.TextField(unique=True)
     tender_date = models.DateField()
+    tender_time = models.TimeField(null=True, default=None)
     investor = models.ForeignKey(Investor, on_delete=models.CASCADE)
     estimated_value = models.FloatField(null=True)
     deposit = models.FloatField(null=True)
