@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %} Szczegóły Projektu {% endblock %}
+
+{% block content %}
+
+<div class="d-flex flex-column align-items-center" style="height: 100%; width: 100%;">
+    <hr>
+    <div class="d-flex flex-row justify-content-center align-items-center">
+        <h2 class="display-5 align-self-center header2"><i>Szczegóły Projektu</i></h2>
+    </div>
+
+    <div class="d-flex flex-column align-items-center" style="height: 100%;">
+    <table class="table table-striped table-bordered">
+        <tbody>
+            <tr>
+                <th scope="col">ID</th>
+                <td scope="col">{{ project.id }}</th>
+            </tr>
+            <tr>
+                <th scope="col">Data złożenia</th>
+                <td scope="col">{{ project.tender_date }}</td>
+            </tr>
+            <tr>
+                <th scope="col">Nazwa projektu</th>
+                <td scope="col">{{ project.project_name }}</td>
+            </tr>
+            <tr>
+                <th scope="col">Inwestor</th>
+                <td scope="col">{{ project.investor.investor_name }}</td>
+            </tr>
+            <tr>
+                <th scope="col">Poziom adm.</th>
+                <td scope="col">{{ project.investor.investor_administration_level }}</td>
+            </tr>
+            <tr>
+                <th scope="col">Projektant</th>
+                <td scope="col">{{ project.designer.designer_name }}</td>
+            </tr>
+            <tr>
+                <th scope="col">Wadium</th>
+                <td scope="col">{{ project.deposit }}</td>
+            </tr>
+            <tr>
+                <th scope="col">Priorytet</th>
+                <td scope="col">{{ project.priority }}</td>
+            </tr> 
+            <tr>
+                <th scope="col">Szacunek</th>
+                <td scope="col">{{ project.estimated_value }}</td>
+            </tr>
+            <tr>
+                <th scope="col">Odpowiedzialny</th>
+                <td scope="col">{% for j in project.person.all %} {{ j.username }} <br> {% endfor %}</td>
+            </tr>
+            <tr>
+                <th scope="col">Status</th>
+                <td scope="col">{{ project.status }}</td>
+            </tr>
+        </tbody>
+      </table>
+      {% if user.username == 'admin' %}
+      <button type="button" class="btn btn-dark"><a style="color:blanchedalmond" href="{% url 'edit-project' project.id %}">Edytuj projekt</a></button>
+      <hr>
+      <button type="button" class="btn btn-dark"><a style="color:blanchedalmond" href="{% url 'delete-project' project.id %}">Usuń projekt</a></button>
+      {% endif %}
+    </div>
+</div>
+
+{% endblock %}
