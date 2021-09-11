@@ -63,12 +63,38 @@ class Status(models.Model):
 
 
 class Project(models.Model):
-    project_name = models.TextField(unique=True)
+
+    VOIVODESHIP = [
+        (1, "dolnośląskie"),
+        (2, "opolskie"),
+        (3, "wielkopolskie"),
+        (4, "lubuskie"),
+        (5, "śląskie"),
+        (6, "zachodniopomorskie"),
+        (7, "pomorskie"),
+        (8, "kujawsko-pomorskie"),
+        (9, "warmińsko-mazurskie"),
+        (10, "mazowieckie"),
+        (11, "łódzkie"),
+        (12, "świętokrzyskie"),
+        (13, "małopolskie"),
+        (14, "podkarpackie"),
+        (15, "lubelskie"),
+        (16, "podlaskie")
+    ]
+
+    project_number = models.TextField(max_length=32, unique=True, null=True)
+    project_name = models.TextField(max_length=512, unique=True)
     tender_date = models.DateField()
     tender_time = models.TimeField(null=True, default=None)
+    open_time = models.TimeField(null=True, default=None)
+    deposit = models.FloatField(null=True)
+    announcement_number = models.TextField(unique=True, default=None, null=True)
+    announcement_date = models.DateField(unique=True, default=None, null=True)
+    voivodeship = models.TextField(default=None, null=True, choices=VOIVODESHIP)
     investor = models.ForeignKey(Investor, on_delete=models.CASCADE)
     estimated_value = models.FloatField(null=True)
-    deposit = models.FloatField(null=True)
+
     person = models.ManyToManyField(User)
     priority = models.ForeignKey(Priority, on_delete=models.CASCADE)
     designer = models.ForeignKey(Designer, null=True, on_delete=models.CASCADE)
