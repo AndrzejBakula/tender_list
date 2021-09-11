@@ -6,6 +6,79 @@ from .models import *
 from .forms import AddInvestorForm, AddDesignerForm, AddProjectForm, EditProjectForm, EditInvestorForm
 from .forms import EditDesignerForm, LoginForm
 
+#INITIAL FUNCTIONS
+def administration_level_init():
+    levels = AdministrationLevel.objects.all()
+    levels_names = [i.level_name for i in levels]
+    if len(levels) != len(AdministrationLevel.LEVEL):
+        for i in AdministrationLevel.LEVEL:
+            if i[1] not in levels_names:
+                AdministrationLevel.objects.create(level_name=i[1])
+
+administration_level_init()
+
+def note_init():
+    notes = Note.objects.all()
+    notes_names = [i.note for i in notes]
+    if len(notes) != len(Note.NOTE):
+        for i in Note.NOTE:
+            if i[1] not in notes_names:
+                Note.objects.create(note=i[1])
+
+note_init()
+
+def priority_init():
+    priorities = Priority.objects.all()
+    priorities_names = [i.priority_name for i in priorities]
+    if len(priorities) != len(Priority.PRIORITY):
+        for i in Priority.PRIORITY:
+            if i[1] not in priorities_names:
+                Priority.objects.create(priority_name=i[1])
+
+priority_init()
+
+def status_init():
+    statuses = Status.objects.all()
+    statuses_names = [i.status_name for i in statuses]
+    if len(statuses) != len(Status.STATUS):
+        for i in Status.STATUS:
+            if i[1] not in statuses_names:
+                Status.objects.create(status_name=i[1])
+
+status_init()
+
+def payment_method_init():
+    payment_methods = PaymentMethod.objects.all()
+    payment_methods_names = [i.payment_method_name for i in payment_methods]
+    if len(payment_methods) != len(PaymentMethod.PAYMENT_METHOD):
+        for i in PaymentMethod.PAYMENT_METHOD:
+            if i[1] not in payment_methods_names:
+                PaymentMethod.objects.create(payment_method_name=i[1])
+
+payment_method_init()
+
+def division_init():
+    divisions = Division.objects.all()
+    division_names = [i.division_name for i in divisions]
+    if len(divisions) != len(Division.DIVISION):
+        for i in Division.DIVISION:
+            if i[1] not in division_names:
+               Division .objects.create(division_name=i[1])
+
+division_init()
+
+def voivodeship_init():
+    voivodeships = Voivodeship.objects.all()
+    voivodeships_names = [i.voivodeship_name for i in voivodeships]
+    if len(voivodeships) != len(Voivodeship.VOIVODESHIP):
+        for i in Voivodeship.VOIVODESHIP:
+            if i[1] not in voivodeships_names:
+                Voivodeship.objects.create(voivodeship_name=i[1])
+
+voivodeship_init()
+
+
+
 
 class LoginView(View):
     def get(self, request):

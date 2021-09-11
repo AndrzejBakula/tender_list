@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 
 
+
 class AdministrationLevel(models.Model):
 
     LEVEL = [
@@ -57,10 +58,10 @@ class Designer(models.Model):
 class Priority(models.Model):
 
     PRIORITY = [
-        (1, "niski"),
-        (2, "średni"),
-        (3, "wysoki"),
-        (4, "brak")
+        (1, "brak"),
+        (2, "niski"),
+        (3, "średni"),
+        (4, "wysoki")
         ]
 
     priority_name = models.CharField(max_length=32, unique=True, choices=PRIORITY)
@@ -161,25 +162,71 @@ class Voivodeship(models.Model):
 
     voivodeship_name = models.CharField(max_length=64, unique=True, choices=VOIVODESHIP)
 
-    poviat = []
+    poviats = []
+    poviat = None
 
     def __str__(self):
         return self.voivodeship_name
     
-    def poviats(self):
+    def set_poviats(self, voivodeship_name):
         for i in POVIAT:
-            if self.voivodeship_name == i[0]:
-                self.poviat = i[1]
+            if voivodeship_name == i[0]:
+                self.poviats = i[1]
                 return None
+    
+    def set_poviat(self, poviat):
+        self.poviat = poviat
+        return None
 
 
-class JV_Partner(models.Model):
+class Company(models.Model):
 
-    jv_partner_name  = models.CharField(max_length=64, unique=True)
-    jv_partner_address = models.CharField(max_length=128, unique=True)
+    company_name  = models.CharField(max_length=64, unique=True)
+    company_address = models.CharField(max_length=128, unique=True)
 
     def __str__(self):
-        return self.jv_member_name
+        return self.company_name
+
+
+class Guarantee(models.Model):
+
+    MONTHS = [
+        (1, 12), (2, 24), (3, 36), (4, 37), (5, 38), (6, 39), (7, 40), (8, 41), (9, 42), (10, 43), (11, 44),
+        (12, 45), (13, 46), (14, 47), (15, 48), (16, 49), (17, 50), (18, 51), (19, 52), (20, 53), (20, 54),
+        (21, 55), (22, 56), (23, 57), (24, 58), (25, 59), (26, 60), (27, 61), (28, 62), (29, 63), (30, 64),
+        (31, 65), (32, 66), (33, 67), (34, 68), (35, 69), (36, 70), (37, 71), (38, 72), (39, 73), (39, 74),
+        (40, 75), (41, 76), (42, 77), (43, 78), (44, 79), (45, 80), (46, 81), (47, 82), (48, 83), (49, 84),
+        (50, 85), (51, 86), (52, 87), (53, 88), (54, 89), (55, 90), (56, 91), (57, 92), (58, 93), (59, 94),
+        (60, 95), (61, 96), (62, 97), (63, 98), (64, 99), (65, 100), (66, 101), (67, 102), (68, 103),
+        (69, 104), (70, 105), (71, 106), (72, 107), (73, 108), (74, 109), (75, 110), (76, 111), (77, 112),
+        (78, 113), (79, 114), (80, 115), (81, 116), (82, 117), (83, 118), (84, 119), (85, 120)
+    ]
+
+    months = models.IntegerField(unique=True, null=True, default=None, choices=MONTHS)
+
+
+class Criteria(models.Model):
+
+    criteria_name = models.CharField(max_length=64, unique=True)
+    criteria_value = models.TextField(null=True, default=None)
+
+    def __str__(self):
+        return self.criteria_name
+
+
+class Tenderer(models.Model):
+
+    tenderer = models.ForeignKey(Company, on_delete=models.CASCADE, null=True, default=None)
+    offer_value = models.FloatField(null=True, default=None)
+    offer_guarantee = models.ForeignKey(Guarantee, on_delete=models.CASCADE, null=True, default=None)
+    offer_deadline = models.DateField(null=True, default=None)
+    other_criteria = models.ManyToManyField(Criteria, default=None)
+
+
+class Tender(models.Model):
+
+    investor_budget = models.FloatField(null=True, default=None)
+    tenderers = models.ManyToManyField(Tenderer, default=None)
 
 
 class Project(models.Model):
@@ -205,12 +252,12 @@ class Project(models.Model):
     rc_agree = models.BooleanField(null=True, default=None)
     evaluation_criteria = models.TextField(null=True, default=None)
     payment_criteria = models.TextField(null=True, default=None)
-    jv_partners = models.ManyToManyField(JV_Partner, default=None)
+    jv_partners = models.ManyToManyField(Company, default=None)
     remarks = models.TextField(null=True, default=None)
-    investor_budget = models.IntegerField(null=True, default=None)
-
-    priority = models.ForeignKey(Priority, on_delete=models.CASCADE)
-    designer = models.ForeignKey(Designer, null=True, on_delete=models.CASCADE)
+    tender = models.ForeignKey(Tender, on_delete=models.CASCADE, null=True, default=None)
+    
+    priority = models.ForeignKey(Priority, on_delete=models.CASCADE, default=Priority.PRIORITY[0][0])
+    designer = models.ForeignKey(Designer, null=True, default=None, on_delete=models.CASCADE)
     status = models.ForeignKey(Status, on_delete=models.CASCADE, default=Status.STATUS[0][0])
 
     def __str__(self):
