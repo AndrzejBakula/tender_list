@@ -78,8 +78,49 @@ def voivodeship_init():
 voivodeship_init()
 
 
+#AUXILIARY FUNCTIONS
+def set_poviats(voivodeship):
 
+    POVIATS_CHOICE = [
+    ("dolnośląskie", ["milicki", "oleśnicki", "oławski", "strzeliński", "ząbkowicki", "kłodzki",
+    "trzebnicki", "Wrocław", "wrocławski", "dzierżoniowski", "Wałbrzych", "wałbrzyski", "świdnicki",
+    "średzki", "wołowski", "górowski", "głogowski", "polkowicki", "lubiński", "Legnica", "legnicki",
+    "jaworski", "kamiennogórski", "bolesławiecki", "złotoryjski", "Jelenia Góra", "jeleniogórski",
+    "zgorzelecki", "lubański"]),
+    ("opolskie", ["Opole", "opolski", "brzeski", "głupczycki", "kędzierzyńsko-kozielski", "kluczborski",
+    "krapkowicki", "namysłowski", "nyski", "oleski", "prudnicki", "strzelecki"]),
+    ("wielkopolskie", ["Kalisz", "Konin", "Leszno", "Poznań", "chodzieski", "czarnkowski-trzcianecki",
+    "gnieźnieński", "gostyński", "grodziski", "jarociński", "kaliski", "kępiński", "kolski",
+    "koniński", "kościański", "krotoszyński", "leszczyński", "międzychodzki", "nowotomyski",
+    "obornicki", "ostrowski", "ostrzeszowski", "pilski", "pleszewski", "poznański", "rawicki",
+    "słupecki", "szamotulski", "średzki", "śremski", "turecki", "wągrowiecki", "wolsztyński",
+    "wrzesiński", "złotowski"]),
+    ("lubuskie", []),
+    ("śląskie", []),
+    ("zachodniopomorskie", []),
+    ("pomorskie", []),
+    ("kujawsko-pomorskie", []),
+    ("warmińsko-mazurskie", []),
+    ("mazowieckie", []),
+    ("łódzkie", []),
+    ("świętokrzyskie", []),
+    ("małopolskie", []),
+    ("podkarpackie", []),
+    ("lubelskie", []),
+    ("podlaskie", [])
+    ]
 
+    choiced_poviats = []
+    poviats = []
+    for i in POVIATS_CHOICE:
+        if i[0] == voivodeship.voivodeship_name:
+            choiced_poviats = i[1]
+    for i in range(len(choiced_poviats)):
+        poviats.append((i+1, choiced_poviats[i]))
+    return poviats
+    
+
+#VIEW CLASSES
 class LoginView(View):
     def get(self, request):
         form = LoginForm()
@@ -267,19 +308,33 @@ class AddProject(View):
         form = AddProjectForm(request.POST)
         if form.is_valid():
             data = form.cleaned_data
-            project_name = data["project_name"]
-            tender_date = data["tender_date"]
-            investor = data["investor"]
-            estimated_value = data["estimated_value"]
+            project_number = data["project_number"]
+            tender_time = data["tender_time"]
+            open_time = data["open_time"]
             deposit = data["deposit"]
+            announcement_number = data["announcement_number"]
+            announcement_date = data["announcement_date"]
+            voivodeship = data["voivodeship"]
+            tender_date = data["tender_date"]
+            project_name = data["project_name"]
+            estimated_value = data["estimated_value"]            
+            investor = data["investor"]
+            project_deadline = data["project_deadline"]
+            mma_quantity = data["mma_quantity"]
+            payment_method = data["payment_method"]
+            project_url = data["project_url"]            
             person = data["person"]
+            division = data["division"]
             priority = data["priority"]
             designer = data["designer"]
             status = data["status"]
             project = Project.objects.create(
-                project_name=project_name, tender_date=tender_date, investor=investor, \
-                estimated_value=estimated_value, deposit=deposit, priority=priority, designer=designer, \
-                status=status)
+                project_number=project_number, tender_time=tender_time, open_time=open_time, deposit=deposit,
+                announcement_number=announcement_number, announcement_date=announcement_date,
+                voivodeship=voivodeship, tender_date=tender_date, project_name=project_name,
+                estimated_value=estimated_value, investor=investor, project_deadline=project_deadline,
+                mma_quantity=mma_quantity, payment_method=payment_method, project_url=project_url,
+                division=division, priority=priority, designer=designer, status=status)
             for i in person:
                 project.person.add(i)
             project.save()

@@ -137,46 +137,11 @@ class Voivodeship(models.Model):
         (16, "lubelskie"),
         (17, "podlaskie")
     ]
-    POVIAT = [
-        ("dolnośląskie", ["milicki", "oleśnicki", "oławski", "strzeliński", "ząbkowicki", "kłodzki",
-        "trzebnicki", "Wrocław", "wrocławski", "dzierżoniowski", "Wałbrzych", "wałbrzyski", "świdnicki",
-        "średzki", "wołowski", "górowski", "głogowski", "polkowicki", "lubiński", "Legnica", "legnicki",
-        "jaworski", "kamiennogórski", "bolesławiecki", "złotoryjski", "Jelenia Góra", "jeleniogórski",
-        "zgorzelecki", "lubański"]),
-        ("opolskie", []),
-        ("wielkopolskie", []),
-        ("lubuskie", []),
-        ("śląskie", []),
-        ("zachodniopomorskie", []),
-        ("pomorskie", []),
-        ("kujawsko-pomorskie", []),
-        ("warmińsko-mazurskie", []),
-        ("mazowieckie", []),
-        ("łódzkie", []),
-        ("świętokrzyskie", []),
-        ("małopolskie", []),
-        ("podkarpackie", []),
-        ("lubelskie", []),
-        ("podlaskie", [])
-    ]
 
     voivodeship_name = models.CharField(max_length=64, unique=True, choices=VOIVODESHIP)
 
-    poviats = []
-    poviat = None
-
     def __str__(self):
         return self.voivodeship_name
-    
-    def set_poviats(self, voivodeship_name):
-        for i in POVIAT:
-            if voivodeship_name == i[0]:
-                self.poviats = i[1]
-                return None
-    
-    def set_poviat(self, poviat):
-        self.poviat = poviat
-        return None
 
 
 class Company(models.Model):
@@ -190,17 +155,10 @@ class Company(models.Model):
 
 class Guarantee(models.Model):
 
-    MONTHS = [
-        (1, 12), (2, 24), (3, 36), (4, 37), (5, 38), (6, 39), (7, 40), (8, 41), (9, 42), (10, 43), (11, 44),
-        (12, 45), (13, 46), (14, 47), (15, 48), (16, 49), (17, 50), (18, 51), (19, 52), (20, 53), (20, 54),
-        (21, 55), (22, 56), (23, 57), (24, 58), (25, 59), (26, 60), (27, 61), (28, 62), (29, 63), (30, 64),
-        (31, 65), (32, 66), (33, 67), (34, 68), (35, 69), (36, 70), (37, 71), (38, 72), (39, 73), (39, 74),
-        (40, 75), (41, 76), (42, 77), (43, 78), (44, 79), (45, 80), (46, 81), (47, 82), (48, 83), (49, 84),
-        (50, 85), (51, 86), (52, 87), (53, 88), (54, 89), (55, 90), (56, 91), (57, 92), (58, 93), (59, 94),
-        (60, 95), (61, 96), (62, 97), (63, 98), (64, 99), (65, 100), (66, 101), (67, 102), (68, 103),
-        (69, 104), (70, 105), (71, 106), (72, 107), (73, 108), (74, 109), (75, 110), (76, 111), (77, 112),
-        (78, 113), (79, 114), (80, 115), (81, 116), (82, 117), (83, 118), (84, 119), (85, 120)
-    ]
+    MONTHS = []
+
+    for i in range(150):
+        MONTHS.append((i+1, i+1))
 
     months = models.IntegerField(unique=True, null=True, default=None, choices=MONTHS)
 
@@ -255,7 +213,7 @@ class Project(models.Model):
     jv_partners = models.ManyToManyField(Company, default=None)
     remarks = models.TextField(null=True, default=None)
     tender = models.ForeignKey(Tender, on_delete=models.CASCADE, null=True, default=None)
-    
+
     priority = models.ForeignKey(Priority, on_delete=models.CASCADE, default=Priority.PRIORITY[0][0])
     designer = models.ForeignKey(Designer, null=True, default=None, on_delete=models.CASCADE)
     status = models.ForeignKey(Status, on_delete=models.CASCADE, default=Status.STATUS[0][0])
