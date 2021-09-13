@@ -90,7 +90,7 @@ class EditProjectForm(forms.Form):
     rc_agree = forms.BooleanField(label="Zgoda komitetu ryzyka", required=False)
     evaluation_criteria = forms.CharField(label="Kryteria oceny", widget=forms.Textarea(attrs={"rows": 5, "cols": 24, "placeholder": "Kryteria oceny"}), required=False)
     payment_criteria = forms.CharField(label="Kryteria płatności", widget=forms.Textarea(attrs={"rows": 5, "cols": 24, "placeholder": "Kryteria płatności"}), required=False)
-    jv_partners = forms.ModelChoiceField(label="Partnerzy konsorcjum", queryset=Company.objects.all())
+    jv_partners = forms.ModelChoiceField(label="Partnerzy konsorcjum", queryset=Company.objects.all(), required=False)
     remarks = forms.CharField(label="Uwagi", widget=forms.Textarea(attrs={"rows": 5, "cols": 24, "placeholder": "Uwagi"}), required=False)
     priority = forms.ModelChoiceField(label="Priorytet", queryset=Priority.objects.all())
     designer = forms.ModelChoiceField(label="Projektant", required=False, queryset=Designer.objects.all().order_by("designer_name"))
