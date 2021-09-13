@@ -26,6 +26,11 @@ class EditInvestorForm(forms.Form):
     investor_note = forms.ModelChoiceField(label="Ocena inwestora", queryset=Note.objects.all())
 
 
+class AddCompanyForm(forms.Form):
+    company_name = forms.CharField(label="", max_length=128, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Nazwa Firmy"}))
+    company_address = forms.CharField(label="", max_length=256, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Adres Firmy"}))
+
+
 class AddDesignerForm(forms.Form):
     designer_name = forms.CharField(label="", max_length=128, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Nazwa Projektanta"}))
     designer_address = forms.CharField(label="", max_length=256, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Adres Projektanta"}))
@@ -60,7 +65,7 @@ class AddProjectForm(forms.Form):
     rc_agree = forms.BooleanField(label="Zgoda komitetu ryzyka", required=False)
     evaluation_criteria = forms.CharField(label="Kryteria oceny", widget=forms.Textarea(attrs={"rows": 5, "cols": 24, "placeholder": "Kryteria oceny"}), required=False)
     payment_criteria = forms.CharField(label="Kryteria płatności", widget=forms.Textarea(attrs={"rows": 5, "cols": 24, "placeholder": "Kryteria płatności"}), required=False)
-    jv_partners = forms.ModelChoiceField(label="Partnerzy konsorcjum", queryset=Company.objects.all())
+    jv_partners = forms.ModelMultipleChoiceField(label="Partnerzy konsorcjum", queryset=Company.objects.all().order_by("company_name"), required=False)
     remarks = forms.CharField(label="Uwagi", widget=forms.Textarea(attrs={"rows": 5, "cols": 24, "placeholder": "Uwagi"}), required=False)
     priority = forms.ModelChoiceField(label="Priorytet", queryset=Priority.objects.all())
     designer = forms.ModelChoiceField(label="Projektant", required=False, queryset=Designer.objects.all().order_by("designer_name"))
@@ -90,7 +95,7 @@ class EditProjectForm(forms.Form):
     rc_agree = forms.BooleanField(label="Zgoda komitetu ryzyka", required=False)
     evaluation_criteria = forms.CharField(label="Kryteria oceny", widget=forms.Textarea(attrs={"rows": 5, "cols": 24, "placeholder": "Kryteria oceny"}), required=False)
     payment_criteria = forms.CharField(label="Kryteria płatności", widget=forms.Textarea(attrs={"rows": 5, "cols": 24, "placeholder": "Kryteria płatności"}), required=False)
-    jv_partners = forms.ModelChoiceField(label="Partnerzy konsorcjum", queryset=Company.objects.all(), required=False)
+    jv_partners = forms.ModelMultipleChoiceField(label="Partnerzy konsorcjum", queryset=Company.objects.all().order_by("company_name"), required=False)
     remarks = forms.CharField(label="Uwagi", widget=forms.Textarea(attrs={"rows": 5, "cols": 24, "placeholder": "Uwagi"}), required=False)
     priority = forms.ModelChoiceField(label="Priorytet", queryset=Priority.objects.all())
     designer = forms.ModelChoiceField(label="Projektant", required=False, queryset=Designer.objects.all().order_by("designer_name"))

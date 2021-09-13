@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model, authenticate, login, logout
 from django.contrib.auth.models import User
 from .models import *
 from .forms import AddInvestorForm, AddDesignerForm, AddProjectForm, EditProjectForm, EditInvestorForm
-from .forms import EditDesignerForm, LoginForm
+from .forms import EditDesignerForm, LoginForm, AddCompanyForm
 
 #INITIAL FUNCTIONS
 def administration_level_init():
@@ -223,6 +223,27 @@ class EditInvestor(View):
                 "form": form
             }
             return render(request, "edit_investor.html", ctx)
+
+
+class AddCompany(View):
+    def get(self, request):
+        form = AddCompanyForm()
+        ctx = {
+            "form": form
+        }
+        return render(request, "add_company.html", ctx)
+    
+    def post(self, request):
+        form = AddCompanyForm(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            company_name = data["company_name"]
+            company_address = data["company_address"]
+            Company.objects.create(company_name=company_name, company_address=company_address)
+            ctx = {
+                "form": form
+            }
+            return redirect("/projects")
 
 
 class AddDesigner(View):

@@ -38,6 +38,7 @@
         {% if user.username == 'admin' %}
         <h4 class="display-5 align-self-center"><a href="{% url 'add-project' %}">Dodaj Projekt</a></h4>
         <h4 class="display-5 align-self-center"><a href="{% url 'add-investor' %}">Dodaj Inwestora</a></h4>
+        <h4 class="display-5 align-self-center"><a href="{% url 'add-company' %}">Dodaj Firmę</a></h4>
         <h4 class="display-5 align-self-center"><a href="{% url 'add-designer' %}">Dodaj Projektanta</a></h4>
         {% endif %}
         <h4 class="display-5 align-self-center"><a href="{% url 'investors' %}">Inwestorzy</a></h4>
