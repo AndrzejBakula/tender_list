@@ -213,7 +213,6 @@ class Project(models.Model):
     jv_partners = models.ManyToManyField(Company, default=None)
     remarks = models.TextField(null=True, default=None)
     tender = models.ForeignKey(Tender, on_delete=models.CASCADE, null=True, default=None)
-
     priority = models.ForeignKey(Priority, on_delete=models.CASCADE, default=Priority.PRIORITY[0][0])
     designer = models.ForeignKey(Designer, null=True, default=None, on_delete=models.CASCADE)
     status = models.ForeignKey(Status, on_delete=models.CASCADE, default=Status.STATUS[0][0])
