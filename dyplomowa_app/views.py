@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model, authenticate, login, logout
 from django.contrib.auth.models import User
 from .models import *
 from .forms import AddInvestorForm, AddDesignerForm, AddProjectForm, EditProjectForm, EditInvestorForm
-from .forms import EditDesignerForm, LoginForm, AddCompanyForm
+from .forms import EditDesignerForm, LoginForm, AddCompanyForm, EditCompanyForm
 
 #INITIAL FUNCTIONS
 def administration_level_init():
@@ -166,7 +166,7 @@ class AddInvestor(View):
             investor_address = data["investor_address"]
             investor_administration_level = data["investor_administration_level"]
             investor_note = data["investor_note"]
-            Investor.objects.create(investor_name=investor_name, investor_address=investor_address, \
+            Investor.objects.create(investor_name=investor_name, investor_address=investor_address,
             investor_administration_level=investor_administration_level, investor_note=investor_note)
             ctx = {
                 "form": form
@@ -225,6 +225,22 @@ class EditInvestor(View):
             return render(request, "edit_investor.html", ctx)
 
 
+class DeleteInvestor(View):
+    def get(self, request, id):
+        investor = Investor.objects.get(id=id)
+        ctx = {
+            "investor": investor
+        }
+        return render(request, "delete_investor.html", ctx)
+
+
+class DeleteInvestorConfirm(View):
+    def get(self, request, id):
+        investor = Investor.objects.get(id=id)
+        investor.delete()
+        return redirect("/projects")
+
+
 class AddCompany(View):
     def get(self, request):
         form = AddCompanyForm()
@@ -246,6 +262,68 @@ class AddCompany(View):
             return redirect("/projects")
 
 
+class CompaniesView(View):
+    def get(self, request):
+        companies = Company.objects.all().order_by("company_name")
+        ctx = {
+            "companies": companies
+        }
+        return render(request, "companies.html", ctx)
+
+
+class CompanyDetails(View):
+    def get(self, request, id):
+        company = Company.objects.get(id=id)
+        ctx = {
+            "company": company
+        }
+        return render(request, "company_details.html", ctx)
+
+
+class EditCompany(View):
+    def get(self, request, id):
+        company = Company.objects.get(id=id)
+        initial_data = {
+            "company_name": company.company_name,
+            "company_address": company.company_address,
+        }
+        form = EditCompanyForm(initial=initial_data)
+        ctx = {
+            "company": company,
+            "form": form
+        }
+        return render(request, "edit_company.html", ctx)
+
+    def post(self, request, id):
+        form = EditCompanyForm(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            company = Company.objects.get(id=id)
+            company.company_name = data["company_name"]
+            company.company_address = data["company_address"]
+            company.save()
+            ctx = {
+                "company": company
+            }
+            return redirect("/companies")
+
+
+class DeleteCompany(View):
+    def get(self, request, id):
+        company = Company.objects.get(id=id)
+        ctx = {
+            "company": company
+        }
+        return render(request, "delete_company.html", ctx)
+
+
+class DeleteCompanyConfirm(View):
+    def get(self, request, id):
+        company = Company.objects.get(id=id)
+        company.delete()
+        return redirect("/projects")
+
+
 class AddDesigner(View):
     def get(self, request):
         form = AddDesignerForm()
@@ -261,7 +339,8 @@ class AddDesigner(View):
             designer_name = data["designer_name"]
             designer_address = data["designer_address"]
             designer_note = data["designer_note"]
-            Designer.objects.create(designer_name=designer_name, designer_address=designer_address, designer_note=designer_note)
+            Designer.objects.create(designer_name=designer_name, designer_address=designer_address,
+            designer_note=designer_note)
             ctx = {
                 "form": form
             }
@@ -315,6 +394,22 @@ class EditDesigner(View):
                 "form": form
             }
             return render(request, "edit_designer.html", ctx)
+
+
+class DeleteDesigner(View):
+    def get(self, request, id):
+        designer = Designer.objects.get(id=id)
+        ctx = {
+            "designer": designer
+        }
+        return render(request, "delete_designer.html", ctx)
+
+
+class DeleteDesignerConfirm(View):
+    def get(self, request, id):
+        designer = Designer.objects.get(id=id)
+        designer.delete()
+        return redirect("/projects")
 
 
 class AddProject(View):
@@ -484,37 +579,6 @@ class DeleteProjectConfirm(View):
         project.delete()
         return redirect("/projects")
 
-
-class DeleteInvestor(View):
-    def get(self, request, id):
-        investor = Investor.objects.get(id=id)
-        ctx = {
-            "investor": investor
-        }
-        return render(request, "delete_investor.html", ctx)
-
-
-class DeleteInvestorConfirm(View):
-    def get(self, request, id):
-        investor = Investor.objects.get(id=id)
-        investor.delete()
-        return redirect("/projects")
-            
-
-class DeleteDesigner(View):
-    def get(self, request, id):
-        designer = Designer.objects.get(id=id)
-        ctx = {
-            "designer": designer
-        }
-        return render(request, "delete_designer.html", ctx)
-
-
-class DeleteDesignerConfirm(View):
-    def get(self, request, id):
-        designer = Designer.objects.get(id=id)
-        designer.delete()
-        return redirect("/projects")
 
 
 

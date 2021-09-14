@@ -12,8 +12,8 @@
         <thead>
           <tr>
             <th scope="col">Nr</th>
-            <th scope="col">Godz. złożenia</th>
-            <th scope="col">Godz. otwarcia</th>
+            <th scope="col">Godz.<br>złożenia</th>
+            <th scope="col">Godz.<br>otwarcia</th>
             <th scope="col">Wadium</th>        
             <th scope="col">Data złożenia</th>
             <th scope="col">Nazwa</th>
@@ -43,7 +43,7 @@
             <td scope="col">{{ i.project_deadline }}</td>
             <td scope="col">{{ i.mma_quantity }}</td>
             <td scope="col">{{ i.payment_method }}</td>
-            <td scope="col">{{ i.project_url }}</td>
+            <td scope="col"><a href="{{ i.project_url }}">Klik</a></td>
             <td scope="col">{% for j in i.person.all %} {{ j.username }} <br> {% endfor %}</td>
             <td scope="col">{{ i.evaluation_criteria }}</td>
 

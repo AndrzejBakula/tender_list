@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %} Szczegóły Firmy {% endblock %}
+
+{% block content %}
+
+<div class="d-flex flex-column align-items-center" style="height: 100%; width: 100%;">
+    <hr>
+    <div class="d-flex flex-row justify-content-center align-items-center">
+        <h2 class="display-5 align-self-center header2"><i>Szczegóły Firmy</i></h2>
+    </div>
+
+    <div class="d-flex flex-column align-items-center" style="height: 100%;">
+    <table class="table table-striped table-bordered">
+        <tbody>
+            <tr>
+                <th scope="col">ID</th>
+                <td scope="col">{{ company.id }}</th>
+            </tr>
+            <tr>
+                <th scope="col">Nazwa firmy</th>
+                <td scope="col">{{ company.company_name }}</td>
+            </tr>
+            <tr>
+                <th scope="col">Adres firmy</th>
+                <td scope="col">{{ company.company_address }}</td>
+            </tr>
+        </tbody>
+      </table>
+      {% if user.username == 'admin' %}
+      <button type="button" class="btn btn-dark"><a style="color:blanchedalmond" href="{% url 'edit-company' company.id %}">Edytuj firmę</a></button>
+      <hr>
+      <button type="button" class="btn btn-dark"><a style="color:blanchedalmond" href="{% url 'delete-company' company.id %}">Usuń firmę</a></button>
+      {% endif %}
+    </div>
+
+</div>
+
+{% endblock %}
