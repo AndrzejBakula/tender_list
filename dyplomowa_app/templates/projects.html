@@ -42,7 +42,7 @@
             <td scope="col">{{ i.project_deadline }}</td>
             <td scope="col">{{ i.mma_quantity }}</td>
             <td scope="col">{{ i.payment_method }}</td>
-            <td scope="col"><a href="{{ i.project_url }}">Klik</a></td>
+            <td scope="col"><a href="{{ i.project_url }}" target=_blank>Klik</a></td>
             <td scope="col">{% for j in i.person.all %} {{ j.username }} <br> {% endfor %}</td>
             <td scope="col">{{ i.evaluation_criteria }}</td>
 

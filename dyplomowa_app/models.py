@@ -144,6 +144,36 @@ class Voivodeship(models.Model):
         return self.voivodeship_name
 
 
+class Poviat(models.Model):
+
+    POVIAT = [
+        (1, "milicki"), (2, "oleśnicki"), (3, "oławski"), (4, "strzeliński"), (5, "ząbkowicki"),
+        (6, "kłodzki"), (7, "trzebnicki"), (8, "Wrocław"), (9, "wrocławski"), (10, "dzierżoniowski"),
+        (11, "Wałbrzych"), (12, "wałbrzyski"), (13, "świdnicki"), (14, "średzki"), (15, "wołowski"),
+        (16, "górowski"), (17, "głogowski"), (18, "polkowicki"), (19, "lubiński"), (20, "Legnica"),
+        (21, "legnicki"), (22, "jaworski"), (23, "kamiennogórski"), (24, "bolesławiecki"), (25, "złotoryjski"),
+        (26, "Jelenia Góra"), (27, "jeleniogórski"), (28, "zgorzelecki"), (29, "lubański"),
+
+        (30, "Opole"), (31, "opolski"), (32, "brzeski"), (33, "głupczycki"), (34, "kędzierzyńsko-kozielski"),
+        (35, "kluczborski"), (36, "krapkowicki"), (37, "namysłowski"), (38, "nyski"), (39, "oleski"),
+        (40, "prudnicki"), (41, "strzelecki"),
+
+        (42, "Kalisz"), (43, "Konin"), (44, "Leszno"), (45, "Poznań"), (46, "chodzieski"),
+        (47, "czarnkowski-trzcianecki"), (48, "gnieźnieński"), (49, "gostyński"), (50, "grodziski"),
+        (51, "jarociński"), (52, "kaliski"), (53, "kępiński"), (54, "kolski"), (55, "koniński"),
+        (56, "kościański"), (57, "krotoszyński"), (58, "leszczyński"), (59, "międzychodzki"), (60, "nowotomyski"),
+        (61, "obornicki"), (62, "ostrowski"), (63, "ostrzeszowski"), (64, "pilski"), (65, "pleszewski"),
+        (66, "poznański"), (67, "rawicki"), (68, "słupecki"), (69, "szamotulski"), (70, "średzki"),
+        (71, "śremski"), (72, "turecki"), (73, "wągrowiecki"), (74, "wolsztyński"), (75, "wrzesiński"),
+        (76, "złotowski")
+    ]
+
+    poviat_name = models.CharField(max_length=64, unique=True, choices=POVIAT)
+
+    def __str__(self):
+        return self.poviat_name
+
+
 class Company(models.Model):
 
     company_name  = models.CharField(max_length=64, unique=True)
@@ -196,6 +226,7 @@ class Project(models.Model):
     announcement_number = models.TextField(default=None, null=True)
     announcement_date = models.DateField(default=None, null=True)
     voivodeship = models.ForeignKey(Voivodeship, on_delete=models.CASCADE, default=Voivodeship.VOIVODESHIP[0][0])
+    poviat = models.ForeignKey(Poviat, on_delete=models.CASCADE, null=True, default=None)
     tender_date = models.DateField(null=True, default=None)
     project_name = models.TextField(max_length=512, unique=True)
     estimated_value = models.FloatField(null=True, default=None)

@@ -77,6 +77,16 @@ def voivodeship_init():
 
 voivodeship_init()
 
+def poviat_init():
+    poviats = Poviat.objects.all()
+    poviats_names = [i.poviat_name for i in poviats]
+    if len(poviats) != len(Poviat.POVIAT):
+        for i in Poviat.POVIAT:
+            if i[1] not in poviats_names:
+                Poviat.objects.create(poviat_name=i[1])
+
+poviat_init()
+
 
 #AUXILIARY FUNCTIONS
 def set_poviats(voivodeship):
@@ -431,6 +441,7 @@ class AddProject(View):
             announcement_number = data["announcement_number"]
             announcement_date = data["announcement_date"]
             voivodeship = data["voivodeship"]
+            poviat = data["poviat"]
             tender_date = data["tender_date"]
             project_name = data["project_name"]
             estimated_value = data["estimated_value"]            
@@ -453,7 +464,7 @@ class AddProject(View):
             project = Project.objects.create(
                 project_number=project_number, tender_time=tender_time, open_time=open_time, deposit=deposit,
                 announcement_number=announcement_number, announcement_date=announcement_date,
-                voivodeship=voivodeship, tender_date=tender_date, project_name=project_name,
+                voivodeship=voivodeship, poviat=poviat, tender_date=tender_date, project_name=project_name,
                 estimated_value=estimated_value, investor=investor, project_deadline=project_deadline,
                 mma_quantity=mma_quantity, payment_method=payment_method, project_url=project_url,
                 division=division, rc_date=rc_date, rc_agree=rc_agree, evaluation_criteria=evaluation_criteria,
@@ -498,6 +509,7 @@ class EditProject(View):
             "announcement_number": project.announcement_number,
             "announcement_date": project.announcement_date,
             "voivodeship": project.voivodeship,
+            "poviat": project.poviat,
             "tender_date": project.tender_date,            
             "project_name": project.project_name,
             "estimated_value": project.estimated_value,            
@@ -537,6 +549,7 @@ class EditProject(View):
             project.announcement_number = data["announcement_number"]
             project.announcement_date = data["announcement_date"]
             project.voivodeship = data["voivodeship"]
+            project.poviat = data["poviat"]
             project.tender_date = data["tender_date"]
             project_name = data["project_name"]
             project.estimated_value = data["estimated_value"]            
