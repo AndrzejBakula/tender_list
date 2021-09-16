@@ -14,37 +14,51 @@ class AddInvestorForm(forms.Form):
         label="", max_length=128, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Nazwa Inwestora"}))
     investor_address = forms.CharField(
         label="", max_length=256, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Adres Inwestora"}))
+    investor_voivodeship = forms.ModelChoiceField(label="Województwo", queryset=Voivodeship.objects.all())
+    investor_poviat = forms.ModelChoiceField(label="Powiat", queryset=Poviat.objects.all().order_by("poviat_name"), required=False)
     investor_administration_level = forms.ModelChoiceField(
         label="Poziom administracyjny", queryset=AdministrationLevel.objects.all())
     investor_note = forms.ModelChoiceField(label="Ocena inwestora", queryset=Note.objects.all())
 
 
 class EditInvestorForm(forms.Form):
-    investor_name = forms.CharField(label="", max_length=128, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Nazwa Inwestora"}))
-    investor_address = forms.CharField(label="", max_length=256, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Adres Inwestora"}))
-    investor_administration_level = forms.ModelChoiceField(label="Poziom administracyjny", queryset=AdministrationLevel.objects.all())
+    investor_name = forms.CharField(
+        label="", max_length=128, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Nazwa Inwestora"}))
+    investor_address = forms.CharField(
+        label="", max_length=256, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Adres Inwestora"}))
+    investor_voivodeship = forms.ModelChoiceField(label="Województwo", queryset=Voivodeship.objects.all())
+    investor_poviat = forms.ModelChoiceField(label="Powiat", queryset=Poviat.objects.all().order_by("poviat_name"), required=False)
+    investor_administration_level = forms.ModelChoiceField(
+        label="Poziom administracyjny", queryset=AdministrationLevel.objects.all())
     investor_note = forms.ModelChoiceField(label="Ocena inwestora", queryset=Note.objects.all())
 
 
 class AddCompanyForm(forms.Form):
     company_name = forms.CharField(label="", max_length=128, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Nazwa Firmy"}))
     company_address = forms.CharField(label="", max_length=256, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Adres Firmy"}))
+    company_voivodeship = forms.ModelChoiceField(label="Województwo", queryset=Voivodeship.objects.all())
+    company_poviat = forms.ModelChoiceField(label="Powiat", queryset=Poviat.objects.all().order_by("poviat_name"), required=False)
 
 
 class EditCompanyForm(forms.Form):
     company_name = forms.CharField(label="", max_length=128, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Nazwa Firmy"}))
     company_address = forms.CharField(label="", max_length=256, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Adres Firmy"}))
-
+    company_voivodeship = forms.ModelChoiceField(label="Województwo", queryset=Voivodeship.objects.all())
+    company_poviat = forms.ModelChoiceField(label="Powiat", queryset=Poviat.objects.all().order_by("poviat_name"), required=False)
 
 class AddDesignerForm(forms.Form):
     designer_name = forms.CharField(label="", max_length=128, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Nazwa Projektanta"}))
     designer_address = forms.CharField(label="", max_length=256, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Adres Projektanta"}))
+    designer_voivodeship = forms.ModelChoiceField(label="Województwo", queryset=Voivodeship.objects.all())
+    designer_poviat = forms.ModelChoiceField(label="Powiat", queryset=Poviat.objects.all().order_by("poviat_name"), required=False)
     designer_note = forms.ModelChoiceField(label="Ocena projektanta", queryset=Note.objects.all())
 
 
 class EditDesignerForm(forms.Form):
     designer_name = forms.CharField(label="", max_length=128, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Nazwa Projektanta"}))
     designer_address = forms.CharField(label="", max_length=256, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Adres Projektanta"}))
+    designer_voivodeship = forms.ModelChoiceField(label="Województwo", queryset=Voivodeship.objects.all())
+    designer_poviat = forms.ModelChoiceField(label="Powiat", queryset=Poviat.objects.all().order_by("poviat_name"), required=False)
     designer_note = forms.ModelChoiceField(label="Ocena projektanta", queryset=Note.objects.all())
 
 

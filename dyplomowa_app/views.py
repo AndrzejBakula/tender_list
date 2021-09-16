@@ -174,14 +174,17 @@ class AddInvestor(View):
             data = form.cleaned_data
             investor_name = data["investor_name"]
             investor_address = data["investor_address"]
+            investor_voivodeship = data["investor_voivodeship"]
+            investor_poviat = data["investor_poviat"]
             investor_administration_level = data["investor_administration_level"]
             investor_note = data["investor_note"]
             Investor.objects.create(investor_name=investor_name, investor_address=investor_address,
+            investor_voivodeship=investor_voivodeship, investor_poviat=investor_poviat,
             investor_administration_level=investor_administration_level, investor_note=investor_note)
             ctx = {
                 "form": form
             }
-            return redirect("/projects")
+            return redirect("/investors")
 
 
 class InvestorsView(View):
@@ -208,6 +211,8 @@ class EditInvestor(View):
         initial_data = {
             "investor_name": investor.investor_name,
             "investor_address": investor.investor_address,
+            "investor_voivodeship": investor.investor_voivodeship,
+            "investor_poviat": investor.investor_poviat,
             "investor_administration_level": investor.investor_administration_level,
             "investor_note": investor.investor_note
         }
@@ -225,6 +230,8 @@ class EditInvestor(View):
             investor = Investor.objects.get(id=id)
             investor.investor_name = data["investor_name"]
             investor.investor_address = data["investor_address"]
+            investor.investor_voivodeship = data["investor_voivodeship"]
+            investor.investor_poviat = data["investor_poviat"]
             investor.investor_administration_level = data["investor_administration_level"]
             investor.investor_note = data["investor_note"]
             investor.save()
@@ -232,7 +239,7 @@ class EditInvestor(View):
                 "investor": investor,
                 "form": form
             }
-            return render(request, "edit_investor.html", ctx)
+            return redirect("/investors")
 
 
 class DeleteInvestor(View):
@@ -265,7 +272,10 @@ class AddCompany(View):
             data = form.cleaned_data
             company_name = data["company_name"]
             company_address = data["company_address"]
-            Company.objects.create(company_name=company_name, company_address=company_address)
+            company_voivodeship = data["company_voivodeship"]
+            company_poviat = data["company_poviat"]
+            Company.objects.create(company_name=company_name, company_address=company_address,
+            company_voivodeship=company_voivodeship, company_poviat=company_poviat)
             ctx = {
                 "form": form
             }
@@ -296,6 +306,8 @@ class EditCompany(View):
         initial_data = {
             "company_name": company.company_name,
             "company_address": company.company_address,
+            "company_voivodeship": company.company_voivodeship,
+            "company_poviat": company.company_poviat
         }
         form = EditCompanyForm(initial=initial_data)
         ctx = {
@@ -311,6 +323,8 @@ class EditCompany(View):
             company = Company.objects.get(id=id)
             company.company_name = data["company_name"]
             company.company_address = data["company_address"]
+            company.company_voivodeship = data["company_voivodeship"]
+            company.company_poviat = data["company_poviat"]
             company.save()
             ctx = {
                 "company": company
@@ -350,11 +364,12 @@ class AddDesigner(View):
             designer_address = data["designer_address"]
             designer_note = data["designer_note"]
             Designer.objects.create(designer_name=designer_name, designer_address=designer_address,
+            designer_voivodeship=designer_voivodeship, designer_poviat=designer_poviat,
             designer_note=designer_note)
             ctx = {
                 "form": form
             }
-            return redirect("/projects")
+            return redirect("/designers")
 
 
 class DesignersView(View):
@@ -381,6 +396,8 @@ class EditDesigner(View):
         initial_data = {
             "designer_name": designer.designer_name,
             "designer_address": designer.designer_address,
+            "designer_voivodeship": designer.designer_voivodeship,
+            "designer_poviat": designer.designer_poviat,
             "designer_note": designer.designer_note
         }
         form = EditDesignerForm(initial=initial_data)
@@ -397,13 +414,14 @@ class EditDesigner(View):
             designer = Designer.objects.get(id=id)
             designer.designer_name = data["designer_name"]
             designer.designer_address = data["designer_address"]
+            designer.designer_voivodeship = data["designer_voivodeship"]
+            designer.designer_poviat = data["designer_poviat"]
             designer.designer_note = data["designer_note"]
             designer.save()
             ctx = {
                 "designer": designer,
-                "form": form
             }
-            return render(request, "edit_designer.html", ctx)
+            return redirect("/designers")
 
 
 class DeleteDesigner(View):
