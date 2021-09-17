@@ -19,33 +19,70 @@
   </head>
 
   <body class="d-flex flex-column body">
-
+    <div class="d-flex flex-row justify-content-between align-items-center" style="padding: 0.5%;">
+    <div class="d-flex flex-row justify-content-center align-items-center">
+      <a href="{% url 'projects' %}" style="color: black;">
+        <button type="button" class="btn btn-outline-primary btn-lg align-self-center">Lista Przetargowa</button>
+      </a>
+    </div>
       {% if user.is_authenticated %}
-      <div>
-          Zalogowany jako: {{ user }}<a href="{% url 'logout' %}" class="btn btn-outline-danger m-1">Logout</a>
+      <div class="d-flex flex-row justify-content-start align-items-center">
+          <i>Zalogowany jako: {{ user }}</i><a href="{% url 'logout' %}" class="btn btn-outline-danger m-1">Logout</a>
       </div>
       {% else %}
-      <div>
+      <div class="d-flex flex-row justify-content-start align-items-center">
        <a href="{% url 'login' %}" class="btn btn-outline-danger m-1">Login</a>
       </div>
       {% endif %}
+    </div>
 
-
-      <div class="d-flex flex-row justify-content-center align-items-center" style="padding: 0.5%;">
-        <button type="button" class="btn btn-outline-primary btn-lg display-5 align-self-center"><a href="{% url 'projects' %}">Lista Przetargowa</a></button>
-      </div>
-      <div class="d-flex flex-row justify-content-around align-items-center" style="padding-bottom: 0.5%;">
+      <div class="d-flex flex-row justify-content-around align-items-center flex-wrap" style="padding-bottom: 0.5%;">
         <div class="d-flex flex-row justify-content-center align-items-center">
-          <button type="button" class="btn btn-outline-primary display-5 align-self-center" style="text-align: center"><a href="{% url 'investors' %}">Inwestorzy</a></h4>
-          <button type="button" class="btn btn-outline-primary display-5 align-self-center" style="text-align: center;"><a href="{% url 'companies' %}">Firmy</a></h4>
-          <button type="button" class="btn btn-outline-primary display-5 align-self-center" style="text-align: center;;"><a href="{% url 'designers' %}">Projektanci</a></h4>
+          <a href="{% url 'investors' %}" style="color: black;">
+            <button type="button" class="btn btn-outline-primary align-self-center" style="text-align: center">
+              Inwestorzy
+            </button>
+          </a>
+          <a href="{% url 'companies' %}" style="color: black;">
+            <button type="button" class="btn btn-outline-primary align-self-center" style="text-align: center;">
+              Firmy
+            </button>
+          </a>
+          <a href="{% url 'designers' %}" style="color: black;">
+            <button type="button" class="btn btn-outline-primary display-5 align-self-center" style="text-align: center;">
+              Projektanci
+            </button>
+          </a>
         </div>
         {% if user.username == 'admin' %}
         <div class="d-flex flex-row justify-content-center align-items-center" style="padding-bottom: 0.5%;">
-          <button type="button" class="btn btn-outline-primary display-5 align-self-center" style="text-align: center;"><a href="{% url 'add-project' %}">Dodaj Projekt</a></h4>
-          <button type="button" class="btn btn-outline-primary display-5 align-self-center" style="text-align: center;"><a href="{% url 'add-investor' %}">Dodaj Inwestora</a></h4>
-          <button type="button" class="btn btn-outline-primary display-5 align-self-center" style="text-align: center;"><a href="{% url 'add-company' %}">Dodaj Firmę</a></h4>
-          <button type="button" class="btn btn-outline-primary display-5 align-self-center" style="text-align: center;"><a href="{% url 'add-designer' %}">Dodaj Projektanta</a></h4>
+          <a href="{% url 'add-project' %}" style="color: black;">
+            <button type="button" class="btn btn-outline-primary align-self-center" style="text-align: center;">
+              Dodaj Projekt
+            </button>
+          </a>
+          <a href="{% url 'add-investor' %}" style="color: black;">
+            <button type="button" class="btn btn-outline-primary align-self-center" style="text-align: center;">
+              Dodaj Inwestora
+            </button>
+          </a>
+          <a href="{% url 'add-company' %}" style="color: black;">
+            <button type="button" class="btn btn-outline-primary align-self-center" style="text-align: center;">
+              Dodaj Firmę
+            </button>
+          </a>
+          <a href="{% url 'add-designer' %}" style="color: black;">
+            <button type="button" class="btn btn-outline-primary align-self-center" style="text-align: center;">
+              Dodaj Projektanta
+            </button>
+          </a>
+        </div>
+        <div class="d-flex flex-row justify-content-center align-items-center">
+          <a href="{% url 'archives' %}" style="color: black;">
+            <button type="button" class="btn btn-outline-primary align-self-center" style="text-align: center">
+              Archiwum
+            </button>
+          </a>
         </div>
       </div>
       {% endif %}
@@ -54,7 +91,7 @@
 
       <hr>
       <div class="d-flex flex-column justify-content-center align-items-center">
-          <span>powered by:</span>
+          <span><i>powered by:</i></span>
           <a class="btn btn-link align-self-center" href="https://www.linkedin.com/in/andrzej-baku%C5%82a/" 
              target="_blank" style="color: black;">Andrzej Bakuła</a>
       </div>

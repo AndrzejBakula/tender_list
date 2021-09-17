@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %} Lista Projektów {% endblock %}
+{% block title %} Projekty Archiwalne {% endblock %}
 
 {% block content %}
 
@@ -28,7 +28,7 @@
           </tr>
         </thead>
         <tbody>
-            {% for i in projects %}
+            {% for i in archives %}
           <tr>
             <th scope="col" style="text-align: center;">{{ i.project_number }}</th>
             <td scope="col" style="text-align: center;">{{ i.tender_time }}</td>

@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from .models import *
 from .forms import AddInvestorForm, AddDesignerForm, AddProjectForm, EditProjectForm, EditInvestorForm
 from .forms import EditDesignerForm, LoginForm, AddCompanyForm, EditCompanyForm
+from datetime import timezone, date, timedelta
 
 #INITIAL FUNCTIONS
 def administration_level_init():
@@ -500,7 +501,9 @@ class AddProject(View):
 
 class Projects(View):
     def get(self, request):
-        projects = Project.objects.all().order_by("tender_date")
+        today = date.today()
+        finish  = today + timedelta(days=100)
+        projects = Project.objects.filter(tender_date__range=[today, finish]).order_by("tender_date")
         ctx = {
             "projects": projects
         }
@@ -611,8 +614,12 @@ class DeleteProjectConfirm(View):
         return redirect("/projects")
 
 
-
-
-
-                
+class ArchivesView(View):
+    def get(self, request):
+        archives_date = date.today() + timedelta(days=-1)
+        archives = Project.objects.filter(tender_date__range=["2021-01-01", archives_date]).order_by("tender_date")
+        ctx = {
+            "archives": archives
+        }
+        return render(request, "archives.html", ctx)
     
