@@ -31,23 +31,25 @@
       {% endif %}
 
 
-      <div class="d-flex flex-row justify-content-center align-items-center">
-        <h1 class="display-5 align-self-center"><a href="{% url 'projects' %}">Lista Przetargowa</a></h1>
+      <div class="d-flex flex-row justify-content-center align-items-center" style="padding: 0.5%;">
+        <button type="button" class="btn btn-outline-primary btn-lg display-5 align-self-center"><a href="{% url 'projects' %}">Lista Przetargowa</a></button>
       </div>
-      {% if user.username == 'admin' %}
-      <div class="d-flex flex-row justify-content-around align-items-center">
-        <h4 class="display-5 align-self-center" style="text-align: center;"><a href="{% url 'add-project' %}">Dodaj Projekt</a></h4>
-        <h4 class="display-5 align-self-center" style="text-align: center;"><a href="{% url 'add-investor' %}">Dodaj Inwestora</a></h4>
-        <h4 class="display-5 align-self-center" style="text-align: center;"><a href="{% url 'add-company' %}">Dodaj Firmę</a></h4>
-        <h4 class="display-5 align-self-center" style="text-align: center;"><a href="{% url 'add-designer' %}">Dodaj Projektanta</a></h4>
+      <div class="d-flex flex-row justify-content-around align-items-center" style="padding-bottom: 0.5%;">
+        <div class="d-flex flex-row justify-content-center align-items-center">
+          <button type="button" class="btn btn-outline-primary display-5 align-self-center" style="text-align: center"><a href="{% url 'investors' %}">Inwestorzy</a></h4>
+          <button type="button" class="btn btn-outline-primary display-5 align-self-center" style="text-align: center;"><a href="{% url 'companies' %}">Firmy</a></h4>
+          <button type="button" class="btn btn-outline-primary display-5 align-self-center" style="text-align: center;;"><a href="{% url 'designers' %}">Projektanci</a></h4>
+        </div>
+        {% if user.username == 'admin' %}
+        <div class="d-flex flex-row justify-content-center align-items-center" style="padding-bottom: 0.5%;">
+          <button type="button" class="btn btn-outline-primary display-5 align-self-center" style="text-align: center;"><a href="{% url 'add-project' %}">Dodaj Projekt</a></h4>
+          <button type="button" class="btn btn-outline-primary display-5 align-self-center" style="text-align: center;"><a href="{% url 'add-investor' %}">Dodaj Inwestora</a></h4>
+          <button type="button" class="btn btn-outline-primary display-5 align-self-center" style="text-align: center;"><a href="{% url 'add-company' %}">Dodaj Firmę</a></h4>
+          <button type="button" class="btn btn-outline-primary display-5 align-self-center" style="text-align: center;"><a href="{% url 'add-designer' %}">Dodaj Projektanta</a></h4>
+        </div>
       </div>
       {% endif %}
-      <div class="d-flex flex-row justify-content-around align-items-center">
-        <h4 class="display-5 align-self-center" style="text-align: center;"><a href="{% url 'investors' %}">Inwestorzy</a></h4>
-        <h4 class="display-5 align-self-center" style="text-align: center;"><a href="{% url 'companies' %}">Firmy</a></h4>
-        <h4 class="display-5 align-self-center" style="text-align: center;"><a href="{% url 'designers' %}">Projektanci</a></h4>
-      </div>
-
+      
       {% block content %}{% endblock %}
 
       <hr>
