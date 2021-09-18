@@ -167,13 +167,9 @@ class PaymentMethod(models.Model):
     
 class Division(models.Model):
 
-    DIVISION = [
-        (1, "nieokreślono"),
-        (2, "Wrocław")
-    ]
-
-    division_name = models.CharField(max_length=64, unique=True, choices=DIVISION)
-    division_person = models.ManyToManyField(User, default=None)
+    division_name = models.CharField(max_length=64, unique=True)
+    division_admin = models.ManyToManyField(User, default=None, related_name="division_admin")
+    division_person = models.ManyToManyField(User, default=None, related_name="division_person")
 
     def __str__(self):
         return self.division_name
@@ -243,7 +239,7 @@ class Project(models.Model):
     payment_method = models.ForeignKey(PaymentMethod, on_delete=models.CASCADE, default=PaymentMethod.PAYMENT_METHOD[0][0])
     project_url = models.URLField(unique=True, null=True, default=None)
     person = models.ManyToManyField(User, default=None)
-    division = models.ForeignKey(Division, on_delete=models.CASCADE, default=Division.DIVISION[0][0])
+    division = models.ForeignKey(Division, on_delete=models.CASCADE)
     rc_date = models.DateField(null=True, default=None)
     rc_agree = models.BooleanField(null=True, default=None)
     evaluation_criteria = models.TextField(null=True, default=None)

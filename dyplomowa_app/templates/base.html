@@ -28,6 +28,9 @@
       <div class="d-flex flex-row justify-content-center align-items-center"></div>
         {% if user.is_authenticated %}
         <div class="d-flex flex-row justify-content-end align-items-center">
+          <a href="{% url 'add-division' %}" class="btn btn-outline-danger m-1">Utwórz nowy zespół</a>
+        </div>
+        <div class="d-flex flex-row justify-content-end align-items-center">
           <i>Zalogowany jako: {{ user }}</i><a href="{% url 'logout' %}" class="btn btn-outline-danger m-1">Logout</a>
         </div>
         {% else %}
@@ -89,9 +92,9 @@
             Archiwum
           </button>
         </a>
-        <a href="{% url 'division' %}" style="color: black;">
+        <a href="{% url 'division-choice' %}" style="color: black;">
           <button type="button" class="btn btn-outline-primary align-self-center" style="text-align: center">
-            Zespół
+            Wybierz Zespół
           </button>
         </a>
       </div>

@@ -130,3 +130,8 @@ class EditProjectForm(forms.Form):
     designer = forms.ModelChoiceField(label="Projektant", required=False, queryset=Designer.objects.all().order_by("designer_name"))
     status = forms.ModelChoiceField(label="Status projektu", queryset=Status.objects.all())
 
+
+class AddDivisionForm(forms.Form):
+    division_name = forms.CharField(label="", max_length=128, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Nazwa Zespołu"}))
+
+

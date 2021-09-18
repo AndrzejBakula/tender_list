@@ -2,10 +2,12 @@ from django.views import View
 from django.shortcuts import render, redirect
 from django.contrib.auth import get_user_model, authenticate, login, logout
 from django.contrib.auth.models import User
+from datetime import timezone, date, timedelta
 from .models import *
 from .forms import AddInvestorForm, AddDesignerForm, AddProjectForm, EditProjectForm, EditInvestorForm
 from .forms import EditDesignerForm, LoginForm, AddCompanyForm, EditCompanyForm, RegisterForm
-from datetime import timezone, date, timedelta
+from .forms import AddDivisionForm
+
 
 #INITIAL FUNCTIONS
 def administration_level_init():
@@ -57,16 +59,6 @@ def payment_method_init():
                 PaymentMethod.objects.create(payment_method_name=i[1])
 
 payment_method_init()
-
-def division_init():
-    divisions = Division.objects.all()
-    division_names = [i.division_name for i in divisions]
-    if len(divisions) != len(Division.DIVISION):
-        for i in Division.DIVISION:
-            if i[1] not in division_names:
-               Division .objects.create(division_name=i[1])
-
-division_init()
 
 def voivodeship_init():
     voivodeships = Voivodeship.objects.all()
@@ -724,7 +716,53 @@ class ArchivesView(View):
         return render(request, "archives.html", ctx)
 
 
-class DivisionView(View):
+class AddDivisionView(View):
     def get(self, request):
-        pass
+        form = AddDivisionForm()
+        ctx = {
+            "form": form
+        }
+        return render(request, "add_division.html", ctx)
+    
+    def post(self, request):
+        form = AddDivisionForm(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            for i in Division.objects.all():
+                if i.division_name == data["division_name"]:
+                    ctx = {
+                        "form": form,
+                        "error_message": "Taki zespół już istnieje",
+                        "data": request.POST
+                    }
+                    return render(request, "add_division.html", ctx)
+            division_name = data["division_name"]
+            division = Division.objects.create(division_name=division_name)
+            user = User.objects.get(pk=int(request.session.get("user_id")))
+            division.division_admin.add(user)
+            division.save()
+            request.session["division"] = division
+            ctx = {
+                "form": form
+            }
+            return redirect("/projects") #ZMIENIĆ NA DIVISION_DETAILS!!!
+
+
+class DivisionChoiceView(View):
+    def get(self, request):
+        user = None
+        if request.session.get("user_id"):
+            user = User.objects.get(pk=int(request.session.get("user_id")))
+        divisions = Division.objects.filter(division_person=user)
+        ctx = {
+            "divisions": divisions
+        }
+        return render(request, "division_choice.html", ctx)
+
+
+class DivisionChoiceConfirm(View):
+    def get(self, request, id):
+        division = Division.objects.get(id=id)
+
+        return redirect("/projects")
     

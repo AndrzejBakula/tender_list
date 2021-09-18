@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %} Wybierz Zespół {% endblock %}
+
+{% block content %}
+
+<div class="d-flex flex-row justify-content-center align-items-center">
+    <h2 class="display-5 align-self-center">Wybierz Zespół</a></h2>
+</div>
+
+<div class="d-flex flex-column align-items-center" style="height: 100%; width: 100%;">
+
+    <table class="table-responsive-xl table-striped table-bordered" style="width: 100%;">
+        <thead>
+          <tr>
+            <th scope="col" style="text-align: center;">ID</th>
+            <th scope="col" style="text-align: center;">Nazwa Zespołu</th>
+          </tr>
+        </thead>
+        <tbody>
+            {% for i in divisions %}
+          <tr>
+            <th scope="col" style="text-align: center;">{{ i.id }}</th>
+            <td scope="col" style="text-align: center;">{{ i.division_name }}</td>
+            <a href="{% url 'division-choice-confirm' i.id %}">
+                <td scope="col" style="text-align: center;">Wybierz</td>
+            </a>
+          </tr>
+            {% endfor %}
+        </tbody>
+      </table>
+
+
+</div>
+
+{% endblock %}
