@@ -173,6 +173,7 @@ class Division(models.Model):
     ]
 
     division_name = models.CharField(max_length=64, unique=True, choices=DIVISION)
+    division_person = models.ManyToManyField(User, default=None)
 
     def __str__(self):
         return self.division_name

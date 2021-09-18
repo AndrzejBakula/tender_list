@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model, authenticate, login, logout
 from django.contrib.auth.models import User
 from .models import *
 from .forms import AddInvestorForm, AddDesignerForm, AddProjectForm, EditProjectForm, EditInvestorForm
-from .forms import EditDesignerForm, LoginForm, AddCompanyForm, EditCompanyForm
+from .forms import EditDesignerForm, LoginForm, AddCompanyForm, EditCompanyForm, RegisterForm
 from datetime import timezone, date, timedelta
 
 #INITIAL FUNCTIONS
@@ -129,9 +129,109 @@ def set_poviats(voivodeship):
     for i in range(len(choiced_poviats)):
         poviats.append((i+1, choiced_poviats[i]))
     return poviats
+
+def validate_email(email):
+    for i in User.objects.all():
+        if i.email == email:
+            return True
+    return False
     
 
 #VIEW CLASSES
+class RegisterView(View):
+
+    def get(self, request):
+        form = RegisterForm()
+        return render(request, "register.html", {"form": form})
+    
+    def post(self, request):
+        users = [i.username for i in User.objects.all()]
+        username = request.POST["username"]
+        email = request.POST["email"]
+        password = request.POST["password"]
+        password2 = request.POST["password2"]
+        message = ""
+        initial_data = {
+            "username": username,
+            "email": email,
+        }
+        form = RegisterForm(initial=initial_data)
+        if password != password2:
+            message = "Proszę podać dwa takie same hasła."
+            ctx = {
+                "username": username,
+                "email": email,
+                "message": message,
+                "form": form
+            }
+            return render(request, "register.html", ctx)
+        elif len(password) < 6:
+            message = "Hasło powinno mieć przynajmniej 6 znaków."
+            ctx = {
+                "username": username,
+                "email": email,
+                "message": message,
+                "form": form
+            }
+            return render(request, "register.html", ctx)
+        elif username in ("", None) or email in ("", None) or password in ("", None):
+            message = "Proszę wypełnić wszystkie pola."
+            ctx = {
+                "username": username,
+                "email": email,
+                "message": message,
+                "form": form
+            }
+            return render(request, "register.html", ctx)
+        elif username in users:
+            message = "Taki użytkownik jest już zarejestrowany."
+            ctx = {
+                "email": email,
+                "message": message,
+                "form": form
+            }
+            return render(request, "register.html", ctx)
+        elif validate_email(email):
+            message = "Ta skrzynka na listy jest już zajęta."
+            ctx = {
+                "username": username,
+                "message": message,
+                "form": form
+            }
+            return render(request, "register.html", ctx)
+        else:
+            user = User.objects.create(username=username, email=email)
+            user.set_password(password)
+            user.is_active = True
+            user.save()
+
+            # uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
+            # domain = get_current_site(request).domain
+            # link = reverse("activate", kwargs={'uidb64': uidb64, 'token': token_generator.make_token(user)})
+
+            # activate_url = PROTOCOLE+domain+link
+
+            # email_subject = "Aktywuj konto kawalerzysty."
+            # email_body = "Baczność, rekrucie " + user.username + "! Użyj poniższego linku werbunkowego i udaj się do kwatermistrza.\n" + activate_url
+            # email = EmailMessage(
+            #     email_subject,
+            #     email_body,
+            #     "noreply@semycolon.com",
+            #     [user.email],
+            #     )            
+            # email.send(fail_silently=False)
+
+            # rank = Rank.objects.get(name="kawalerzysta")
+            # UserRank.objects.create(user=user, rank=rank)
+            message = f"Dodano nowego użytkownika {user.username}."
+            form = LoginForm()
+            ctx = {
+                "message": message,
+                "form": form
+            }
+            return render(request, "login.html", ctx)
+
+
 class LoginView(View):
     def get(self, request):
         form = LoginForm()
@@ -622,4 +722,9 @@ class ArchivesView(View):
             "archives": archives
         }
         return render(request, "archives.html", ctx)
+
+
+class DivisionView(View):
+    def get(self, request):
+        pass
     

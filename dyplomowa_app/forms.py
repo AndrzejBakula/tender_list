@@ -4,6 +4,14 @@ from .models import Division, Company, Poviat
 from django.contrib.auth.models import User
 
 
+class RegisterForm(forms.Form):
+    username = forms.CharField(label="", max_length=128, widget=forms.TextInput(attrs={"size": 34, "placeholder": "Nazwa urzytkownika"}))
+    email = forms.EmailField(label="", max_length=128, widget=forms.EmailInput(attrs={"size": 34, "placeholder": "Adres email"}))
+    password = forms.CharField(label="", widget=forms.PasswordInput({"size": 34, "placeholder": "Hasło"},))
+    password2 = forms.CharField(label="", widget=forms.PasswordInput({"size": 34, "placeholder": "Powtórz hasło"},))
+    # captcha = ReCaptchaField(label="", widget=ReCaptchaV3(attrs={'required_score':0.85}))
+
+
 class LoginForm(forms.Form):
     username = forms.CharField(label="Username", max_length=100)
     password = forms.CharField(label="Password", widget=forms.PasswordInput)

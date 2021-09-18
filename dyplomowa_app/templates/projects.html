@@ -5,6 +5,7 @@
 
 {% block content %}
 
+{% if user.is_authenticated %}
 <div class="d-flex flex-column align-items-center" style="height: 100%; width: 100%; padding: 0.5%;">
 
     <table class="table-responsive-xl table-striped table-bordered" style="width: 100%;">
@@ -51,7 +52,7 @@
         </tbody>
       </table>
 
-
 </div>
+{% endif %}
 
 {% endblock %}
