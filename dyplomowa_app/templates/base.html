@@ -19,7 +19,7 @@
   </head>
 
   <body class="d-flex flex-column body" style="background-color:honeydew;">
-    <div class="d-flex flex-row justify-content-between align-items-center" style="padding: 0.5%;">
+    <div class="d-flex flex-row justify-content-between align-items-center">      
       <div class="d-flex flex-row justify-content-start align-items-center flex-grow-1">
         <a href="{% url 'projects' %}" style="color: black;">
           <button type="button" class="btn btn-outline-primary btn-lg align-self-center">Lista Przetargowa</button>
@@ -43,8 +43,8 @@
       </div>
     </div>
     {% if user.is_authenticated %}
-    {% if request.session.division_id %}
-    <div class="d-flex flex-row justify-content-between align-items-center flex-wrap" style="padding: 0.5%;">
+    <div class="d-flex flex-row justify-content-between align-items-center flex-wrap">
+      {% if request.session.division_id %}
       <div class="d-flex flex-row justify-content-center align-items-center">
         <a href="{% url 'archives' %}" style="color: black;">
           <button type="button" class="btn btn-outline-primary align-self-center" style="text-align: center">
@@ -52,6 +52,7 @@
           </button>
         </a>
       </div>
+      {% endif %}
       <div class="d-flex flex-row justify-content-center align-items-center">
         <a href="{% url 'investors' %}" style="color: black;">
           <button type="button" class="btn btn-outline-primary align-self-center" style="text-align: center">
@@ -70,12 +71,14 @@
         </a>
       </div>
       {% if user.is_staff %}
-      <div class="d-flex flex-row justify-content-center align-items-center" style="padding-top: 0.5%;">
+      <div class="d-flex flex-row justify-content-center align-items-center">
+        {% if request.session.division_id %}
         <a href="{% url 'add-project' %}" style="color: black;">
           <button type="button" class="btn btn-outline-primary align-self-center" style="text-align: center;">
             Dodaj Projekt
           </button>
         </a>
+        {% endif %}
         <a href="{% url 'add-investor' %}" style="color: black;">
           <button type="button" class="btn btn-outline-primary align-self-center" style="text-align: center;">
             Dodaj Inwestora
@@ -99,22 +102,22 @@
             Moje Zespoły
           </button>
         </a>
-        {% endif %}
         <a href="{% url 'add-division' %}" class="btn btn-outline-danger m-1">Utwórz nowy zespół</a>
         <a href="{% url 'join-division' %}" class="btn btn-outline-danger m-1">Dołącz do zespołu</a>
       </div>
     </div>
     {% endif %}
-    
-    <div class="d-flex flex-column justify-content-center align-items-center"></div>
-      {% block content %}{% endblock %}
-    </div>
-    <hr>
-    <div class="d-flex flex-column justify-content-center align-items-center">
-        <span><i>powered by:</i></span>
-        <a class="btn btn-link align-self-center" href="https://www.linkedin.com/in/andrzej-baku%C5%82a/" 
-            target="_blank" style="color: black;">Andrzej Bakuła</a>
-    </div>
+      
+      <div class="d-flex flex-column justify-content-center align-items-center"></div>
+        {% block content %}{% endblock %}
+      </div>
+
+      <hr>
+      <div class="d-flex flex-column justify-content-center align-items-center">
+          <span><i>powered by:</i></span>
+          <a class="btn btn-link align-self-center" href="https://www.linkedin.com/in/andrzej-baku%C5%82a/" 
+              target="_blank" style="color: black;">Andrzej Bakuła</a>
+      </div>
 
     <!-- Optional JavaScript; choose one of the two! -->
 

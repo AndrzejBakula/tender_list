@@ -818,7 +818,7 @@ class DivisionDetails(View):
 
 class AddAdminView(View):
     def get(self, request, division_id, user_id):
-        division = Division.objects.get(id=id)
+        division = Division.objects.get(id=division_id)
         user = User.objects.get(id=user_id)
         division.division_admin.add(user)
         division.save()
@@ -835,4 +835,14 @@ class CancelAdminView(View):
         division.save()
         user.is_staff = False
         user.save()
+        return redirect(f"/division_details/{division.id}")
+
+
+class AddPersonView(View):
+    def get(self, request, division_id, user_id):
+        division = Division.objects.get(id=division_id)
+        user = User.objects.get(id=user_id)
+        division.division_person.add(user)
+        division.division_wannabe.remove(user)
+        division.save()
         return redirect(f"/division_details/{division.id}")

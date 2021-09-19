@@ -43,6 +43,15 @@
                             {% endif %}
                     {% endfor %}</td>
             </tr>
+            <tr>
+                <th scope="col">Chcą dołączyć</th>
+                <td scope="col">
+                    {% for i in division.division_wannabe.all %}
+                        {{ i.username }}
+                            <a href="{% url 'add-person' division.id i.id %}">(Dodaj)</a><br>
+                    {% endfor %}
+                </td>
+            </tr>
         </tbody>
       </table>
     </div>
