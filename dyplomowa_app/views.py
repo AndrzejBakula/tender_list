@@ -236,6 +236,9 @@ class LoginView(View):
             if user is not None:
                 login(request, user)
                 request.session["logged"] = True
+                request.session["user_id"] = user.id
+                request.session.save()
+                user.is_active = True
                 return redirect("/projects")
         message = "Podaj właściwe dane."
         ctx = {
@@ -250,6 +253,9 @@ class LogoutView(View):
         if request.user.is_authenticated:
             logout(request)
             request.session["logged"] = False
+            # del request.session["user_id"]
+            user = request.user
+            user.is_active = False
         return redirect("/projects")
 
 
@@ -737,11 +743,23 @@ class AddDivisionView(View):
                     }
                     return render(request, "add_division.html", ctx)
             division_name = data["division_name"]
+            if request.session.get("user_id") == None:
+                ctx = {
+                        "form": form,
+                        "error_message": "Brak zalogowanego użytkownika",
+                        "data": request.POST
+                    }
+                return render(request, "add_division.html", ctx)
+            user = User.objects.get(pk=int(request.session["user_id"]))
             division = Division.objects.create(division_name=division_name)
-            user = User.objects.get(pk=int(request.session.get("user_id")))
             division.division_admin.add(user)
+            division.division_person.add(user)
             division.save()
-            request.session["division"] = division
+            user.is_staff = True
+            user.save()
+            request.session["division_id"] = division.id
+            request.session["division_name"] = division.division_name
+            request.session.save()
             ctx = {
                 "form": form
             }
@@ -751,8 +769,8 @@ class AddDivisionView(View):
 class DivisionChoiceView(View):
     def get(self, request):
         user = None
-        if request.session.get("user_id"):
-            user = User.objects.get(pk=int(request.session.get("user_id")))
+        if request.session["user_id"] not in ("", None):
+            user = User.objects.get(pk=int(request.session["user_id"]))
         divisions = Division.objects.filter(division_person=user)
         ctx = {
             "divisions": divisions
@@ -762,7 +780,9 @@ class DivisionChoiceView(View):
 
 class DivisionChoiceConfirm(View):
     def get(self, request, id):
-        division = Division.objects.get(id=id)
-
+        division = Division.objects.get(pk=id)
+        request.session["division_id"] = division.id
+        request.session["division_name"] = division.division_name
+        request.session.save()
         return redirect("/projects")
     

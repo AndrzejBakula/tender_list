@@ -27,12 +27,11 @@
       </div>
       <div class="d-flex flex-row justify-content-center align-items-center"></div>
         {% if user.is_authenticated %}
-        <div class="d-flex flex-row justify-content-end align-items-center">
-          <a href="{% url 'add-division' %}" class="btn btn-outline-danger m-1">Utwórz nowy zespół</a>
+        <div class="d-flex flex-column justify-content-end align-items-end">
+          <i>Zalogowany jako: {{ user }}</i>
+          <i>{% if request.session.division_name %} Aktywny zespół: {{ request.session.division_name }} {% endif %}</i>
         </div>
-        <div class="d-flex flex-row justify-content-end align-items-center">
-          <i>Zalogowany jako: {{ user }}</i><a href="{% url 'logout' %}" class="btn btn-outline-danger m-1">Logout</a>
-        </div>
+        <a href="{% url 'logout' %}" class="btn btn-outline-danger m-1">Logout</a>
         {% else %}
         <div class="d-flex flex-row justify-content-end align-items-center">
           <a href="{% url 'login' %}" class="btn btn-outline-danger m-1">Login</a>
@@ -44,7 +43,15 @@
       </div>
     </div>
     {% if user.is_authenticated %}
-    <div class="d-flex flex-row justify-content-around align-items-center flex-wrap" style="padding-bottom: 0.5%;">
+    {% if request.session.division_id %}
+    <div class="d-flex flex-row justify-content-between align-items-center flex-wrap" style="padding: 0.5%;">
+      <div class="d-flex flex-row justify-content-center align-items-center">
+        <a href="{% url 'archives' %}" style="color: black;">
+          <button type="button" class="btn btn-outline-primary align-self-center" style="text-align: center">
+            Archiwum
+          </button>
+        </a>
+      </div>
       <div class="d-flex flex-row justify-content-center align-items-center">
         <a href="{% url 'investors' %}" style="color: black;">
           <button type="button" class="btn btn-outline-primary align-self-center" style="text-align: center">
@@ -63,7 +70,7 @@
         </a>
       </div>
       {% if user.is_staff %}
-      <div class="d-flex flex-row justify-content-center align-items-center" style="padding-bottom: 0.5%;">
+      <div class="d-flex flex-row justify-content-center align-items-center" style="padding-top: 0.5%;">
         <a href="{% url 'add-project' %}" style="color: black;">
           <button type="button" class="btn btn-outline-primary align-self-center" style="text-align: center;">
             Dodaj Projekt
@@ -87,16 +94,13 @@
       </div>
       {% endif %}
       <div class="d-flex flex-row justify-content-center align-items-center">
-        <a href="{% url 'archives' %}" style="color: black;">
-          <button type="button" class="btn btn-outline-primary align-self-center" style="text-align: center">
-            Archiwum
-          </button>
-        </a>
         <a href="{% url 'division-choice' %}" style="color: black;">
-          <button type="button" class="btn btn-outline-primary align-self-center" style="text-align: center">
-            Wybierz Zespół
+          <button type="button" class="btn btn-outline-primary align-self-end" style="text-align: center">
+            Moje Zespoły
           </button>
         </a>
+        {% endif %}
+        <a href="{% url 'add-division' %}" class="btn btn-outline-danger m-1">Utwórz nowy zespół</a>
       </div>
     </div>
     {% endif %}
