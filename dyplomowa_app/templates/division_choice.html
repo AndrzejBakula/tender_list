@@ -23,7 +23,9 @@
             {% for i in divisions %}
           <tr>
             <th scope="col" style="text-align: center;">{{ i.id }}</th>
-            <td scope="col" style="text-align: center;">{{ i.division_name }} (kliknij by zobaczyć szczegóły)</td>
+            <td scope="col" style="text-align: center;">
+              <a href="{% url 'division-details' i.id %}">{{ i.division_name }} (kliknij by zobaczyć szczegóły)</a>
+            </td>
             <td scope="col" style="text-align: center;">
               <a href="{% url 'division-choice-confirm' i.id %}">Przełącz na ten zespół</a>
             </td>

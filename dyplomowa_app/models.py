@@ -168,8 +168,10 @@ class PaymentMethod(models.Model):
 class Division(models.Model):
 
     division_name = models.CharField(max_length=64, unique=True)
-    division_admin = models.ManyToManyField(User, default=None, related_name="division_admin")
-    division_person = models.ManyToManyField(User, default=None, related_name="division_person")
+    division_person = models.ManyToManyField(User, related_name="division_person")
+    division_admin = models.ManyToManyField(User, related_name="division_admin")
+    division_creator = models.ForeignKey(User, on_delete=models.CASCADE, null=True, default=None, related_name="division_creator")
+    division_wannabe = models.ManyToManyField(User, related_name="division_wannabe")
 
     def __str__(self):
         return self.division_name

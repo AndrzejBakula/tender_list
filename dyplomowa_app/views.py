@@ -6,7 +6,7 @@ from datetime import timezone, date, timedelta
 from .models import *
 from .forms import AddInvestorForm, AddDesignerForm, AddProjectForm, EditProjectForm, EditInvestorForm
 from .forms import EditDesignerForm, LoginForm, AddCompanyForm, EditCompanyForm, RegisterForm
-from .forms import AddDivisionForm
+from .forms import AddDivisionForm, JoinDivisionForm
 
 
 #INITIAL FUNCTIONS
@@ -752,6 +752,7 @@ class AddDivisionView(View):
                 return render(request, "add_division.html", ctx)
             user = User.objects.get(pk=int(request.session["user_id"]))
             division = Division.objects.create(division_name=division_name)
+            division.division_creator = user
             division.division_admin.add(user)
             division.division_person.add(user)
             division.save()
@@ -764,6 +765,25 @@ class AddDivisionView(View):
                 "form": form
             }
             return redirect("/projects") #ZMIENIĆ NA DIVISION_DETAILS!!!
+
+
+class JoinDivisionView(View):
+    def get(self, request):
+        form = JoinDivisionForm()
+        ctx = {
+            "form": form
+        }
+        return render(request, "join_division.html", ctx)
+    
+    def post(self,request):
+        form = JoinDivisionForm(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            user = User.objects.get(pk=int(request.session["user_id"]))
+            division = data["division"]
+            division.division_wannabe.add(user)
+            division.save()
+            return redirect("/projects")
 
 
 class DivisionChoiceView(View):
@@ -786,3 +806,33 @@ class DivisionChoiceConfirm(View):
         request.session.save()
         return redirect("/projects")
     
+
+class DivisionDetails(View):
+    def get(self, request, id):
+        division = Division.objects.get(id=id)
+        ctx = {
+            "division": division
+        }
+        return render(request, "division_details.html", ctx)
+
+
+class AddAdminView(View):
+    def get(self, request, division_id, user_id):
+        division = Division.objects.get(id=id)
+        user = User.objects.get(id=user_id)
+        division.division_admin.add(user)
+        division.save()
+        user.is_staff = True
+        user.save()
+        return redirect(f"/division_details/{division.id}")
+
+
+class CancelAdminView(View):
+    def get(self, request, division_id, user_id):
+        division = Division.objects.get(id=id)
+        user = User.objects.get(id=user_id)
+        division.division_admin.delete(user)
+        division.save()
+        user.is_staff = False
+        user.save()
+        return redirect(f"/division_details/{division.id}")

@@ -119,7 +119,7 @@ class EditProjectForm(forms.Form):
     payment_method = forms.ModelChoiceField(label="Rozliczenie", queryset=PaymentMethod.objects.all(), required=False)
     project_url = forms.URLField(label="", widget=forms.TextInput(attrs={"size": 64, "placeholder": "Link do przetargu"}), required=False)
     person = forms.ModelMultipleChoiceField(label="Osoba odpowiedzialna", required=False, queryset=User.objects.all().order_by("username"))
-    division = forms.ModelChoiceField(label="Oddział", queryset=Division.objects.all())
+    division = forms.ModelChoiceField(label="Zespół", queryset=Division.objects.all())
     rc_date = forms.CharField(label="Data komitetu ryzyka", widget=forms.TextInput(attrs={"type": "date"}), required=False)
     rc_agree = forms.BooleanField(label="Zgoda komitetu ryzyka", required=False)
     evaluation_criteria = forms.CharField(label="Kryteria oceny", widget=forms.Textarea(attrs={"rows": 5, "cols": 24, "placeholder": "Kryteria oceny"}), required=False)
@@ -134,4 +134,7 @@ class EditProjectForm(forms.Form):
 class AddDivisionForm(forms.Form):
     division_name = forms.CharField(label="", max_length=128, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Nazwa Zespołu"}))
 
+
+class JoinDivisionForm(forms.Form):
+    division = forms.ModelChoiceField(label="Wybierz zespół", queryset=Division.objects.all())
 

@@ -21,7 +21,7 @@ from dyplomowa_app.views import LoginView, LogoutView, DeleteProjectConfirm, Del
 from dyplomowa_app.views import InvestorsView, DesignersView, DeleteDesigner, DeleteDesignerConfirm
 from dyplomowa_app.views import AddCompany, CompaniesView, CompanyDetails, EditCompany, DeleteCompany
 from dyplomowa_app.views import ArchivesView, DivisionChoiceView, DivisionChoiceConfirm, RegisterView
-from dyplomowa_app.views import AddDivisionView
+from dyplomowa_app.views import AddDivisionView, DivisionDetails, AddAdminView, CancelAdminView, JoinDivisionView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -54,8 +54,12 @@ urlpatterns = [
     path('delete_designer_confirm/<int:id>', DeleteDesignerConfirm.as_view(), name='delete-designer-confirm'),
     path('archives/', ArchivesView.as_view(), name='archives'),
     path('add_division/', AddDivisionView.as_view(), name='add-division'),
+    path('join_division/', JoinDivisionView.as_view(), name='join-division'),
     path('division_choice/', DivisionChoiceView.as_view(), name='division-choice'),
     path('division_choice_confirm/<int:id>', DivisionChoiceConfirm.as_view(), name='division-choice-confirm'),
+    path('division_details/<int:id>', DivisionDetails.as_view(), name='division-details'),
+    path('add_admin/<int:division_id>/<int:user_id>', AddAdminView.as_view(), name='add-admin'),
+    path('cancel_admin/<int:division_id>/<int:user_id>', CancelAdminView.as_view(), name='cancel-admin'),
 
 
 ]
