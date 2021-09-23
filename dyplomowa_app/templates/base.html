@@ -19,7 +19,7 @@
   </head>
 
   <body class="d-flex flex-column body" style="background-color:honeydew;">
-    <div class="d-flex flex-row justify-content-between align-items-center">      
+    <div class="d-flex flex-row justify-content-between align-items-center" style="padding: 0.5%;">      
       <div class="d-flex flex-row justify-content-start align-items-center flex-grow-1">
         <a href="{% url 'projects' %}" style="color: black;">
           <button type="button" class="btn btn-outline-primary btn-lg align-self-center">Lista Przetargowa</button>
@@ -29,7 +29,7 @@
         {% if user.is_authenticated %}
         <div class="d-flex flex-column justify-content-end align-items-end">
           <i>Zalogowany jako: {{ user }}</i>
-          <i>{% if request.session.division_name %} Aktywny zespół: {{ request.session.division_name }} {% endif %}</i>
+          <i>{% if request.session.division_name %} Aktywny zespół: {{ request.session.division_name }} {% else %} Wybierz zespół w "Moje Zespoły" {% endif %}</i>
         </div>
         <a href="{% url 'logout' %}" class="btn btn-outline-danger m-1">Logout</a>
         {% else %}
@@ -45,7 +45,7 @@
     {% if user.is_authenticated %}
     <div class="d-flex flex-row justify-content-between align-items-center flex-wrap">
       {% if request.session.division_id %}
-      <div class="d-flex flex-row justify-content-center align-items-center">
+      <div class="d-flex flex-row justify-content-center align-items-center" style="padding-left: 0.5%;">
         <a href="{% url 'archives' %}" style="color: black;">
           <button type="button" class="btn btn-outline-primary align-self-center" style="text-align: center">
             Archiwum
@@ -53,13 +53,13 @@
         </a>
       </div>
       {% endif %}
-      <div class="d-flex flex-row justify-content-center align-items-center">
-        <a href="{% url 'investors' %}" style="color: black;">
+      <div class="d-flex flex-row justify-content-center align-items-center" style="padding-right: 0.5%;">
+        <a href="{% url 'investors' %}" style="color: black; padding-right: 0.5%;">
           <button type="button" class="btn btn-outline-primary align-self-center" style="text-align: center">
             Inwestorzy
           </button>
         </a>
-        <a href="{% url 'companies' %}" style="color: black;">
+        <a href="{% url 'companies' %}" style="color: black; padding-right: 0.5%;">
           <button type="button" class="btn btn-outline-primary align-self-center" style="text-align: center;">
             Firmy
           </button>
@@ -71,7 +71,7 @@
         </a>
       </div>
       {% if user.is_staff %}
-      <div class="d-flex flex-row justify-content-center align-items-center">
+      <div class="d-flex flex-row justify-content-center align-items-center" style="padding-bottom: 0.5%; padding-top: 0.5%; padding-left: 0.5%;">
         {% if request.session.division_id %}
         <a href="{% url 'add-project' %}" style="color: black;">
           <button type="button" class="btn btn-outline-primary align-self-center" style="text-align: center;">
@@ -96,12 +96,8 @@
         </a>
       </div>
       {% endif %}
-      <div class="d-flex flex-row justify-content-center align-items-center">
-        <a href="{% url 'division-choice' %}" style="color: black;">
-          <button type="button" class="btn btn-outline-primary align-self-end" style="text-align: center">
-            Moje Zespoły
-          </button>
-        </a>
+      <div class="d-flex flex-row justify-content-center align-items-center" style="padding-left: 0.5%;">
+        <a href="{% url 'division-choice' %}" class="btn btn-outline-primary m-1">Moje zespoły</a>
         <a href="{% url 'add-division' %}" class="btn btn-outline-danger m-1">Utwórz nowy zespół</a>
         <a href="{% url 'join-division' %}" class="btn btn-outline-danger m-1">Dołącz do zespołu</a>
       </div>

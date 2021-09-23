@@ -136,5 +136,6 @@ class AddDivisionForm(forms.Form):
 
 
 class JoinDivisionForm(forms.Form):
+
     division = forms.ModelChoiceField(label="Wybierz zespół", queryset=Division.objects.all())
 

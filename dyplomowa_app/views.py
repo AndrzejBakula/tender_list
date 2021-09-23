@@ -769,7 +769,9 @@ class AddDivisionView(View):
 
 class JoinDivisionView(View):
     def get(self, request):
+        user = User.objects.get(pk=int(request.session["user_id"]))
         form = JoinDivisionForm()
+        form.fields["division"].queryset = Division.objects.filter().exclude(division_person=user)
         ctx = {
             "form": form
         }
