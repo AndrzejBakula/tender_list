@@ -72,7 +72,7 @@
       </div>
       {% if user.is_staff %}
       <div class="d-flex flex-row justify-content-center align-items-center" style="padding-bottom: 0.5%; padding-top: 0.5%; padding-left: 0.5%;">
-        {% if request.session.division_id %}
+        {% if request.session.division_id in divisions %}
         <a href="{% url 'add-project' %}" style="color: black;">
           <button type="button" class="btn btn-outline-primary align-self-center" style="text-align: center;">
             Dodaj Projekt

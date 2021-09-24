@@ -599,11 +599,16 @@ class AddProject(View):
 
 class Projects(View):
     def get(self, request):
+        user = None
+        if request.session.get("user_id") not in ("", None):
+            user = User.objects.get(pk=int(request.session["user_id"]))
         today = date.today()
         finish  = today + timedelta(days=100)
         projects = Project.objects.filter(tender_date__range=[today, finish]).order_by("tender_date")
+        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         ctx = {
-            "projects": projects
+            "projects": projects,
+            "divisions": divisions
         }
         return render(request, "projects.html", ctx)
 
@@ -611,6 +616,7 @@ class Projects(View):
 class ProjectDetails(View):
     def get(self, request, id):
         project = Project.objects.get(id=id)
+
         ctx = {
             "project": project
         }
