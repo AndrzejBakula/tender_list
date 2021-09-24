@@ -831,12 +831,14 @@ class AddAdminView(View):
 
 class CancelAdminView(View):
     def get(self, request, division_id, user_id):
-        division = Division.objects.get(id=id)
+        division = Division.objects.get(id=division_id)
         user = User.objects.get(id=user_id)
-        division.division_admin.delete(user)
+        division.division_admin.remove(user)
         division.save()
-        user.is_staff = False
-        user.save()
+        divisions = Division.objects.filter(division_admin=user)
+        if len(divisions) == 0:
+            user.is_staff = False
+            user.save()
         return redirect(f"/division_details/{division.id}")
 
 
