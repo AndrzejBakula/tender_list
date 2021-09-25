@@ -261,13 +261,17 @@ class LogoutView(View):
 
 class AddInvestor(View):
     def get(self, request):
+        user = User.objects.get(pk=int(request.session["user_id"]))
+        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         form = AddInvestorForm()
         ctx = {
-            "form": form
+            "form": form,
+            "divisions": divisions
         }
         return render(request, "add_investor.html", ctx)
     
     def post(self, request):
+        user = User.objects.get(pk=int(request.session["user_id"]))
         form = AddInvestorForm(request.POST)
         if form.is_valid():
             data = form.cleaned_data
@@ -279,7 +283,8 @@ class AddInvestor(View):
             investor_note = data["investor_note"]
             Investor.objects.create(investor_name=investor_name, investor_address=investor_address,
             investor_voivodeship=investor_voivodeship, investor_poviat=investor_poviat,
-            investor_administration_level=investor_administration_level, investor_note=investor_note)
+            investor_administration_level=investor_administration_level, investor_note=investor_note,
+            investor_added_by=user)
             ctx = {
                 "form": form
             }
@@ -288,24 +293,32 @@ class AddInvestor(View):
 
 class InvestorsView(View):
     def get(self, request):
+        user = User.objects.get(pk=int(request.session["user_id"]))
+        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         investors = Investor.objects.all().order_by("investor_name")
         ctx = {
-            "investors": investors
+            "investors": investors,
+            "divisions": divisions
         }
         return render(request, "investors.html", ctx)
 
 
 class InvestorDetails(View):
     def get(self, request, id):
+        user = User.objects.get(pk=int(request.session["user_id"]))
+        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         investor = Investor.objects.get(id=id)
         ctx = {
-            "investor": investor
+            "investor": investor,
+            "divisions": divisions
         }
         return render(request, "investor_details.html", ctx)
 
 
 class EditInvestor(View):
     def get(self, request, id):
+        user = User.objects.get(pk=int(request.session["user_id"]))
+        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         investor = Investor.objects.get(id=id)
         initial_data = {
             "investor_name": investor.investor_name,
@@ -318,7 +331,8 @@ class EditInvestor(View):
         form = EditInvestorForm(initial=initial_data)
         ctx = {
             "investor": investor,
-            "form": form
+            "form": form,
+            "divisions": divisions
         }
         return render(request, "edit_investor.html", ctx)
 
@@ -343,9 +357,12 @@ class EditInvestor(View):
 
 class DeleteInvestor(View):
     def get(self, request, id):
+        user = User.objects.get(pk=int(request.session["user_id"]))
+        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         investor = Investor.objects.get(id=id)
         ctx = {
-            "investor": investor
+            "investor": investor,
+            "divisions": divisions
         }
         return render(request, "delete_investor.html", ctx)
 
@@ -359,13 +376,17 @@ class DeleteInvestorConfirm(View):
 
 class AddCompany(View):
     def get(self, request):
+        user = User.objects.get(pk=int(request.session["user_id"]))
+        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         form = AddCompanyForm()
         ctx = {
-            "form": form
+            "form": form,
+            "divisions": divisions
         }
         return render(request, "add_company.html", ctx)
     
     def post(self, request):
+        user = User.objects.get(pk=int(request.session["user_id"]))
         form = AddCompanyForm(request.POST)
         if form.is_valid():
             data = form.cleaned_data
@@ -374,7 +395,7 @@ class AddCompany(View):
             company_voivodeship = data["company_voivodeship"]
             company_poviat = data["company_poviat"]
             Company.objects.create(company_name=company_name, company_address=company_address,
-            company_voivodeship=company_voivodeship, company_poviat=company_poviat)
+            company_voivodeship=company_voivodeship, company_poviat=company_poviat, company_added_by=user)
             ctx = {
                 "form": form
             }
@@ -383,24 +404,32 @@ class AddCompany(View):
 
 class CompaniesView(View):
     def get(self, request):
+        user = User.objects.get(pk=int(request.session["user_id"]))
+        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         companies = Company.objects.all().order_by("company_name")
         ctx = {
-            "companies": companies
+            "companies": companies,
+            "divisions": divisions
         }
         return render(request, "companies.html", ctx)
 
 
 class CompanyDetails(View):
     def get(self, request, id):
+        user = User.objects.get(pk=int(request.session["user_id"]))
+        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         company = Company.objects.get(id=id)
         ctx = {
-            "company": company
+            "company": company,
+            "divisions": divisions
         }
         return render(request, "company_details.html", ctx)
 
 
 class EditCompany(View):
     def get(self, request, id):
+        user = User.objects.get(pk=int(request.session["user_id"]))
+        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         company = Company.objects.get(id=id)
         initial_data = {
             "company_name": company.company_name,
@@ -411,7 +440,8 @@ class EditCompany(View):
         form = EditCompanyForm(initial=initial_data)
         ctx = {
             "company": company,
-            "form": form
+            "form": form,
+            "divisions": divisions
         }
         return render(request, "edit_company.html", ctx)
 
@@ -433,9 +463,12 @@ class EditCompany(View):
 
 class DeleteCompany(View):
     def get(self, request, id):
+        user = User.objects.get(pk=int(request.session["user_id"]))
+        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         company = Company.objects.get(id=id)
         ctx = {
-            "company": company
+            "company": company,
+            "divisions": divisions
         }
         return render(request, "delete_company.html", ctx)
 
@@ -449,22 +482,28 @@ class DeleteCompanyConfirm(View):
 
 class AddDesigner(View):
     def get(self, request):
+        user = User.objects.get(pk=int(request.session["user_id"]))
+        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         form = AddDesignerForm()
         ctx = {
-            "form": form
+            "form": form,
+            "divisions": divisions
         }
         return render(request, "add_designer.html", ctx)
     
     def post(self, request):
+        user = User.objects.get(pk=int(request.session["user_id"]))
         form = AddDesignerForm(request.POST)
         if form.is_valid():
             data = form.cleaned_data
             designer_name = data["designer_name"]
             designer_address = data["designer_address"]
+            designer_voivodeship = data["designer_voivodeship"]
+            designer_poviat = data["designer_poviat"]
             designer_note = data["designer_note"]
             Designer.objects.create(designer_name=designer_name, designer_address=designer_address,
             designer_voivodeship=designer_voivodeship, designer_poviat=designer_poviat,
-            designer_note=designer_note)
+            designer_note=designer_note, designer_added_by=user)
             ctx = {
                 "form": form
             }
@@ -473,24 +512,32 @@ class AddDesigner(View):
 
 class DesignersView(View):
     def get(self, request):
+        user = User.objects.get(pk=int(request.session["user_id"]))
+        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         designers = Designer.objects.all().order_by("designer_name")
         ctx = {
-            "designers": designers
+            "designers": designers,
+            "divisions": divisions
         }
         return render(request, "designers.html", ctx)
 
 
 class DesignerDetails(View):
     def get(self, request, id):
+        user = User.objects.get(pk=int(request.session["user_id"]))
+        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         designer = Designer.objects.get(id=id)
         ctx = {
-            "designer": designer
+            "designer": designer,
+            "divisions": divisions
         }
         return render(request, "designer_details.html", ctx)
 
 
 class EditDesigner(View):
     def get(self, request, id):
+        user = User.objects.get(pk=int(request.session["user_id"]))
+        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         designer = Designer.objects.get(id=id)
         initial_data = {
             "designer_name": designer.designer_name,
@@ -502,7 +549,8 @@ class EditDesigner(View):
         form = EditDesignerForm(initial=initial_data)
         ctx = {
             "designer": designer,
-            "form": form
+            "form": form,
+            "divisions": divisions
         }
         return render(request, "edit_designer.html", ctx)
 
@@ -525,9 +573,12 @@ class EditDesigner(View):
 
 class DeleteDesigner(View):
     def get(self, request, id):
+        user = User.objects.get(pk=int(request.session["user_id"]))
+        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         designer = Designer.objects.get(id=id)
         ctx = {
-            "designer": designer
+            "designer": designer,
+            "divisions": divisions
         }
         return render(request, "delete_designer.html", ctx)
 
@@ -615,16 +666,20 @@ class Projects(View):
 
 class ProjectDetails(View):
     def get(self, request, id):
+        user = User.objects.get(pk=int(request.session["user_id"]))
+        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         project = Project.objects.get(id=id)
-
         ctx = {
-            "project": project
+            "project": project,
+            "divisions": divisions
         }
         return render(request, "project_details.html", ctx)
 
 
 class EditProject(View):
     def get(self, request, id):
+        user = User.objects.get(pk=int(request.session["user_id"]))
+        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         project = Project.objects.get(id=id)
         initial_data = {
             "project_number": project.project_number,
@@ -658,7 +713,8 @@ class EditProject(View):
         form = EditProjectForm(initial=initial_data)
         ctx = {
             "project": project,
-            "form": form
+            "form": form,
+            "divisions": divisions
         }
         return render(request, "edit_project.html", ctx)
     
@@ -704,9 +760,12 @@ class EditProject(View):
 
 class DeleteProject(View):
     def get(self, request, id):
+        user = User.objects.get(pk=int(request.session["user_id"]))
+        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         project = Project.objects.get(id=id)
         ctx = {
-            "project": project
+            "project": project,
+            "divisions": divisions
         }
         return render(request, "delete_project.html", ctx)
     
@@ -720,19 +779,25 @@ class DeleteProjectConfirm(View):
 
 class ArchivesView(View):
     def get(self, request):
+        user = User.objects.get(pk=int(request.session["user_id"]))
+        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         archives_date = date.today() + timedelta(days=-1)
         archives = Project.objects.filter(tender_date__range=["2021-01-01", archives_date]).order_by("tender_date")
         ctx = {
-            "archives": archives
+            "archives": archives,
+            "divisions": divisions
         }
         return render(request, "archives.html", ctx)
 
 
 class AddDivisionView(View):
     def get(self, request):
+        user = User.objects.get(pk=int(request.session["user_id"]))
+        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         form = AddDivisionForm()
         ctx = {
-            "form": form
+            "form": form,
+            "divisions": divisions
         }
         return render(request, "add_division.html", ctx)
     
@@ -776,10 +841,12 @@ class AddDivisionView(View):
 class JoinDivisionView(View):
     def get(self, request):
         user = User.objects.get(pk=int(request.session["user_id"]))
+        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         form = JoinDivisionForm()
         form.fields["division"].queryset = Division.objects.filter().exclude(division_person=user)
         ctx = {
-            "form": form
+            "form": form,
+            "divisions": divisions
         }
         return render(request, "join_division.html", ctx)
     
@@ -799,8 +866,10 @@ class DivisionChoiceView(View):
         user = None
         if request.session["user_id"] not in ("", None):
             user = User.objects.get(pk=int(request.session["user_id"]))
-        divisions = Division.objects.filter(division_person=user)
+        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
+        division_choice = Division.objects.filter(division_person=user)
         ctx = {
+            "division_choice": division_choice,
             "divisions": divisions
         }
         return render(request, "division_choice.html", ctx)
@@ -817,9 +886,12 @@ class DivisionChoiceConfirm(View):
 
 class DivisionDetails(View):
     def get(self, request, id):
+        user = User.objects.get(pk=int(request.session["user_id"]))
+        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         division = Division.objects.get(id=id)
         ctx = {
-            "division": division
+            "division": division,
+            "divisions": divisions
         }
         return render(request, "division_details.html", ctx)
 

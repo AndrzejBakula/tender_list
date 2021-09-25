@@ -101,6 +101,7 @@ class Investor(models.Model):
     investor_poviat = models.ForeignKey(Poviat, on_delete=models.CASCADE, null=True, default=None)
     investor_administration_level = models.ForeignKey(AdministrationLevel, on_delete=models.CASCADE)
     investor_note = models.ForeignKey(Note, on_delete=models.CASCADE)
+    investor_added_by = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.investor_name
@@ -112,6 +113,7 @@ class Designer(models.Model):
     designer_voivodeship = models.ForeignKey(Voivodeship, on_delete=models.CASCADE, default=Voivodeship.VOIVODESHIP[0][0])
     designer_poviat = models.ForeignKey(Poviat, on_delete=models.CASCADE, null=True, default=None)
     designer_note = models.ForeignKey(Note, on_delete=models.CASCADE, null=True, default=None)
+    designer_added_by = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.designer_name
@@ -183,6 +185,7 @@ class Company(models.Model):
     company_address = models.CharField(max_length=128, unique=True)
     company_voivodeship = models.ForeignKey(Voivodeship, on_delete=models.CASCADE, default=Voivodeship.VOIVODESHIP[0][0])
     company_poviat = models.ForeignKey(Poviat, on_delete=models.CASCADE, null=True, default=None)
+    company_added_by = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.company_name
