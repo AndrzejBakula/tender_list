@@ -399,7 +399,7 @@ class AddCompany(View):
             ctx = {
                 "form": form
             }
-            return redirect("/projects")
+            return redirect("/companies")
 
 
 class CompaniesView(View):
@@ -751,18 +751,23 @@ class EditProject(View):
             project = Project.objects.get(id=id)
             data = form.cleaned_data
             project.project_number = data["project_number"]
-            project.tender_time = data["tender_time"]
-            project.open_time = data["open_time"]
+            if data["tender_time"] not in (None, ""):
+                project.tender_time = data["tender_time"]
+            if data["open_time"] not in (None, ""):
+                project.open_time = data["open_time"]
             project.deposit = data["deposit"]
             project.announcement_number = data["announcement_number"]
-            project.announcement_date = data["announcement_date"]
+            if data["announcement_date"] not in (None, ""):
+                project.announcement_date = data["announcement_date"]
             project.voivodeship = data["voivodeship"]
             project.poviat = data["poviat"]
-            project.tender_date = data["tender_date"]
+            if data["tender_date"] not in (None, ""):
+                project.tender_date = data["tender_date"]
             project_name = data["project_name"]
             project.estimated_value = data["estimated_value"]            
             project.investor = data["investor"]
-            project.project_deadline_date = data["project_deadline_date"]
+            if data["project_deadline_date"] not in (None, ""):
+                project.project_deadline_date = data["project_deadline_date"]
             project.project_deadline_months = data["project_deadline_months"]
             project.project_deadline_days = data["project_deadline_days"]
             project.mma_quantity = data["mma_quantity"]
@@ -770,7 +775,8 @@ class EditProject(View):
             project.project_url = data["project_url"]            
             project.person.set(data["person"])
             project.division = data["division"]
-            project.rc_date = data["rc_date"]
+            if data["rc_date"] not in (None, ""):
+                project.rc_date = data["rc_date"]
             project.rc_agree = data["rc_agree"]
             project.evaluation_criteria = data["evaluation_criteria"]
             project.payment_criteria = data["payment_criteria"]
@@ -784,7 +790,7 @@ class EditProject(View):
             ctx = {
                 "project": project,
             }
-            return render(request, "project_details.html", ctx)
+            return redirect(f"/project_details/{project.id}")
 
 
 class DeleteProject(View):

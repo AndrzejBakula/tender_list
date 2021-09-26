@@ -124,7 +124,7 @@
             </tr>
         </tbody>
       </table>
-      {% if user.username == 'admin' %}
+      {% if user.is_staff and request.session.division_id in divisions %}
       <button type="button" class="btn btn-dark"><a style="color:blanchedalmond" href="{% url 'edit-project' project.id %}">Edytuj/Uzupełnij dane</a></button>
       <hr>
       <button type="button" class="btn btn-dark"><a style="color:blanchedalmond" href="{% url 'delete-project' project.id %}">Usuń projekt</a></button>
