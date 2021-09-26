@@ -84,7 +84,16 @@ class Poviat(models.Model):
         (61, "obornicki"), (62, "ostrowski"), (63, "ostrzeszowski"), (64, "pilski"), (65, "pleszewski"),
         (66, "poznański"), (67, "rawicki"), (68, "słupecki"), (69, "szamotulski"), (70, "średzki"),
         (71, "śremski"), (72, "turecki"), (73, "wągrowiecki"), (74, "wolsztyński"), (75, "wrzesiński"),
-        (76, "złotowski")
+        (76, "złotowski"),
+
+        (77, "będziński"), (78, "bielski"), (79, "Bielsko-Biała"), (80, "bieruńsko-lędziński"),
+        (81, "Bytom"), (82, "Chorzów"), (83, "cieszyński"), (84, "Częstochowa"), (85, "częstochowski"),
+        (86, "Dąbrowa Górnicza"), (87, "Gliwice"), (88, "gliwicki"), (89, "Jastrzębie-Zdrój"),
+        (90, "Jaworzno"), (91, "Katowice"), (92, "kłobucki"), (93, "lubliniecki"), (94, "mikołowski"),
+        (95, "Mysłowice"), (96, "myszkowski"), (97, "Piekary Śląskie"), (98, "pszczyński"),
+        (99, "raciborski"), (100, "Ruda Śląska"), (101, "rybnicki"), (102, "Rybnik"), (103, "Siemanowice Śląskie"),
+        (104, "Sosnowiec"), (105, "Świętochłowice"), (106, "tarnogórski"), (107, "Tychy"), (108, "wodzisławski"),
+        (109, "Zabrze"), (110, "zawierciański"), (111, "Żory"), (112, "żywiecki")
     ]
 
     poviat_name = models.CharField(max_length=64, unique=True, choices=POVIAT)

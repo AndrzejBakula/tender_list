@@ -40,7 +40,7 @@
             </tr>
         </tbody>
       </table>
-      {% if user.username == 'admin' %}
+      {% if user == designer.designer_added_by %}
       <button type="button" class="btn btn-dark"><a style="color:blanchedalmond" href="{% url 'edit-designer' designer.id %}">Edytuj projektanta</a></button>
       <hr>
       <button type="button" class="btn btn-dark"><a style="color:blanchedalmond" href="{% url 'delete-designer' designer.id %}">Usuń projektanta</a></button>
