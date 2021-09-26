@@ -590,6 +590,14 @@ class DeleteDesignerConfirm(View):
         return redirect("/projects")
 
 
+class DateChoiceView(View):
+    def get(self, request):
+        form = DateChoiceForm()
+        return render(request, "date_choice.html")
+    
+    def post(self, request):
+        pass
+
 class AddProject(View):
     def get(self, request):
         form = AddProjectForm()
@@ -604,23 +612,37 @@ class AddProject(View):
             data = form.cleaned_data
             project_number = data["project_number"]
             tender_time = data["tender_time"]
+            if tender_time == "":
+                tender_time = None
             open_time = data["open_time"]
+            if open_time == "":
+                open_time = None
             deposit = data["deposit"]
             announcement_number = data["announcement_number"]
             announcement_date = data["announcement_date"]
+            if announcement_date == "":
+                announcement_date = None
             voivodeship = data["voivodeship"]
             poviat = data["poviat"]
             tender_date = data["tender_date"]
+            if tender_date == "":
+                tender_date = None
             project_name = data["project_name"]
             estimated_value = data["estimated_value"]            
             investor = data["investor"]
-            project_deadline = data["project_deadline"]
+            project_deadline_date = data["project_deadline_date"]
+            if project_deadline_date == "":
+                project_deadline_date = None
+            project_deadline_months = data["project_deadline_months"]
+            project_deadline_days = data["project_deadline_days"]
             mma_quantity = data["mma_quantity"]
             payment_method = data["payment_method"]
             project_url = data["project_url"]            
             person = data["person"]
             division = data["division"]
             rc_date = data["rc_date"]
+            if rc_date == "":
+                rc_date = None
             rc_agree = data["rc_agree"]
             evaluation_criteria = data["evaluation_criteria"]
             payment_criteria = data["payment_criteria"]
@@ -633,7 +655,8 @@ class AddProject(View):
                 project_number=project_number, tender_time=tender_time, open_time=open_time, deposit=deposit,
                 announcement_number=announcement_number, announcement_date=announcement_date,
                 voivodeship=voivodeship, poviat=poviat, tender_date=tender_date, project_name=project_name,
-                estimated_value=estimated_value, investor=investor, project_deadline=project_deadline,
+                estimated_value=estimated_value, investor=investor, project_deadline_date=project_deadline_date,
+                project_deadline_months=project_deadline_months, project_deadline_days=project_deadline_days,
                 mma_quantity=mma_quantity, payment_method=payment_method, project_url=project_url,
                 division=division, rc_date=rc_date, rc_agree=rc_agree, evaluation_criteria=evaluation_criteria,
                 payment_criteria=payment_criteria, remarks=remarks, priority=priority, designer=designer, status=status)
@@ -655,7 +678,9 @@ class Projects(View):
             user = User.objects.get(pk=int(request.session["user_id"]))
         today = date.today()
         finish  = today + timedelta(days=100)
-        projects = Project.objects.filter(tender_date__range=[today, finish]).order_by("tender_date")
+        projects1 = Project.objects.filter(tender_date__range=[today, finish]).order_by("tender_date")
+        projects2 = Project.objects.filter(tender_date__isnull=True, status=2)
+        projects = projects1 | projects2
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         ctx = {
             "projects": projects,
@@ -694,7 +719,9 @@ class EditProject(View):
             "project_name": project.project_name,
             "estimated_value": project.estimated_value,            
             "investor": project.investor,
-            "project_deadline": project.project_deadline,
+            "project_deadline_date": project.project_deadline_date,
+            "project_deadline_months": project.project_deadline_months,
+            "project_deadline_days": project.project_deadline_days,
             "mma_quantity": project.mma_quantity,
             "payment_method": project.payment_method,
             "project_url": project.project_url,            
@@ -735,7 +762,9 @@ class EditProject(View):
             project_name = data["project_name"]
             project.estimated_value = data["estimated_value"]            
             project.investor = data["investor"]
-            project.project_deadline = data["project_deadline"]
+            project.project_deadline_date = data["project_deadline_date"]
+            project.project_deadline_months = data["project_deadline_months"]
+            project.project_deadline_days = data["project_deadline_days"]
             project.mma_quantity = data["mma_quantity"]
             project.payment_method = data["payment_method"]
             project.project_url = data["project_url"]            

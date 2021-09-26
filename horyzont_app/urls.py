@@ -22,7 +22,7 @@ from dyplomowa_app.views import InvestorsView, DesignersView, DeleteDesigner, De
 from dyplomowa_app.views import AddCompany, CompaniesView, CompanyDetails, EditCompany, DeleteCompany
 from dyplomowa_app.views import ArchivesView, DivisionChoiceView, DivisionChoiceConfirm, RegisterView
 from dyplomowa_app.views import AddDivisionView, DivisionDetails, AddAdminView, CancelAdminView, JoinDivisionView
-from dyplomowa_app.views import AddPersonView
+from dyplomowa_app.views import AddPersonView, DateChoiceView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -43,6 +43,7 @@ urlpatterns = [
     path('designers/', DesignersView.as_view(), name='designers'),
     path('designer_details/<int:id>', DesignerDetails.as_view(), name='designer-details'),
     path('edit_designer/<int:id>', EditDesigner.as_view(), name='edit-designer'),
+    path('date_choice/', DateChoiceView.as_view(), name='date-choice'),
     path('add_project/', AddProject.as_view(), name='add-project'),
     path('projects/', Projects.as_view(), name='projects'),
     path('project_details/<int:id>', ProjectDetails.as_view(), name='project-details'),
