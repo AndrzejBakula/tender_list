@@ -32,20 +32,20 @@
             {% for i in projects %}
           <tr>
             <th scope="col" style="text-align: center;">{{ i.project_number }}</th>
-            <td scope="col" style="text-align: center;">{{ i.tender_time }}</td>
-            <td scope="col" style="text-align: center;">{{ i.open_time }}</td>
-            <td scope="col" style="text-align: center;">{{ i.deposit }}</td>
-            <td scope="col" style="text-align: center;">{{ i.tender_date }}</td>
+            <td scope="col" style="text-align: center;">{% if i.tender_time %} {{ i.tender_time }} {% else %} brak {% endif %}</td>
+            <td scope="col" style="text-align: center;">{% if i.open_time %} {{ i.open_time }} {% else %} brak {% endif %}</td>
+            <td scope="col" style="text-align: center;">{% if i.deposit %} {{ i.deposit }} {% else %} brak {% endif %}</td>
+            <td scope="col" style="text-align: center;">{% if i.tender_date %} {{ i.tender_date }} {% else %} brak {% endif %}</td>
             <td scope="col" style="text-align: center;"><a href="{% url 'project-details' i.id %}">{{ i.project_name }}</a></td>
-            <td scope="col" style="text-align: center;">{{ i.estimated_value }}</td>
+            <td scope="col" style="text-align: center;">{% if i.estimated_value %} {{ i.estimated_value }} {% else %} brak {% endif %}</td>
             <td scope="col" style="text-align: center;">
               <a href="{% url 'investor-details' i.investor.id %}">{{ i.investor.investor_name }}</a></td>
-            <td scope="col" style="text-align: center;">{% if i.project_deadline_date %} {{ i.project_deadline_date }} {% elif i.project_deadline_months %} {{ i.project_deadline_months }} mies. {% else %} {{ i.project_deadline_days }} dni {% endif %}</td>
-            <td scope="col" style="text-align: center;">{{ i.mma_quantity }}</td>
-            <td scope="col" style="text-align: center;">{{ i.payment_method }}</td>
-            <td scope="col" style="text-align: center;"><a href="{{ i.project_url }}" target=_blank>Klik</a></td>
-            <td scope="col" style="text-align: center;">{% for j in i.person.all %} {{ j.username }} <br> {% endfor %}</td>
-            <td scope="col" style="text-align: center;">{{ i.evaluation_criteria }}</td>
+            <td scope="col" style="text-align: center;">{% if i.project_deadline_date %} {{ i.project_deadline_date }} {% elif i.project_deadline_months %} {{ i.project_deadline_months }} mies. {% elif i.project_deadline_days %} {{ i.project_deadline_days }} dni {% else %} brak {% endif %}</td>
+            <td scope="col" style="text-align: center;">{% if i.mma_quantity %} {{ i.mma_quantity }} {% else %} brak {% endif %}</td>
+            <td scope="col" style="text-align: center;">{% if i.payment_method %} {{ i.payment_method }} {% else %} brak {% endif %}</td>
+            <td scope="col" style="text-align: center;">{% if i.project_url %} <a href="{{ i.project_url }}" target=_blank>Klik</a> {% else %} brak {% endif %}</td>
+            <td scope="col" style="text-align: center;">{% if i.person.all.0 != None %} {% for j in i.person.all %} {{ j.username }} <br> {% endfor %} {% else %} brak {% endif %}</td>
+            <td scope="col" style="text-align: center;">{% if i.evaluation_criteria %} {{ i.evaluation_criteria }} {% else %} brak {% endif %}</td>
 
           </tr>
             {% endfor %}

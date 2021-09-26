@@ -19,27 +19,27 @@
         <tbody>
             <tr>
                 <th scope="col">Numer projektu</th>
-                <td scope="col">{{ project.project_number }}</th>
+                <td scope="col">{{ project.project_number }}</td>
             </tr>
             <tr>
                 <th scope="col">Godzina złożenia</th>
-                <td scope="col">{{ project.tender_time }}</th>
+                <td scope="col">{% if project.tender_time %} {{ project.tender_time }} {% else %} brak {% endif %}</td>
             </tr>
             <tr>
                 <th scope="col">Godzina otwarcia</th>
-                <td scope="col">{{ project.open_time }}</th>
+                <td scope="col">{% if project.open_time %} {{ project.open_time }} {% else %} brak {% endif %}</td>
             </tr>
             <tr>
                 <th scope="col">Wadium</th>
-                <td scope="col">{{ project.deposit }}</td>
+                <td scope="col">{% if project.deposit %} {{ project.deposit }} {% else %} brak {% endif %}</td>
             </tr>
             <tr>
                 <th scope="col">Numer postępowania</th>
-                <td scope="col">{{ project.announcement_number }}</td>
+                <td scope="col">{% if project.announcement_number %} {{ project.announcement_number }} {% else %} brak {% endif %}</td>
             </tr>
             <tr>
                 <th scope="col">Data ogłoszenia</th>
-                <td scope="col">{{ project.announcement_date }}</td>
+                <td scope="col">{% if project.announcement_date %} {{ project.announcement_date }} {% else %} brak {% endif %}</td>
             </tr>
             <tr>
                 <th scope="col">Województwo</th>
@@ -47,15 +47,15 @@
             </tr>
             <tr>
                 <th scope="col">Powiat</th>
-                <td scope="col">{{ project.poviat }}</td>
+                <td scope="col">{% if project.poviat %} {{ project.poviat }} {% else %} nie określono {% endif %}</td>
             </tr>
             <tr>
                 <th scope="col">Data złożenia</th>
-                <td scope="col">{{ project.tender_date }}</td>
+                <td scope="col">{% if project.tender_date %} {{ project.tender_date }} {% else %} brak {% endif %}</td>
             </tr>
             <tr>
                 <th scope="col">Szacunkowa wartość</th>
-                <td scope="col">{{ project.estimated_value }}</td>
+                <td scope="col">{% if project.estimated_value %} {{ project.estimated_value }} {% else %} brak {% endif %}</td>
             </tr>
             <tr>
                 <th scope="col">Inwestor</th>
@@ -63,19 +63,19 @@
             </tr>
             <tr>
                 <th scope="col">Termin realizacji</th>
-                <td scope="col">{{ project.project_deadline }}</td>
+                <td scope="col">{% if project.project_deadline_date %} {{ project.project_deadline_date }} {% elif project.project_deadline_months %} {{ project.project_deadline_months }} mies. {% elif project.project_deadline_days %} {{ project.project_deadline_days }} dni {% else %} brak {% endif %}</td>
             </tr>
             <tr>
                 <th scope="col">Ilość MMA</th>
-                <td scope="col">{{ project.mma_quantity }} ton</td>
+                <td scope="col">{% if project.mma_quantity %} {{ project.mma_quantity }} ton {% else %} brak {% endif %}</td>
             </tr>
             <tr>
                 <th scope="col">Rodzaj rozliczenia</th>
-                <td scope="col">{{ project.payment_method }}</td>
+                <td scope="col">{% if project.payment_method %} {{ project.payment_method }} {% else %} nieokreślono {% endif %}</td>
             </tr>
             <tr>
                 <th scope="col">Link do strony</th>
-                <td scope="col"><a href="{{ project.project_url }}" target=_blank>Klik</a></td>
+                <td scope="col">{% if project.project_url %} <a href="{{ project.project_url }}" target=_blank>Klik</a> {% else %} brak {% endif %}</td>
             </tr>
             <tr>
                 <th scope="col">Zespół/Oddział</th>
@@ -83,39 +83,39 @@
             </tr>
             <tr>
                 <th scope="col">Odpowiedzialny</th>
-                <td scope="col">{% for j in project.person.all %} {{ j.username }} <br> {% endfor %}</td>
+                <td scope="col">{% if project.person.all.0 != None %} {% for j in project.person.all %} {{ j.username }} <br> {% endfor %} {% else %} brak {% endif %}</td>
             </tr>
             <tr>
                 <th scope="col">Data komitetu ryzyka</th>
-                <td scope="col">{{ project.rc_date }}</td>
+                <td scope="col">{% if project.rc_date %} {{ project.rc_date }} {% else %} brak {% endif %}</td>
             </tr>
             <tr>
                 <th scope="col">Zgoda komitetu ryzyka</th>
-                <td scope="col">{{ project.rc_agree }}</td>
+                <td scope="col">{% if project.rc_agree %} jest zgoda {% else %} brak {% endif %}</td>
             </tr>
             <tr>
                 <th scope="col">Kryteria oceny</th>
-                <td scope="col">{{ project.evaluation_criteria }}</td>
+                <td scope="col">{% if project.evaluation_criteria %} {{ project.evaluation_criteria }} {% else %} nieokreślono {% endif %}</td>
             </tr>
             <tr>
                 <th scope="col">Kryteria płatności</th>
-                <td scope="col">{{ project.payment_criteria }}</td>
+                <td scope="col">{% if project.payment_criteria %} {{ project.payment_criteria }} {% else %} nieokreślono {% endif %}</td>
             </tr>
             <tr>
                 <th scope="col">Partnerzy konsorcjum</th>
-                <td scope="col">{% for j in project.jv_partners.all %} {{ j }} <br> {% endfor %}</td>
+                <td scope="col">{% if project.jv_partners.all.0 %} {% for i in project.jv_partners.all %} {{ i }} <br> {% endfor %} {% else %} brak {% endif %}</td>
             </tr>
             <tr>
                 <th scope="col">Uwagi</th>
-                <td scope="col">{{ project.remarks }}</td>
+                <td scope="col">{% if project.remarks %} {{ project.remarks }} {% else %} brak {% endif %}</td>
             </tr>
             <tr>
                 <th scope="col">Projektant</th>
-                <td scope="col">{{ project.designer }}</td>
+                <td scope="col">{% if project.designer %} {{ project.designer }} {% else %} nieokreślono {% endif %}</td>
             </tr>
             <tr>
                 <th scope="col">Priorytet</th>
-                <td scope="col">{{ project.priority }}</td>
+                <td scope="col">{% if project.priority %} {{ project.priority }} {% else %} nieokreślono {% endif %}</td>
             </tr> 
             
             <tr>
