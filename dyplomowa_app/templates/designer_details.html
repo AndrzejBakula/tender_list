@@ -32,7 +32,7 @@
             </tr>
             <tr>
                 <th scope="col">Powiat</th>
-                <td scope="col">{{ designer.designer_poviat }}</td>
+                <td scope="col">{% if designer.designer_poviat %} {{ designer.designer_poviat }} {% else %} nieokreślono {% endif %}</td>
             </tr>
             <tr>
                 <th scope="col">Ocena projektanta</th>
