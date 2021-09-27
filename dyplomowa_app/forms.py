@@ -140,6 +140,10 @@ class AddDivisionForm(forms.Form):
     division_name = forms.CharField(label="", max_length=128, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Nazwa Zespołu"}))
 
 
+class EditDivisionForm(forms.Form):
+    division_name = forms.CharField(label="", max_length=128, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Nazwa Zespołu"}))
+
+
 class JoinDivisionForm(forms.Form):
 
     division = forms.ModelChoiceField(label="Wybierz zespół", queryset=Division.objects.all())

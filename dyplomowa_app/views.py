@@ -6,7 +6,7 @@ from datetime import timezone, date, timedelta
 from .models import *
 from .forms import AddInvestorForm, AddDesignerForm, AddProjectForm, EditProjectForm, EditInvestorForm
 from .forms import EditDesignerForm, LoginForm, AddCompanyForm, EditCompanyForm, RegisterForm
-from .forms import AddDivisionForm, JoinDivisionForm
+from .forms import AddDivisionForm, JoinDivisionForm, EditDivisionForm
 
 
 #INITIAL FUNCTIONS
@@ -352,7 +352,7 @@ class EditInvestor(View):
                 "investor": investor,
                 "form": form
             }
-            return redirect("/investors")
+            return redirect("/investors") #ZMIENIĆ NA INVESTOR DETAILS
 
 
 class DeleteInvestor(View):
@@ -371,7 +371,7 @@ class DeleteInvestorConfirm(View):
     def get(self, request, id):
         investor = Investor.objects.get(id=id)
         investor.delete()
-        return redirect("/projects")
+        return redirect("/investors")
 
 
 class AddCompany(View):
@@ -458,7 +458,7 @@ class EditCompany(View):
             ctx = {
                 "company": company
             }
-            return redirect("/companies")
+            return redirect("/companies") #ZMIENIĆ NA COMPANY DETAILS
 
 
 class DeleteCompany(View):
@@ -477,7 +477,7 @@ class DeleteCompanyConfirm(View):
     def get(self, request, id):
         company = Company.objects.get(id=id)
         company.delete()
-        return redirect("/projects")
+        return redirect("/companies")
 
 
 class AddDesigner(View):
@@ -568,7 +568,7 @@ class EditDesigner(View):
             ctx = {
                 "designer": designer,
             }
-            return redirect("/designers")
+            return redirect("/designers") #ZMIENIĆ NA DESIGNER DETAILS
 
 
 class DeleteDesigner(View):
@@ -587,7 +587,7 @@ class DeleteDesignerConfirm(View):
     def get(self, request, id):
         designer = Designer.objects.get(id=id)
         designer.delete()
-        return redirect("/projects")
+        return redirect("/designers")
 
 
 class DateChoiceView(View):
@@ -870,7 +870,7 @@ class AddDivisionView(View):
             ctx = {
                 "form": form
             }
-            return redirect("/projects") #ZMIENIĆ NA DIVISION_DETAILS!!!
+            return redirect("/divisions")
 
 
 class JoinDivisionView(View):
@@ -893,7 +893,7 @@ class JoinDivisionView(View):
             division = data["division"]
             division.division_wannabe.add(user)
             division.save()
-            return redirect("/projects")
+            return redirect("/divisions")
 
 
 class DivisionChoiceView(View):
@@ -916,7 +916,7 @@ class DivisionChoiceConfirm(View):
         request.session["division_id"] = division.id
         request.session["division_name"] = division.division_name
         request.session.save()
-        return redirect("/projects")
+        return redirect("/divisions")
     
 
 class DivisionDetails(View):
@@ -929,6 +929,54 @@ class DivisionDetails(View):
             "divisions": divisions
         }
         return render(request, "division_details.html", ctx)
+
+
+class EditDivisionView(View):
+    def get(self, request, id):
+        user = User.objects.get(pk=int(request.session["user_id"]))
+        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
+        division = Division.objects.get(id=id)
+        initial_data = {
+            "division_name": division.division_name
+        }
+        form = EditDivisionForm(initial=initial_data)
+        ctx = {
+            "division": division,
+            "form": form,
+            "divisions": divisions
+        }
+        return render(request, "edit_division.html", ctx)
+
+    def post(self, request, id):
+        form = EditDivisionForm(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            division = Division.objects.get(id=id)
+            division.division_name = data["division_name"]
+            division.save()
+            ctx = {
+                "division": division
+            }
+            return redirect(f"/division_details/{division.id}")
+
+
+class DeleteDivisionView(View):
+    def get(self, request, id):
+        user = User.objects.get(pk=int(request.session["user_id"]))
+        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
+        division = Division.objects.get(id=id)
+        ctx = {
+            "division": division,
+            "divisions": divisions
+        }
+        return render(request, "delete_division.html", ctx)
+
+
+class DeleteDivisionConfirm(View):
+    def get(self, request, id):
+        division = Division.objects.get(id=id)
+        division.delete()
+        return redirect("/divisions")
 
 
 class AddAdminView(View):

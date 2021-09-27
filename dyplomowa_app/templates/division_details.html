@@ -54,8 +54,14 @@
             </tr>
         </tbody>
       </table>
-    </div>
 
+      {% if user == division.division_creator %}
+      <button type="button" class="btn btn-dark"><a style="color:blanchedalmond" href="{% url 'edit-division' division.id %}">Edytuj zespół</a></button>
+      <hr>
+      <button type="button" class="btn btn-dark"><a style="color:blanchedalmond" href="{% url 'delete-division' division.id %}">Usuń zespół</a></button>
+      {% endif %}
+
+    </div>
 
 </div>
 
