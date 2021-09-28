@@ -31,12 +31,12 @@
                 <td scope="col">{{ investor.investor_administration_level }}</td>
             </tr>
             <tr>
-                <th scope="col">Ocena inwestora</th>
+                <th scope="col">Średnia ocena</th>
                 <td scope="col">{{ investor.investor_note }}</td>
             </tr>
         </tbody>
       </table>
-      {% if user.username == 'admin' %}
+      {% if user == investor.investor_added_by %}
       <button type="button" class="btn btn-dark"><a style="color:blanchedalmond" href="{% url 'edit-investor' investor.id %}">Edytuj inwestora</a></button>
       <hr>
       <button type="button" class="btn btn-dark"><a style="color:blanchedalmond" href="{% url 'delete-investor' investor.id %}">Usuń inwestora</a></button>

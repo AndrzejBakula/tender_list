@@ -23,16 +23,18 @@ class AdministrationLevel(models.Model):
 class Note(models.Model):
 
     NOTE = [
-        (1, "brak współpracy"),
-        (2, "niska"),
-        (3, "średnia"),
-        (4, "wysoka")
+        (1, 1),
+        (2, 2),
+        (3, 3),
+        (4, 4),
+        (5, 5)
         ]
 
-    note = models.CharField(max_length=32, unique=True, choices=NOTE)
+    note = models.IntegerField(unique=True, choices=NOTE)
+    note_added_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, default=None)
 
     def __str__(self):
-        return self.note
+        return f"{self.note}"
 
 
 class Voivodeship(models.Model):
@@ -66,6 +68,7 @@ class Voivodeship(models.Model):
 class Poviat(models.Model):
 
     POVIAT = [
+        #DOLNOŚLĄSKIE
         (1, "milicki"), (2, "oleśnicki"), (3, "oławski"), (4, "strzeliński"), (5, "ząbkowicki"),
         (6, "kłodzki"), (7, "trzebnicki"), (8, "Wrocław"), (9, "wrocławski"), (10, "dzierżoniowski"),
         (11, "Wałbrzych"), (12, "wałbrzyski"), (13, "świdnicki"), (14, "średzki"), (15, "wołowski"),
@@ -73,10 +76,12 @@ class Poviat(models.Model):
         (21, "legnicki"), (22, "jaworski"), (23, "kamiennogórski"), (24, "bolesławiecki"), (25, "złotoryjski"),
         (26, "Jelenia Góra"), (27, "jeleniogórski"), (28, "zgorzelecki"), (29, "lubański"),
 
+        #OPOLSKIE
         (30, "Opole"), (31, "opolski"), (32, "brzeski"), (33, "głupczycki"), (34, "kędzierzyńsko-kozielski"),
         (35, "kluczborski"), (36, "krapkowicki"), (37, "namysłowski"), (38, "nyski"), (39, "oleski"),
         (40, "prudnicki"), (41, "strzelecki"),
 
+        #WIELKOPOLSKIE
         (42, "Kalisz"), (43, "Konin"), (44, "Leszno"), (45, "Poznań"), (46, "chodzieski"),
         (47, "czarnkowski-trzcianecki"), (48, "gnieźnieński"), (49, "gostyński"), (50, "grodziski"),
         (51, "jarociński"), (52, "kaliski"), (53, "kępiński"), (54, "kolski"), (55, "koniński"),
@@ -86,6 +91,7 @@ class Poviat(models.Model):
         (71, "śremski"), (72, "turecki"), (73, "wągrowiecki"), (74, "wolsztyński"), (75, "wrzesiński"),
         (76, "złotowski"),
 
+        #ŚLĄSKIE
         (77, "będziński"), (78, "bielski"), (79, "Bielsko-Biała"), (80, "bieruńsko-lędziński"),
         (81, "Bytom"), (82, "Chorzów"), (83, "cieszyński"), (84, "Częstochowa"), (85, "częstochowski"),
         (86, "Dąbrowa Górnicza"), (87, "Gliwice"), (88, "gliwicki"), (89, "Jastrzębie-Zdrój"),
@@ -105,15 +111,22 @@ class Poviat(models.Model):
 class Investor(models.Model):
 
     investor_name = models.CharField(max_length=128, unique=True)
-    investor_address = models.CharField(max_length=256, unique=True)
+    investor_address = models.CharField(max_length=256)
     investor_voivodeship = models.ForeignKey(Voivodeship, on_delete=models.CASCADE, default=Voivodeship.VOIVODESHIP[0][0])
     investor_poviat = models.ForeignKey(Poviat, on_delete=models.CASCADE, null=True, default=None)
     investor_administration_level = models.ForeignKey(AdministrationLevel, on_delete=models.CASCADE)
-    investor_note = models.ForeignKey(Note, on_delete=models.CASCADE)
+    investor_note = models.FloatField(max_length=4, null=True, default=None)
     investor_added_by = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.investor_name
+
+
+class InvestorNote(models.Model):
+
+    investor_note_note = models.ForeignKey(Note, on_delete=models.CASCADE)
+    investor_note_user = models.ForeignKey(User, on_delete=models.CASCADE)
+    investor_note_investor = models.ForeignKey(Investor, on_delete=models.CASCADE)
 
 
 class Designer(models.Model):
@@ -121,7 +134,7 @@ class Designer(models.Model):
     designer_address = models.CharField(max_length=128, unique=True)
     designer_voivodeship = models.ForeignKey(Voivodeship, on_delete=models.CASCADE, default=Voivodeship.VOIVODESHIP[0][0])
     designer_poviat = models.ForeignKey(Poviat, on_delete=models.CASCADE, null=True, default=None)
-    designer_note = models.ForeignKey(Note, on_delete=models.CASCADE, null=True, default=None)
+    designer_note = models.ManyToManyField(Note)
     designer_added_by = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):

@@ -281,10 +281,15 @@ class AddInvestor(View):
             investor_poviat = data["investor_poviat"]
             investor_administration_level = data["investor_administration_level"]
             investor_note = data["investor_note"]
-            Investor.objects.create(investor_name=investor_name, investor_address=investor_address,
+            investor = Investor.objects.create(investor_name=investor_name, investor_address=investor_address,
             investor_voivodeship=investor_voivodeship, investor_poviat=investor_poviat,
-            investor_administration_level=investor_administration_level, investor_note=investor_note,
-            investor_added_by=user)
+            investor_administration_level=investor_administration_level, investor_added_by=user)
+            new_investor_note = InvestorNote.objects.create(investor_note_investor=investor,
+            investor_note_note=investor_note, investor_note_user=user)
+            notes = [i.investor_note_note.note for i in InvestorNote.objects.filter(investor_note_investor=investor)]
+            note_to_add = sum(notes)/len(notes)
+            investor.investor_note = note_to_add
+            investor.save()
             ctx = {
                 "form": form
             }
@@ -870,7 +875,7 @@ class AddDivisionView(View):
             ctx = {
                 "form": form
             }
-            return redirect("/divisions")
+            return redirect("/division_choice")
 
 
 class JoinDivisionView(View):
@@ -893,7 +898,7 @@ class JoinDivisionView(View):
             division = data["division"]
             division.division_wannabe.add(user)
             division.save()
-            return redirect("/divisions")
+            return redirect("/division_choice")
 
 
 class DivisionChoiceView(View):
@@ -916,7 +921,7 @@ class DivisionChoiceConfirm(View):
         request.session["division_id"] = division.id
         request.session["division_name"] = division.division_name
         request.session.save()
-        return redirect("/divisions")
+        return redirect("/projects")
     
 
 class DivisionDetails(View):
