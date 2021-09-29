@@ -6,7 +6,7 @@ from datetime import timezone, date, timedelta
 from .models import *
 from .forms import AddInvestorForm, AddDesignerForm, AddProjectForm, EditProjectForm, EditInvestorForm
 from .forms import EditDesignerForm, LoginForm, AddCompanyForm, EditCompanyForm, RegisterForm
-from .forms import AddDivisionForm, JoinDivisionForm, EditDivisionForm
+from .forms import AddDivisionForm, JoinDivisionForm, EditDivisionForm, InvestorNoteForm
 
 
 #INITIAL FUNCTIONS
@@ -313,11 +313,30 @@ class InvestorDetails(View):
         user = User.objects.get(pk=int(request.session["user_id"]))
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         investor = Investor.objects.get(id=id)
+        noters = [i.investor_note_user for i in InvestorNote.objects.filter(investor_note_investor=investor)]
+        form = InvestorNoteForm()
         ctx = {
             "investor": investor,
-            "divisions": divisions
+            "divisions": divisions,
+            "noters": noters,
+            "form": form
         }
         return render(request, "investor_details.html", ctx)
+    
+    def post(self, request, id):
+        user = User.objects.get(pk=int(request.session["user_id"]))
+        form = InvestorNoteForm(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            investor = Investor.objects.get(id=id)
+            investor_note = data["investor_note"]
+            new_investor_note = InvestorNote.objects.create(investor_note_investor=investor,
+            investor_note_note=investor_note, investor_note_user=user)
+            notes = [i.investor_note_note.note for i in InvestorNote.objects.filter(investor_note_investor=investor)]
+            note_to_add = sum(notes)/len(notes)
+            investor.investor_note = note_to_add
+            investor.save()
+            return redirect(f"/investor_details/{investor.id}")
 
 
 class EditInvestor(View):
@@ -351,7 +370,6 @@ class EditInvestor(View):
             investor.investor_voivodeship = data["investor_voivodeship"]
             investor.investor_poviat = data["investor_poviat"]
             investor.investor_administration_level = data["investor_administration_level"]
-            investor.investor_note = data["investor_note"]
             investor.save()
             ctx = {
                 "investor": investor,

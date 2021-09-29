@@ -36,6 +36,16 @@
             </tr>
         </tbody>
       </table>
+      {% if user not in noters %}
+
+      <form class="d-flex flex-column align-items-center" style="height: 100%; width: 100%;" action="{% url 'investor-details' investor.id %}" method="POST">
+        {% csrf_token %}
+
+        {{ form.as_p }}
+
+        <button type="submit" id="submit">Oceń</button>
+      </form>
+      {% endif %}
       {% if user == investor.investor_added_by %}
       <button type="button" class="btn btn-dark"><a style="color:blanchedalmond" href="{% url 'edit-investor' investor.id %}">Edytuj inwestora</a></button>
       <hr>
