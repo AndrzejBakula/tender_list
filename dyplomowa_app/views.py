@@ -1034,3 +1034,12 @@ class AddPersonView(View):
         division.division_wannabe.remove(user)
         division.save()
         return redirect(f"/division_details/{division.id}")
+
+
+class RemoveMemberView(View):
+    def get(self, request, division_id, user_id):
+        division = Division.objects.get(id=division_id)
+        user = User.objects.get(id=user_id)
+        division.division_person.remove(user)
+        division.save()
+        return redirect(f"/division_details/{division.id}")

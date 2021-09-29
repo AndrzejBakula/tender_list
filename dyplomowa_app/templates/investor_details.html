@@ -45,6 +45,7 @@
 
         <button type="submit" id="submit">Oceń</button>
       </form>
+      <hr>
       {% endif %}
       {% if user == investor.investor_added_by %}
       <button type="button" class="btn btn-dark"><a style="color:blanchedalmond" href="{% url 'edit-investor' investor.id %}">Edytuj inwestora</a></button>

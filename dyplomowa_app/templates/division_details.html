@@ -26,6 +26,9 @@
                             {% if not i in division.division_admin.all and user == division.division_creator and not i == division.division_creator %}
                                 <a href="{% url 'add-admin' division.id i.id %}">(Zrób adminem)</a>
                             {% endif %}
+                            {% if user == division.division_creator and not i == division.division_creator %}
+                                <a href="{% url 'remove-member' division.id i.id %}">(Usuń z zespołu)</a>
+                            {% endif %}
                             <hr>
                     {% endfor %}
                 </td>
