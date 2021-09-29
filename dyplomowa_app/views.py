@@ -284,11 +284,12 @@ class AddInvestor(View):
             investor = Investor.objects.create(investor_name=investor_name, investor_address=investor_address,
             investor_voivodeship=investor_voivodeship, investor_poviat=investor_poviat,
             investor_administration_level=investor_administration_level, investor_added_by=user)
-            new_investor_note = InvestorNote.objects.create(investor_note_investor=investor,
-            investor_note_note=investor_note, investor_note_user=user)
-            notes = [i.investor_note_note.note for i in InvestorNote.objects.filter(investor_note_investor=investor)]
-            note_to_add = sum(notes)/len(notes)
-            investor.investor_note = note_to_add
+            if investor_note:
+                new_investor_note = InvestorNote.objects.create(investor_note_investor=investor,
+                investor_note_note=investor_note, investor_note_user=user)
+                notes = [i.investor_note_note.note for i in InvestorNote.objects.filter(investor_note_investor=investor)]
+                note_to_add = sum(notes)/len(notes)
+                investor.investor_note = note_to_add
             investor.save()
             ctx = {
                 "form": form

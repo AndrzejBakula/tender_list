@@ -31,8 +31,8 @@
             <td scope="col" style="text-align: center;">{{ i.investor_address }}</td>
             <td scope="col" style="text-align: center;">{{ i.investor_administration_level }}</td>
             <td scope="col" style="text-align: center;">{{ i.investor_voivodeship }}</td>
-            <td scope="col" style="text-align: center;">{{ i.investor_poviat }}</td>
-            <td scope="col" style="text-align: center;">{{ i.investor_note }}</td>
+            <td scope="col" style="text-align: center;">{% if i.investor_poviat %} {{ i.investor_poviat }} {% else %} nieokreślono {% endif %}</td>
+            <td scope="col" style="text-align: center;">{% if i.investor_note %} {{ i.investor_note }} {% else %} brak {% endif %}</td>
           </tr>
             {% endfor %}
         </tbody>

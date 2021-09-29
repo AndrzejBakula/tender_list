@@ -31,8 +31,16 @@
                 <td scope="col">{{ investor.investor_administration_level }}</td>
             </tr>
             <tr>
+                <th scope="col">Województwo</th>
+                <td scope="col">{{ investor.investor_voivodeship }}</td>
+            </tr>
+            <tr>
+                <th scope="col">Powiat</th>
+                <td scope="col">{% if investor.investor_poviat %} {{ investor.investor_poviat }} {% else %} nieokreślono {% endif %}</td>
+            </tr>
+            <tr>
                 <th scope="col">Średnia ocena</th>
-                <td scope="col">{{ investor.investor_note }}</td>
+                <td scope="col">{% if investor.investor_note %} {{ investor.investor_note }} {% else %} brak {% endif %}</td>
             </tr>
         </tbody>
       </table>

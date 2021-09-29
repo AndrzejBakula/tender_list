@@ -27,7 +27,7 @@ class AddInvestorForm(forms.Form):
     investor_poviat = forms.ModelChoiceField(label="Powiat", queryset=Poviat.objects.all().order_by("poviat_name"), required=False)
     investor_administration_level = forms.ModelChoiceField(
         label="Poziom administracyjny", queryset=AdministrationLevel.objects.all())
-    investor_note = forms.ModelChoiceField(label="Ocena inwestora", queryset=Note.objects.all())
+    investor_note = forms.ModelChoiceField(label="Ocena inwestora", queryset=Note.objects.all(), required=False)
 
 
 class EditInvestorForm(forms.Form):
