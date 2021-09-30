@@ -28,7 +28,7 @@
             <td scope="col" style="text-align: center;"><a href="{% url 'company-details' i.id %}">{{ i.company_name }}</a></td>
             <td scope="col" style="text-align: center;">{{ i.company_address }}</td>
             <td scope="col" style="text-align: center;">{{ i.company_voivodeship }}</td>
-            <td scope="col" style="text-align: center;">{{ i.company_poviat }}</td>           
+            <td scope="col" style="text-align: center;">{% if i.company_poviat %} {{ i.company_poviat }} {% else %} nieokreślono {% endif %}</td>           
           </tr>
             {% endfor %}
         </tbody>

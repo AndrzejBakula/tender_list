@@ -26,6 +26,14 @@
                 <th scope="col">Adres firmy</th>
                 <td scope="col">{{ company.company_address }}</td>
             </tr>
+            <tr>
+                <th scope="col">Województwo</th>
+                <td scope="col">{{ company.company_voivodeship }}</td>
+            </tr>
+            <tr>
+                <th scope="col">Powiat</th>
+                <td scope="col">{% if company.company_poviat %} {{ company.company_poviat }} {% else %} nieokreślono {% endif %}</td>
+            </tr>
         </tbody>
       </table>
       {% if user.username == 'admin' %}
