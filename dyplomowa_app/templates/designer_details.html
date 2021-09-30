@@ -36,10 +36,21 @@
             </tr>
             <tr>
                 <th scope="col">Ocena projektanta</th>
-                <td scope="col">{{ designer.designer_note }}</td>
+                <td scope="col">{% if designer.designer_note %} {{ designer.designer_note }} {% else %} brak {% endif %}</td>
             </tr>
         </tbody>
       </table>
+      {% if user not in noters %}
+
+      <form class="d-flex flex-column align-items-center" style="height: 100%; width: 100%;" action="{% url 'designer-details' designer.id %}" method="POST">
+        {% csrf_token %}
+
+        {{ form.as_p }}
+
+        <button type="submit" id="submit">Oceń</button>
+      </form>
+      <hr>
+      {% endif %}
       {% if user == designer.designer_added_by %}
       <button type="button" class="btn btn-dark"><a style="color:blanchedalmond" href="{% url 'edit-designer' designer.id %}">Edytuj projektanta</a></button>
       <hr>

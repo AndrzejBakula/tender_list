@@ -63,6 +63,10 @@ class AddDesignerForm(forms.Form):
     designer_address = forms.CharField(label="", max_length=256, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Adres Projektanta"}))
     designer_voivodeship = forms.ModelChoiceField(label="Województwo", queryset=Voivodeship.objects.all())
     designer_poviat = forms.ModelChoiceField(label="Powiat", queryset=Poviat.objects.all().order_by("poviat_name"), required=False)
+    designer_note = forms.ModelChoiceField(label="Ocena projektanta", queryset=Note.objects.all(), required=False)
+
+
+class DesignerNoteForm(forms.Form):
     designer_note = forms.ModelChoiceField(label="Ocena projektanta", queryset=Note.objects.all())
 
 

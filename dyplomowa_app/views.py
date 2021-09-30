@@ -6,7 +6,7 @@ from datetime import timezone, date, timedelta
 from .models import *
 from .forms import AddInvestorForm, AddDesignerForm, AddProjectForm, EditProjectForm, EditInvestorForm
 from .forms import EditDesignerForm, LoginForm, AddCompanyForm, EditCompanyForm, RegisterForm
-from .forms import AddDivisionForm, JoinDivisionForm, EditDivisionForm, InvestorNoteForm
+from .forms import AddDivisionForm, JoinDivisionForm, EditDivisionForm, InvestorNoteForm, DesignerNoteForm
 
 
 #INITIAL FUNCTIONS
@@ -351,7 +351,6 @@ class EditInvestor(View):
             "investor_voivodeship": investor.investor_voivodeship,
             "investor_poviat": investor.investor_poviat,
             "investor_administration_level": investor.investor_administration_level,
-            "investor_note": investor.investor_note
         }
         form = EditInvestorForm(initial=initial_data)
         ctx = {
@@ -525,9 +524,15 @@ class AddDesigner(View):
             designer_voivodeship = data["designer_voivodeship"]
             designer_poviat = data["designer_poviat"]
             designer_note = data["designer_note"]
-            Designer.objects.create(designer_name=designer_name, designer_address=designer_address,
-            designer_voivodeship=designer_voivodeship, designer_poviat=designer_poviat,
-            designer_note=designer_note, designer_added_by=user)
+            designer = Designer.objects.create(designer_name=designer_name, designer_address=designer_address,
+            designer_voivodeship=designer_voivodeship, designer_poviat=designer_poviat, designer_added_by=user)
+            if designer_note:
+                new_designer_note = DesignerNote.objects.create(designer_note_designer=designer,
+                designer_note_note=designer_note, designer_note_user=user)
+                notes = [i.designer_note_note.note for i in DesignerNote.objects.filter(designer_note_designer=designer)]
+                note_to_add = sum(notes)/len(notes)
+                designer.designer_note = note_to_add
+            designer.save()
             ctx = {
                 "form": form
             }
@@ -551,11 +556,30 @@ class DesignerDetails(View):
         user = User.objects.get(pk=int(request.session["user_id"]))
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         designer = Designer.objects.get(id=id)
+        noters = [i.designer_note_user for i in DesignerNote.objects.filter(designer_note_designer=designer)]
+        form = DesignerNoteForm()
         ctx = {
             "designer": designer,
-            "divisions": divisions
+            "divisions": divisions,
+            "form": form,
+            "noters": noters
         }
         return render(request, "designer_details.html", ctx)
+
+    def post(self, request, id):
+        user = User.objects.get(pk=int(request.session["user_id"]))
+        form = DesignerNoteForm(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            designer = Designer.objects.get(id=id)
+            designer_note = data["designer_note"]
+            new_designer_note = DesignerNote.objects.create(designer_note_designer=designer,
+            designer_note_note=designer_note, designer_note_user=user)
+            notes = [i.designer_note_note.note for i in DesignerNote.objects.filter(designer_note_designer=designer)]
+            note_to_add = sum(notes)/len(notes)
+            designer.designer_note = note_to_add
+            designer.save()
+            return redirect(f"/designer_details/{designer.id}")
 
 
 class EditDesigner(View):

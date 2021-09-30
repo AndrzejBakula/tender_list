@@ -29,8 +29,8 @@
             <td scope="col" style="text-align: center;"><a href="{% url 'designer-details' i.id %}">{{ i.designer_name }}</a></td>
             <td scope="col" style="text-align: center;">{{ i.designer_address }}</td>
             <td scope="col" style="text-align: center;">{{ i.designer_voivodeship }}</td>
-            <td scope="col" style="text-align: center;">{{ i.designer_poviat }}</td>
-            <td scope="col" style="text-align: center;">{{ i.designer_note }}</td>
+            <td scope="col" style="text-align: center;">{% if i.designer_poviat %} {{ i.designer_poviat }} {% else %} nieokreślono {% endif %}</td>
+            <td scope="col" style="text-align: center;">{% if i.designer_note %} {{ i.designer_note }} {% else %} brak {% endif %}</td>
           </tr>
             {% endfor %}
         </tbody>

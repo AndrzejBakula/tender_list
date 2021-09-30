@@ -145,7 +145,7 @@ class DesignerNote(models.Model):
 
     designer_note_note = models.ForeignKey(Note, on_delete=models.CASCADE)
     designer_note_user = models.ForeignKey(User, on_delete=models.CASCADE)
-    designer_note_investor = models.ForeignKey(Investor, on_delete=models.CASCADE)
+    designer_note_designer = models.ForeignKey(Designer, on_delete=models.CASCADE)
 
 
 class Priority(models.Model):
