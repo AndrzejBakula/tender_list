@@ -27,7 +27,9 @@
               <a href="{% url 'division-details' i.id %}">{{ i.division_name }} (kliknij by zobaczyć szczegóły)</a>
             </td>
             <td scope="col" style="text-align: center;">
+              {% if i.id != request.session.division_id %}
               <a href="{% url 'division-choice-confirm' i.id %}">Przełącz na ten zespół</a>
+              {% else %} Aktywny zespół {% endif %}
             </td>
           </tr>
             {% endfor %}
