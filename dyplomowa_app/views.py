@@ -685,7 +685,9 @@ class AddProject(View):
             project_deadline_days = data["project_deadline_days"]
             mma_quantity = data["mma_quantity"]
             payment_method = data["payment_method"]
-            project_url = data["project_url"]            
+            project_url = data["project_url"]
+            if project_url == "":
+                project_url = None
             person = data["person"]
             division = data["division"]
             rc_date = data["rc_date"]
@@ -1068,3 +1070,12 @@ class RemoveMemberView(View):
         division.division_person.remove(user)
         division.save()
         return redirect(f"/division_details/{division.id}")
+
+
+class UserDetailsView(View):
+    def get(self, request, id):
+        user = User.objects.get(id=id)
+        ctx = {
+            "user": user
+        }
+        return render(request, "user_details.html", ctx)
