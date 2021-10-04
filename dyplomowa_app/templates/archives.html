@@ -30,7 +30,7 @@
             {% for i in archives %}
           <tr>
             <th scope="col" style="text-align: center;">{{ i.project_number }}</th>
-            <td scope="col" style="text-align: center;">{{ i.deposit }}</td>
+            <td scope="col" style="text-align: center;">{% if i.deposit %} {{ i.deposit }} {% else %} brak {% endif %}</td>
             <td scope="col" style="text-align: center;">{{ i.tender_date }}</td>
             <td scope="col" style="text-align: center;"><a href="{% url 'project-details' i.id %}">{{ i.project_name }}</a></td>
             <td scope="col" style="text-align: center;">

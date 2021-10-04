@@ -728,7 +728,7 @@ class Projects(View):
             user = User.objects.get(pk=int(request.session["user_id"]))
         today = date.today()
         finish  = today + timedelta(days=100)
-        projects1 = Project.objects.filter(tender_date__range=[today, finish]).order_by("tender_date")
+        projects1 = Project.objects.filter(tender_date__range=[today, finish], status=2).order_by("tender_date")
         projects2 = Project.objects.filter(tender_date__isnull=True, status=2)
         projects = projects1 | projects2
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
@@ -822,7 +822,8 @@ class EditProject(View):
             project.project_deadline_days = data["project_deadline_days"]
             project.mma_quantity = data["mma_quantity"]
             project.payment_method = data["payment_method"]
-            project.project_url = data["project_url"]            
+            if data["project_url"] not in (None, ""):
+                project.project_url = data["project_url"]            
             project.person.set(data["person"])
             project.division = data["division"]
             if data["rc_date"] not in (None, ""):
@@ -867,7 +868,9 @@ class ArchivesView(View):
         user = User.objects.get(pk=int(request.session["user_id"]))
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         archives_date = date.today() + timedelta(days=-1)
-        archives = Project.objects.filter(tender_date__range=["2021-01-01", archives_date]).order_by("tender_date")
+        archives1 = Project.objects.filter(tender_date__range=["2021-01-01", archives_date]).order_by("tender_date")
+        archives2 = Project.objects.all().exclude(status=2)
+        archives = archives1 | archives2
         ctx = {
             "archives": archives,
             "divisions": divisions
