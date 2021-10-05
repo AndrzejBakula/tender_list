@@ -871,7 +871,7 @@ class ArchivesView(View):
         archives1 = Project.objects.filter(tender_date__range=["2021-01-01", archives_date])
         archives2 = Project.objects.all().exclude(status=2)
         archives = archives1 | archives2
-        archives = archives.order_by("-tender_date")
+        archives = archives.order_by("-tender_date", "-tender_time", "-project_number")
         ctx = {
             "archives": archives,
             "divisions": divisions
