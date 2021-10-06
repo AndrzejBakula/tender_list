@@ -12,6 +12,14 @@
     <h2 class="display-5 align-self-center">Aktualne Przetargi</a></h2>
   </div>
 
+  <form class="d-flex flex-row justify-content-center align-items-center" style="height: 100%; width: 100%;" action="{% url 'projects' %}" method="POST">
+    {% csrf_token %}
+
+    {{ form.as_p }}
+
+
+  </form>
+
     <table class="table-responsive-xl table-striped table-bordered" style="width: 100%;">
         <thead>
           <tr>

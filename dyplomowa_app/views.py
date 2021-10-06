@@ -7,6 +7,7 @@ from .models import *
 from .forms import AddInvestorForm, AddDesignerForm, AddProjectForm, EditProjectForm, EditInvestorForm
 from .forms import EditDesignerForm, LoginForm, AddCompanyForm, EditCompanyForm, RegisterForm
 from .forms import AddDivisionForm, JoinDivisionForm, EditDivisionForm, InvestorNoteForm, DesignerNoteForm
+from .forms import SearchProjectForm
 
 
 #INITIAL FUNCTIONS
@@ -726,6 +727,7 @@ class Projects(View):
         user = None
         if request.session.get("user_id") not in ("", None):
             user = User.objects.get(pk=int(request.session["user_id"]))
+        form = SearchProjectForm()
         today = date.today()
         finish  = today + timedelta(days=100)
         projects1 = Project.objects.filter(tender_date__range=[today, finish], status=2).order_by("tender_date", "tender_time", "project_number")
@@ -734,9 +736,32 @@ class Projects(View):
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         ctx = {
             "projects": projects,
-            "divisions": divisions
+            "divisions": divisions,
+            "form": form
         }
         return render(request, "projects.html", ctx)
+    
+    def post(self, request):
+        user = None
+        if request.session.get("user_id") not in ("", None):
+            user = User.objects.get(pk=int(request.session["user_id"]))
+        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
+        today = date.today()
+        finish = today + timedelta(days=100)
+        form = SearchProjectForm(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            text = data["text"]
+            projects1 = Project.objects.filter(project_name__icontains=text, tender_date__range=[today, finish], status=2).order_by("tender_date", "tender_time", "project_number")
+            projects2 = Project.objects.filter(project_name__icontains=text, tender_date__isnull=True, status=2).order_by("tender_date", "tender_time", "project_number")
+            projects = projects1 | projects2                            
+            ctx = {
+                "form": form,
+                "projects": projects,
+                "post": request.POST,
+                "divisions": divisions
+            }
+            return render(request, "projects.html", ctx)
 
 
 class ProjectDetails(View):

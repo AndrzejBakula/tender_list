@@ -143,6 +143,10 @@ class EditProjectForm(forms.Form):
     status = forms.ModelChoiceField(label="Status projektu", queryset=Status.objects.all())
 
 
+class SearchProjectForm(forms.Form):
+    text = forms.CharField(label="", max_length=64, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Wprowadź fragment nazwy szukanego projektu"}))
+
+
 class AddDivisionForm(forms.Form):
     division_name = forms.CharField(label="", max_length=128, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Nazwa Zespołu"}))
 
