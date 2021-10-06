@@ -144,7 +144,7 @@ class EditProjectForm(forms.Form):
 
 
 class SearchProjectForm(forms.Form):
-    text = forms.CharField(label="", max_length=64, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Wprowadź fragment nazwy szukanego projektu"}))
+    text = forms.CharField(label="", max_length=64, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Wprowadź fragment nazwy projektu i wciśnij enter"}))
 
 
 class AddDivisionForm(forms.Form):
