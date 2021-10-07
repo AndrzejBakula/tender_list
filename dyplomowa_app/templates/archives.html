@@ -10,41 +10,46 @@
     <h2 class="display-5 align-self-center">Archiwum Przetargów</a></h2>
   </div>
 
-    <table class="table-responsive-xl table-striped table-bordered" style="width: 100%;">
-        <thead>
-          <tr>
-            <th scope="col" style="text-align: center;">Nr</th>
-            <th scope="col" style="text-align: center;">Wadium</th>        
-            <th scope="col" style="text-align: center;">Data <br> złożenia</th>
-            <th scope="col" style="text-align: center;">Nazwa</th>
-            <th scope="col" style="text-align: center;">Inwestor</th>
-            <th scope="col" style="text-align: center;">Termin</th>
-            <th scope="col" style="text-align: center;">MMA</th>
-            <th scope="col" style="text-align: center;">Rozliczenie</th>
-            <th scope="col" style="text-align: center;">Strona <br> przetargu</th>
-            <th scope="col" style="text-align: center;">Osoby</th>
+  <form class="d-flex flex-row justify-content-center align-items-center" style="height: 100%; width: 100%;" action="{% url 'archives' %}" method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+  </form>
 
-          </tr>
-        </thead>
-        <tbody>
-            {% for i in archives %}
-          <tr>
-            <th scope="col" style="text-align: center;">{{ i.project_number }}</th>
-            <td scope="col" style="text-align: center;">{% if i.deposit %} {{ i.deposit }} {% else %} brak {% endif %}</td>
-            <td scope="col" style="text-align: center;">{% if i.tender_date %} {{ i.tender_date }} {% else %} brak {% endif %}</td>
-            <td scope="col" style="text-align: center;"><a href="{% url 'project-details' i.id %}">{{ i.project_name }}</a></td>
-            <td scope="col" style="text-align: center;">
-              <a href="{% url 'investor-details' i.investor.id %}">{{ i.investor.investor_name }}</a></td>
-            <td scope="col" style="text-align: center;">{% if i.project_deadline %} {{ i.project_deadline }} {% else %} brak {% endif %}</td>
-            <td scope="col" style="text-align: center;">{% if i.mma_quantity %} {{ i.mma_quantity }} {% else %} brak {% endif %}</td>
-            <td scope="col" style="text-align: center;">{% if i.payment_method %} {{ i.payment_method }} {% else %} nieokreślono {% endif %}</td>
-            <td scope="col" style="text-align: center;">{% if i.project_url %} <a href="{{ i.project_url }}" target=_blank>Klik</a> {% else %} brak {% endif %}</td>
-            <td scope="col" style="text-align: center;">{% if i.person.all %} {% for j in i.person.all %} {{ j.username }} <br> {% endfor %} {% else %} nieokreślono {% endif %}</td>
+  <table class="table-responsive-xl table-striped table-bordered" style="width: 100%;">
+      <thead>
+        <tr>
+          <th scope="col" style="text-align: center;">Nr</th>
+          <th scope="col" style="text-align: center;">Wadium</th>        
+          <th scope="col" style="text-align: center;">Data <br> złożenia</th>
+          <th scope="col" style="text-align: center;">Nazwa</th>
+          <th scope="col" style="text-align: center;">Inwestor</th>
+          <th scope="col" style="text-align: center;">Termin</th>
+          <th scope="col" style="text-align: center;">MMA</th>
+          <th scope="col" style="text-align: center;">Rozliczenie</th>
+          <th scope="col" style="text-align: center;">Strona <br> przetargu</th>
+          <th scope="col" style="text-align: center;">Osoby</th>
 
-          </tr>
-            {% endfor %}
-        </tbody>
-      </table>
+        </tr>
+      </thead>
+      <tbody>
+          {% for i in archives %}
+        <tr>
+          <th scope="col" style="text-align: center;">{{ i.project_number }}</th>
+          <td scope="col" style="text-align: center;">{% if i.deposit %} {{ i.deposit }} {% else %} brak {% endif %}</td>
+          <td scope="col" style="text-align: center;">{% if i.tender_date %} {{ i.tender_date }} {% else %} brak {% endif %}</td>
+          <td scope="col" style="text-align: center;"><a href="{% url 'project-details' i.id %}">{{ i.project_name }}</a></td>
+          <td scope="col" style="text-align: center;">
+            <a href="{% url 'investor-details' i.investor.id %}">{{ i.investor.investor_name }}</a></td>
+          <td scope="col" style="text-align: center;">{% if i.project_deadline %} {{ i.project_deadline }} {% else %} brak {% endif %}</td>
+          <td scope="col" style="text-align: center;">{% if i.mma_quantity %} {{ i.mma_quantity }} {% else %} brak {% endif %}</td>
+          <td scope="col" style="text-align: center;">{% if i.payment_method %} {{ i.payment_method }} {% else %} nieokreślono {% endif %}</td>
+          <td scope="col" style="text-align: center;">{% if i.project_url %} <a href="{{ i.project_url }}" target=_blank>Klik</a> {% else %} brak {% endif %}</td>
+          <td scope="col" style="text-align: center;">{% if i.person.all %} {% for j in i.person.all %} {{ j.username }} <br> {% endfor %} {% else %} nieokreślono {% endif %}</td>
+
+        </tr>
+          {% endfor %}
+      </tbody>
+    </table>
 
 
 </div>

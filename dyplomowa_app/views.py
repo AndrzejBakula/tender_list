@@ -7,7 +7,7 @@ from .models import *
 from .forms import AddInvestorForm, AddDesignerForm, AddProjectForm, EditProjectForm, EditInvestorForm
 from .forms import EditDesignerForm, LoginForm, AddCompanyForm, EditCompanyForm, RegisterForm
 from .forms import AddDivisionForm, JoinDivisionForm, EditDivisionForm, InvestorNoteForm, DesignerNoteForm
-from .forms import SearchProjectForm
+from .forms import SearchProjectForm, SearchArchiveForm, SearchInvestorForm
 
 
 #INITIAL FUNCTIONS
@@ -302,12 +302,32 @@ class InvestorsView(View):
     def get(self, request):
         user = User.objects.get(pk=int(request.session["user_id"]))
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
+        form = SearchInvestorForm()
         investors = Investor.objects.all().order_by("investor_name")
         ctx = {
             "investors": investors,
-            "divisions": divisions
+            "divisions": divisions,
+            "form": form
         }
         return render(request, "investors.html", ctx)
+    
+    def post(self, request):
+        user = None
+        if request.session.get("user_id") not in ("", None):
+            user = User.objects.get(pk=int(request.session["user_id"]))
+        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
+        form = SearchInvestorForm(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            text = data["text"]
+            investors = Investor.objects.filter(investor_name__icontains=text).order_by("investor_name")                           
+            ctx = {
+                "form": form,
+                "investors": investors,
+                "post": request.POST,
+                "divisions": divisions
+            }
+            return render(request, "investors.html", ctx)
 
 
 class InvestorDetails(View):
@@ -892,6 +912,7 @@ class ArchivesView(View):
     def get(self, request):
         user = User.objects.get(pk=int(request.session["user_id"]))
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
+        form = SearchArchiveForm()
         archives_date = date.today() + timedelta(days=-1)
         archives1 = Project.objects.filter(tender_date__range=["2021-01-01", archives_date])
         archives2 = Project.objects.all().exclude(status=2)
@@ -899,9 +920,33 @@ class ArchivesView(View):
         archives = archives.order_by("-tender_date", "-tender_time", "-project_number")
         ctx = {
             "archives": archives,
-            "divisions": divisions
+            "divisions": divisions,
+            "form": form
         }
         return render(request, "archives.html", ctx)
+    
+    def post(self, request):
+        user = None
+        if request.session.get("user_id") not in ("", None):
+            user = User.objects.get(pk=int(request.session["user_id"]))
+        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
+        today = date.today()
+        finish = today + timedelta(days=100)
+        form = SearchArchiveForm(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            text = data["text"]
+            archives_date = date.today() + timedelta(days=-1)
+            archives1 = Project.objects.filter(project_name__icontains=text, tender_date__range=["2021-01-01", archives_date]).order_by("tender_date", "tender_time", "project_number")
+            archives2 = Project.objects.filter(project_name__icontains=text).exclude(status=2).order_by("tender_date", "tender_time", "project_number")
+            archives = archives1 | archives2              
+            ctx = {
+                "form": form,
+                "archives": archives,
+                "post": request.POST,
+                "divisions": divisions
+            }
+            return render(request, "archives.html", ctx)
 
 
 class AddDivisionView(View):

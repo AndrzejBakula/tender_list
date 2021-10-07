@@ -147,6 +147,14 @@ class SearchProjectForm(forms.Form):
     text = forms.CharField(label="", max_length=64, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Wprowadź fragment nazwy projektu i wciśnij enter"}))
 
 
+class SearchArchiveForm(forms.Form):
+    text = forms.CharField(label="", max_length=64, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Wprowadź fragment nazwy projektu i wciśnij enter"}))
+
+
+class SearchInvestorForm(forms.Form):
+    text = forms.CharField(label="", max_length=64, widget=forms.TextInput(attrs={"size": 40, "placeholder": "Wprowadź fragment nazwy inwestora i wciśnij enter"}))
+
+
 class AddDivisionForm(forms.Form):
     division_name = forms.CharField(label="", max_length=128, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Nazwa Zespołu"}))
 
