@@ -5,11 +5,15 @@
 
 {% block content %}
 
-<div class="d-flex flex-row justify-content-center align-items-center">
-    <h2 class="display-5 align-self-center">Zestawienie Projektantów</a></h2>
-</div>
+<div class="d-flex flex-column align-items-center" style="height: 100%; width: 100%;"></div>
+    <div class="d-flex flex-row justify-content-center align-items-center">
+        <h2 class="display-5 align-self-center">Zestawienie Projektantów</a></h2>
+    </div>
 
-<div class="d-flex flex-column align-items-center" style="height: 100%; width: 100%;">
+    <form class="d-flex flex-row justify-content-center align-items-center" style="height: 100%; width: 100%;" action="{% url 'designers' %}" method="POST">
+      {% csrf_token %}
+      {{ form.as_p }}
+    </form>
 
     <table class="table-responsive-xl table-striped table-bordered" style="width: 100%;">
         <thead>

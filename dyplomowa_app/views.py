@@ -8,6 +8,7 @@ from .forms import AddInvestorForm, AddDesignerForm, AddProjectForm, EditProject
 from .forms import EditDesignerForm, LoginForm, AddCompanyForm, EditCompanyForm, RegisterForm
 from .forms import AddDivisionForm, JoinDivisionForm, EditDivisionForm, InvestorNoteForm, DesignerNoteForm
 from .forms import SearchProjectForm, SearchArchiveForm, SearchInvestorForm, SearchCompanyForm
+from .forms import SearchDesignerForm
 
 
 #INITIAL FUNCTIONS
@@ -584,12 +585,32 @@ class DesignersView(View):
     def get(self, request):
         user = User.objects.get(pk=int(request.session["user_id"]))
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
+        form = SearchDesignerForm()
         designers = Designer.objects.all().order_by("designer_name")
         ctx = {
             "designers": designers,
-            "divisions": divisions
+            "divisions": divisions,
+            "form": form
         }
         return render(request, "designers.html", ctx)
+    
+    def post(self, request):
+        user = None
+        if request.session.get("user_id") not in ("", None):
+            user = User.objects.get(pk=int(request.session["user_id"]))
+        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
+        form = SearchDesignerForm(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            text = data["text"]
+            designers = Designer.objects.filter(designer_name__icontains=text).order_by("designer_name")                           
+            ctx = {
+                "form": form,
+                "designers": designers,
+                "post": request.POST,
+                "divisions": divisions
+            }
+            return render(request, "designers.html", ctx)
 
 
 class DesignerDetails(View):
