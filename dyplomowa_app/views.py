@@ -7,7 +7,7 @@ from .models import *
 from .forms import AddInvestorForm, AddDesignerForm, AddProjectForm, EditProjectForm, EditInvestorForm
 from .forms import EditDesignerForm, LoginForm, AddCompanyForm, EditCompanyForm, RegisterForm
 from .forms import AddDivisionForm, JoinDivisionForm, EditDivisionForm, InvestorNoteForm, DesignerNoteForm
-from .forms import SearchProjectForm, SearchArchiveForm, SearchInvestorForm
+from .forms import SearchProjectForm, SearchArchiveForm, SearchInvestorForm, SearchCompanyForm
 
 
 #INITIAL FUNCTIONS
@@ -450,12 +450,32 @@ class CompaniesView(View):
     def get(self, request):
         user = User.objects.get(pk=int(request.session["user_id"]))
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
+        form = SearchCompanyForm()
         companies = Company.objects.all().order_by("company_name")
         ctx = {
             "companies": companies,
-            "divisions": divisions
+            "divisions": divisions,
+            "form": form
         }
         return render(request, "companies.html", ctx)
+    
+    def post(self, request):
+        user = None
+        if request.session.get("user_id") not in ("", None):
+            user = User.objects.get(pk=int(request.session["user_id"]))
+        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
+        form = SearchCompanyForm(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            text = data["text"]
+            companies = Company.objects.filter(company_name__icontains=text).order_by("company_name")                           
+            ctx = {
+                "form": form,
+                "companies": companies,
+                "post": request.POST,
+                "divisions": divisions
+            }
+            return render(request, "companies.html", ctx)
 
 
 class CompanyDetails(View):
