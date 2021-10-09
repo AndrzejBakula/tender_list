@@ -1,6 +1,6 @@
 from django import forms
 from .models import AdministrationLevel, Note, Investor, Designer, Status, Priority, Voivodeship, PaymentMethod
-from .models import Division, Company, Poviat
+from .models import Division, Company, Poviat, Guarantee
 from django.contrib.auth.models import User
 from datetime import timezone, date, timedelta
 
@@ -115,14 +115,14 @@ class EditProjectForm(forms.Form):
     project_number = forms.CharField(label="", widget=forms.TextInput(attrs={"size": 38, "placeholder": "Numer Projektu"}))
     tender_time = forms.CharField(label="Godzina złożenia", widget=forms.TextInput(attrs={"type": "time"}), required=False)
     open_time = forms.CharField(label="Godzina otwarcia", widget=forms.TextInput(attrs={"type": "time"}), required=False)
-    deposit = forms.FloatField(label="Wadium", required=False)
+    deposit = forms.FloatField(label="Wadium", required=False, widget=forms.NumberInput(attrs={'step': "0.01"}))
     announcement_number = forms.CharField(label="", widget=forms.TextInput(attrs={"size": 38, "placeholder": "Numer postępowania"}), required=False)
     announcement_date = forms.CharField(label="Data ogłoszenia", widget=forms.TextInput(attrs={"type": "date"}), required=False)
     voivodeship = forms.ModelChoiceField(label="Województwo", queryset=Voivodeship.objects.all())
     poviat = forms.ModelChoiceField(label="Powiat", queryset=Poviat.objects.all().order_by("poviat_name"), required=False)
     tender_date = forms.CharField(label="Data złożenia", widget=forms.TextInput(attrs={"type": "date", 'min': date.today()}), required=False)
     project_name = forms.CharField(label="", widget=forms.TextInput(attrs={"size": 64, "placeholder": "Nazwa Projektu"}))
-    estimated_value = forms.FloatField(label="Szacunkowa wartość", required=False)
+    estimated_value = forms.FloatField(label="Szacunkowa wartość", required=False, widget=forms.NumberInput(attrs={'step': "0.01"}))
     investor = forms.ModelChoiceField(label="Inwestor", queryset=Investor.objects.all().order_by("investor_name"))
     project_deadline_date = forms.CharField(label="Termin realizacji (data)", widget=forms.TextInput(attrs={"type": "date", 'min': date.today()}), required=False)
     project_deadline_months = forms.IntegerField(label="Termin realizacji (miesiące)", required=False)
@@ -172,6 +172,13 @@ class EditDivisionForm(forms.Form):
 
 
 class JoinDivisionForm(forms.Form):
-
     division = forms.ModelChoiceField(label="Wybierz zespół", queryset=Division.objects.all())
 
+class AddTenderForm(forms.Form):
+    investor_budget = forms.FloatField(label="Budżet inwestora", required=False, widget=forms.NumberInput(attrs={'step': "0.01"}))
+
+
+class AddTendererForm(forms.Form):
+    tenderer = forms.ModelChoiceField(label="Oferent", queryset=Company.objects.all().order_by("company_name"))
+    offer_value = forms.FloatField(label="Wartość oferty brutto", required=False, widget=forms.NumberInput(attrs={'step': "0.01"}))
+    offer_guarantee = forms.ModelChoiceField(label="Gwarancja", queryset=Guarantee.objects.all())

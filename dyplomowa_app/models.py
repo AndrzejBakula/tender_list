@@ -229,6 +229,9 @@ class Guarantee(models.Model):
 
     months = models.IntegerField(unique=True, null=True, default=None, choices=MONTHS)
 
+    def __str__(self):
+        return str(self.months)
+
 
 class Criteria(models.Model):
 
@@ -251,7 +254,7 @@ class Tenderer(models.Model):
 class Tender(models.Model):
 
     investor_budget = models.FloatField(null=True, default=None)
-    tenderers = models.ManyToManyField(Tenderer, default=None)
+    tenderer = models.ManyToManyField(Tenderer, default=None)
 
 
 class Project(models.Model):
@@ -282,7 +285,7 @@ class Project(models.Model):
     payment_criteria = models.TextField(null=True, default=None)
     jv_partners = models.ManyToManyField(Company, default=None)
     remarks = models.TextField(null=True, default=None)
-    tender = models.ForeignKey(Tender, on_delete=models.CASCADE, null=True, default=None)
+    tender = models.OneToOneField(Tender, on_delete=models.CASCADE, null=True, default=None)
     priority = models.ForeignKey(Priority, on_delete=models.CASCADE, null=True, default=None)
     designer = models.ForeignKey(Designer, null=True, default=None, on_delete=models.CASCADE)
     status = models.ForeignKey(Status, on_delete=models.CASCADE, default=Status.STATUS[0][0])

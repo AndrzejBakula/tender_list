@@ -46,6 +46,8 @@
           <td scope="col" style="text-align: center;">{% if i.payment_method %} {{ i.payment_method }} {% else %} nieokreślono {% endif %}</td>
           <td scope="col" style="text-align: center;">{% if i.project_url %} <a href="{{ i.project_url }}" target=_blank>Klik</a> {% else %} brak {% endif %}</td>
           <td scope="col" style="text-align: center;">{% if i.person.all %} {% for j in i.person.all %} {{ j.username }} <br> {% endfor %} {% else %} nieokreślono {% endif %}</td>
+          <td scope="col" style="text-align: center;">{% if i.tender == None %} brak wyników <br> <a href="{% url 'add-tender' i.id %}">dodaj wyniki</a> 
+            {% else %} <a href="{% url 'add-tender-details' i.id i.tender.id %}">zobacz wyniki</a> {% endif %}</td>
 
         </tr>
           {% endfor %}

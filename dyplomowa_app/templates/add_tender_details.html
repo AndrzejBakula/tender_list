@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %} Dodaj Wyniki Przetargu {% endblock %}
+
+{% block content %}
+
+<div class="d-flex flex-column align-items-center" style="height: 100%; width: 100%;">
+    <hr>
+    <div class="d-flex flex-row justify-content-center align-items-center">
+        <h2 class="display-5 align-self-center header2"><i>Szczegóły Przetargu</i></h2>
+    </div>
+
+    <div class="d-flex flex-column align-items-center">
+        <table class="table table-striped table-bordered">
+            <tbody>
+                <tr>
+                    <th scope="col">Nazwa projektu</th>
+                    <td scope="col">{{ tender.project.project_name }}</td>
+                </tr>
+                <tr>
+                    <th scope="col">Kwota zamawiającego</th>
+                    <td scope="col">{{ tender.investor_budget }} zł brutto</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <table class="table-responsive-xl table-striped table-bordered" style="width: 100%;">
+        <thead>
+          <tr>
+            <th scope="col" style="text-align: center;">Oferent</th>
+            <th scope="col" style="text-align: center;">Cena</th>
+            <th scope="col" style="text-align: center;">Gwarancja</th>
+            <th scope="col" style="text-align: center;">Termin</th>
+            <th scope="col" style="text-align: center;">Pozostałe kryteria</th>
+          </tr>
+        </thead>
+        <tbody>
+            {% for i in tender.tenderer.all %}
+          <tr>
+            <td scope="col" style="text-align: center;"><a href="{% url 'company-details' i.tenderer.id %}">{{ i.tenderer.company_name }}</a></td>
+            <td scope="col" style="text-align: center;">{{ i.offer_value }}</td>
+            <td scope="col" style="text-align: center;">{{ i.offer_guarantee }} mies.</td>
+            <td scope="col" style="text-align: center;">{% if i.offer_deadline %} {{ i.offer_deadline }} {% else %} brak {% endif %}</td>
+            <td scope="col" style="text-align: center;">{% for j in i.other_criteria.all %} {{ j.criteria}} - {{ j.value }} <br> {% endfor %}</td>
+          </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <hr>
+    <div class="d-flex flex-row justify-content-center align-items-center">
+        <h3 class="display-5 align-self-center header2"><i>Dodaj Oferenta</i></h3>
+    </div>
+    <form class="d-flex flex-row justify-content-center align-items-center" style="height: 100%; width: 100%;" action="{% url 'add-tender-details' project.id tender.id %}" method="POST">
+        {% csrf_token %}
+        {{ form.as_table }}
+        <button type="submit" id="submit">Dodaj oferenta</button>
+    </form>
+
+</div>
+
+{% endblock %}

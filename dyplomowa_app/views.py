@@ -8,7 +8,7 @@ from .forms import AddInvestorForm, AddDesignerForm, AddProjectForm, EditProject
 from .forms import EditDesignerForm, LoginForm, AddCompanyForm, EditCompanyForm, RegisterForm
 from .forms import AddDivisionForm, JoinDivisionForm, EditDivisionForm, InvestorNoteForm, DesignerNoteForm
 from .forms import SearchProjectForm, SearchArchiveForm, SearchInvestorForm, SearchCompanyForm
-from .forms import SearchDesignerForm
+from .forms import SearchDesignerForm, AddTenderForm, AddTendererForm
 
 
 #INITIAL FUNCTIONS
@@ -81,6 +81,16 @@ def poviat_init():
                 Poviat.objects.create(poviat_name=i[1])
 
 poviat_init()
+
+def guarantee_init():
+    guarantees = Guarantee.objects.all()
+    months = [i.months for i in guarantees]
+    if len(guarantees) != len(Guarantee.MONTHS):
+        for i in Guarantee.MONTHS:
+            if i[1] not in months:
+                Guarantee.objects.create(months=i[1])
+
+guarantee_init()
 
 
 #AUXILIARY FUNCTIONS
@@ -1194,3 +1204,68 @@ class UserDetailsView(View):
             "user": user
         }
         return render(request, "user_details.html", ctx)
+
+
+class AddTenderView(View):
+    def get(self, request, id):
+        user = User.objects.get(pk=int(request.session["user_id"]))
+        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
+        project = Project.objects.get(id=id)
+        form = AddTenderForm()
+        ctx = {
+            "project": project,
+            "divisions": divisions,
+            "form": form
+        }
+        return render(request, "add_tender.html", ctx)
+    
+    def post(self, request, id):
+        user = User.objects.get(pk=int(request.session["user_id"]))
+        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
+        project = Project.objects.get(id=id)
+        form = AddTenderForm(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            budget = data["investor_budget"]
+            tender = Tender.objects.create(investor_budget=budget)
+            project.tender = tender
+            project.save()
+            return redirect(f"/add_tender_details/{project.id}/{tender.id}")
+    
+
+class AddTenderDetails(View):
+    def get(self, request, project_id, tender_id):
+        user = User.objects.get(pk=int(request.session["user_id"]))
+        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
+        project = Project.objects.get(id=project_id)
+        tender = Tender.objects.get(id=tender_id)
+        form = AddTendererForm()
+        ctx = {
+            "divisions": divisions,
+            "project": project,
+            "tender": tender,
+            "form": form
+        }
+        return render(request, "add_tender_details.html", ctx)
+
+    def post(self, request, project_id, tender_id):
+        user = User.objects.get(pk=int(request.session["user_id"]))
+        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
+        project = Project.objects.get(id=project_id)
+        tender = Tender.objects.get(id=tender_id)
+        form = AddTendererForm(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            tenderer = data["tenderer"]
+            offer_value = data["offer_value"]
+            offer_guarantee = data["offer_guarantee"]
+            tenderer = Tenderer.objects.create(tenderer=tenderer, offer_value=offer_value, offer_guarantee=offer_guarantee)
+            tender.tenderer.add(tenderer)
+            tender.save()
+            ctx = {
+                "divisions": divisions,
+                "project": project,
+                "tender": tender,
+                "form": form
+            }
+            return render(request, "add_tender_details.html", ctx)
