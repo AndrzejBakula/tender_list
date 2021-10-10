@@ -1,6 +1,6 @@
 from django import forms
 from .models import AdministrationLevel, Note, Investor, Designer, Status, Priority, Voivodeship, PaymentMethod
-from .models import Division, Company, Poviat, Criteria, Guarantee, Weight
+from .models import Division, Company, Poviat, Criteria, Guarantee, Weight, Month
 from django.contrib.auth.models import User
 from datetime import timezone, date, timedelta
 
@@ -176,17 +176,23 @@ class JoinDivisionForm(forms.Form):
 
 class AddTenderForm(forms.Form):
     investor_budget = forms.FloatField(label="Budżet inwestora", required=False, widget=forms.NumberInput(attrs={'step': "0.01"}))
-    value_weight = forms.ModelChoiceField(label="Okreś % wagi ceny", queryset=Weight.objects.all())
+    value_weight = forms.ModelChoiceField(label="Waga ceny [%]", queryset=Weight.objects.all())
     is_guarantee = forms.BooleanField(label="Czy jest kryterium gwarancji?", required=False)
     is_deadline = forms.BooleanField(label="Czy jest kryterium terminu wykonania?", required=False)
     is_other_criteria = forms.BooleanField(label="Czy są jakieś inne kryteria?", required=False)
 
 
-class ChoiceCriteriaForm(forms.Form):
+class AddCriteriaForm(forms.Form):
+    guarantee_min = forms.ModelChoiceField(label="Gwarancja min [mies.]", queryset=Month.objects.all())
+    guarantee_max = forms.ModelChoiceField(label="Gwarancja max [mies.]", queryset=Month.objects.all())
+    guarantee_weight = forms.ModelChoiceField(label="Waga gwarancji [%]", queryset=Weight.objects.all())
+    deadline_min = forms.ModelChoiceField(label="Termin min [mies.]", queryset=Month.objects.all())
+    deadline_max = forms.ModelChoiceField(label="Termin max [mies.]", queryset=Month.objects.all())
+    deadline_weight = forms.ModelChoiceField(label="Waga gwarancji [%]", queryset=Weight.objects.all())
     criteria = forms.ModelMultipleChoiceField(label="Wybierz inne kryteria oceny", required=False, queryset=Criteria.objects.all().order_by("criteria_name"))
 
 
-class AddCriteriaForm(forms.Form):
+class AddOtherCriteriaForm(forms.Form):
     criteria_name = forms.CharField(label="", max_length=64, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Nazwa Kryterium"}))
 
 

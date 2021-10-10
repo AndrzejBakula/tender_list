@@ -229,6 +229,8 @@ class Month(models.Model):
     
     month = models.IntegerField(unique=True, null=True, default=None, choices=MONTH)
 
+    def __str__(self):
+        return str(self.month)
 
 class Weight(models.Model):
 

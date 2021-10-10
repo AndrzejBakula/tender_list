@@ -1,4 +1,5 @@
 from django.views import View
+from django import forms
 from django.shortcuts import render, redirect
 from django.contrib.auth import get_user_model, authenticate, login, logout
 from django.contrib.auth.models import User
@@ -1259,6 +1260,16 @@ class AddTenderCriteria(View):
         project = Project.objects.get(id=project_id)
         tender = Tender.objects.get(id=tender_id)
         form = AddCriteriaForm()
+        if tender.is_guarantee == False:
+            form.fields["guarantee_min"].widget = forms.HiddenInput()
+            form.fields["guarantee_max"].widget = forms.HiddenInput()
+            form.fields["guarantee_weight"].widget = forms.HiddenInput()
+            # form.fields["guarantee"] = None
+        if tender.is_deadline == False:
+            form.fields["deadline_min"].widget = forms.HiddenInput()
+            form.fields["deadline_max"].widget = forms.HiddenInput()
+            form.fields["deadline_weight"].widget = forms.HiddenInput()
+            # form.fields["deadline"] = None
         ctx = {
             "divisions": divisions,
             "project": project,
