@@ -8,7 +8,7 @@ from .forms import AddInvestorForm, AddDesignerForm, AddProjectForm, EditProject
 from .forms import EditDesignerForm, LoginForm, AddCompanyForm, EditCompanyForm, RegisterForm
 from .forms import AddDivisionForm, JoinDivisionForm, EditDivisionForm, InvestorNoteForm, DesignerNoteForm
 from .forms import SearchProjectForm, SearchArchiveForm, SearchInvestorForm, SearchCompanyForm
-from .forms import SearchDesignerForm, AddTenderForm, AddTendererForm
+from .forms import SearchDesignerForm, AddTenderForm, AddCriteriaForm, AddTendererForm
 
 
 #INITIAL FUNCTIONS
@@ -82,15 +82,25 @@ def poviat_init():
 
 poviat_init()
 
-def guarantee_init():
-    guarantees = Guarantee.objects.all()
-    months = [i.months for i in guarantees]
-    if len(guarantees) != len(Guarantee.MONTHS):
-        for i in Guarantee.MONTHS:
+def month_init():
+    month = Month.objects.all()
+    months = [i.month for i in month]
+    if len(months) != len(Month.MONTH):
+        for i in Month.MONTH:
             if i[1] not in months:
-                Guarantee.objects.create(months=i[1])
+                Month.objects.create(month=i[1])
 
-guarantee_init()
+month_init()
+
+def weight_init():
+    weight = Weight.objects.all()
+    weights = [i.weight for i in weight]
+    if len(weights) != len(Weight.WEIGHT):
+        for i in Weight.WEIGHT:
+            if i[1] not in weights:
+                Weight.objects.create(weight=i[1])
+
+weight_init()
 
 
 #AUXILIARY FUNCTIONS
@@ -1227,10 +1237,56 @@ class AddTenderView(View):
         if form.is_valid():
             data = form.cleaned_data
             budget = data["investor_budget"]
-            tender = Tender.objects.create(investor_budget=budget)
+            value_weight = data["value_weight"]
+            is_guarantee = data["is_guarantee"]
+            is_deadline = data["is_deadline"]
+            is_other_criteria = data["is_other_criteria"]
+            tender = Tender.objects.create(investor_budget=budget, value_weight=value_weight, is_guarantee=is_guarantee,
+                is_deadline=is_deadline, is_other_criteria=is_other_criteria)
+            # for i in criteria:
+            #     criterium = Criteria.objects.create(criteria_name=i)
+            #     tender.criteria.add(criterium)
+            #     tender.save()
             project.tender = tender
             project.save()
-            return redirect(f"/add_tender_details/{project.id}/{tender.id}")
+            return redirect(f"/add_tender_criteria/{project.id}/{tender.id}")
+
+
+class AddTenderCriteria(View):
+    def get(self, request, project_id, tender_id):
+        user = User.objects.get(pk=int(request.session["user_id"]))
+        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
+        project = Project.objects.get(id=project_id)
+        tender = Tender.objects.get(id=tender_id)
+        form = AddCriteriaForm()
+        ctx = {
+            "divisions": divisions,
+            "project": project,
+            "tender": tender,
+            "form": form
+        }
+        return render(request, "add_tender_criteria.html", ctx)
+    
+    def post(self, request, project_id, tender_id):
+        user = User.objects.get(pk=int(request.session["user_id"]))
+        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
+        project = Project.objects.get(id=project_id)
+        tender = Tender.objects.get(id=tender_id)
+        form = AddCriteriaForm(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            criteria_name = data["criteria_name"]
+            criteria_value = data["criteria_value"]
+            tenderer = Tenderer.objects.create(tenderer=tenderer, offer_value=offer_value, offer_guarantee=offer_guarantee)
+            tender.tenderer.add(tenderer)
+            tender.save()
+            ctx = {
+                "divisions": divisions,
+                "project": project,
+                "tender": tender,
+                "form": form
+            }
+            return render(request, "add_tender_details.html", ctx)
     
 
 class AddTenderDetails(View):

@@ -1,14 +1,14 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %} Dodaj Budżet Zamawiającego {% endblock %}
+{% block title %} Dodaj Budżet Inwestora {% endblock %}
 
 {% block content %}
 
 <div class="d-flex flex-column align-items-center" style="height: 100%; width: 100%;">
 
     <div class="d-flex flex-row justify-content-center align-items-center">
-        <h2 class="display-5 align-self-center header2"><i>Dodaj Budżet Zamawiającego</i></h2>
+        <h2 class="display-5 align-self-center header2"><i>Dodaj Budżet i Niestandardowe Kryteria Oceny</i></h2>
     </div>
     dla zadania <i>{{ project.project_name }}</i>
     <hr>
@@ -26,7 +26,7 @@
     <form class="d-flex flex-column align-items-center" style="height: 100%; width: 100%;" action="{% url 'add-tender' project.id %}" method="POST">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit" id="submit">Dodaj Budżet</button>
+        <button type="submit" id="submit">Dalej</button>
     </form>
 
 </div>

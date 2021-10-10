@@ -220,23 +220,48 @@ class Company(models.Model):
         return self.company_name
 
 
-class Guarantee(models.Model):
+class Month(models.Model):
 
-    MONTHS = []
+    MONTH = []
 
     for i in range(150):
-        MONTHS.append((i+1, i+1))
+        MONTH.append((i+1, i+1))
+    
+    month = models.IntegerField(unique=True, null=True, default=None, choices=MONTH)
 
-    months = models.IntegerField(unique=True, null=True, default=None, choices=MONTHS)
+
+class Weight(models.Model):
+
+    WEIGHT = []
+
+    for i in range(100):
+        WEIGHT.append((i+1, i+1))
+    
+    weight = models.IntegerField(unique=True, null=True, default=None, choices=WEIGHT)
 
     def __str__(self):
-        return str(self.months)
+        return str(self.weight)
+
+
+class Guarantee(models.Model):
+
+    months_min = models.ForeignKey(Month, on_delete=models.CASCADE, related_name="guarantee_min")
+    months_max = models.ForeignKey(Month, on_delete=models.CASCADE, related_name="guarantee_max")
+    weight = models.ForeignKey(Weight, on_delete=models.CASCADE)
+
+
+class Deadline(models.Model):
+
+    months_min = models.ForeignKey(Month, on_delete=models.CASCADE, related_name="deadline_min")
+    months_max = models.ForeignKey(Month, on_delete=models.CASCADE, related_name="deadline_max")
+    weight = models.ForeignKey(Weight, on_delete=models.CASCADE)
 
 
 class Criteria(models.Model):
 
     criteria_name = models.CharField(max_length=64, unique=True)
     criteria_value = models.TextField(null=True, default=None)
+    weight = models.ForeignKey(Weight, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.criteria_name
@@ -255,6 +280,13 @@ class Tender(models.Model):
 
     investor_budget = models.FloatField(null=True, default=None)
     tenderer = models.ManyToManyField(Tenderer, default=None)
+    value_weight = models.ForeignKey(Weight, on_delete=models.CASCADE)
+    is_guarantee = models.BooleanField(default=False)
+    guarantee = models.ForeignKey(Guarantee, on_delete=models.CASCADE, null=True, default=None)
+    is_deadline = models.BooleanField(default=False)
+    deadline = models.ForeignKey(Deadline, on_delete=models.CASCADE, null=True, default=None)
+    is_other_criteria = models.BooleanField(default=False)
+    other_criteria = models.ManyToManyField(Criteria, default=None)
 
 
 class Project(models.Model):
