@@ -24,7 +24,7 @@ from dyplomowa_app.views import ArchivesView, DivisionChoiceView, DivisionChoice
 from dyplomowa_app.views import AddDivisionView, DivisionDetails, AddAdminView, CancelAdminView, JoinDivisionView
 from dyplomowa_app.views import AddPersonView, DateChoiceView, EditDivisionView, DeleteDivisionView
 from dyplomowa_app.views import DeleteDivisionConfirm, RemoveMemberView, UserDetailsView, AddTenderView
-from dyplomowa_app.views import AddTenderCriteria, AddTenderDetails
+from dyplomowa_app.views import AddTenderCriteria, AddOtherCriteria, AddTenderDetails
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -72,6 +72,7 @@ urlpatterns = [
     path('user_details/<int:id>', UserDetailsView.as_view(), name='user-details'),
     path('add_tender/<int:id>', AddTenderView.as_view(), name='add-tender'),
     path('add_tender_criteria/<project_id>/<tender_id>', AddTenderCriteria.as_view(), name='add-tender-criteria'),
+    path('add_other_criteria/<project_id>/<tender_id>', AddOtherCriteria.as_view(), name='add-other-criteria'),
     path('add_tender_details/<project_id>/<tender_id>', AddTenderDetails.as_view(), name='add-tender-details'),
 
 ]

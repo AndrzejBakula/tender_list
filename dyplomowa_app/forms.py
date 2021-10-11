@@ -183,17 +183,19 @@ class AddTenderForm(forms.Form):
 
 
 class AddCriteriaForm(forms.Form):
-    guarantee_min = forms.ModelChoiceField(label="Gwarancja min [mies.]", queryset=Month.objects.all())
-    guarantee_max = forms.ModelChoiceField(label="Gwarancja max [mies.]", queryset=Month.objects.all())
-    guarantee_weight = forms.ModelChoiceField(label="Waga gwarancji [%]", queryset=Weight.objects.all())
-    deadline_min = forms.ModelChoiceField(label="Termin min [mies.]", queryset=Month.objects.all())
-    deadline_max = forms.ModelChoiceField(label="Termin max [mies.]", queryset=Month.objects.all())
-    deadline_weight = forms.ModelChoiceField(label="Waga gwarancji [%]", queryset=Weight.objects.all())
+    guarantee_min = forms.ModelChoiceField(label="Gwarancja min [mies.]", queryset=Month.objects.all(), required=False)
+    guarantee_max = forms.ModelChoiceField(label="Gwarancja max [mies.]", queryset=Month.objects.all(), required=False)
+    guarantee_weight = forms.ModelChoiceField(label="Waga gwarancji [%]", queryset=Weight.objects.all(), required=False)
+    deadline_min = forms.ModelChoiceField(label="Termin min [mies.]", queryset=Month.objects.all(), required=False)
+    deadline_max = forms.ModelChoiceField(label="Termin max [mies.]", queryset=Month.objects.all(), required=False)
+    deadline_weight = forms.ModelChoiceField(label="Waga gwarancji [%]", queryset=Weight.objects.all(), required=False)
     criteria = forms.ModelMultipleChoiceField(label="Wybierz inne kryteria oceny", required=False, queryset=Criteria.objects.all().order_by("criteria_name"))
 
 
 class AddOtherCriteriaForm(forms.Form):
     criteria_name = forms.CharField(label="", max_length=64, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Nazwa Kryterium"}))
+    criteria_value = forms.CharField(label="", widget=forms.Textarea(attrs={"rows": 5, "cols": 24, "placeholder": "Treść Kryterium"}), required=False)
+    criteria_weight = forms.ModelChoiceField(label="Waga kryterium [%]", queryset=Weight.objects.all())
 
 
 class AddTendererForm(forms.Form):
