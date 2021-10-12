@@ -13,40 +13,45 @@
     dla zadania <i>{{ project.project_name }}</i>
     <hr>
 
+    <div class="d-flex flex-row justify-content-center align-items-center">
+        <h4 class="display-5 align-self-center header2"><i>Aktualnie Wybrane Kryteria</i></h4>
+    </div>
     <table class="table-responsive-xl table-striped table-bordered" style="width: 100%;">
         <thead>
-            {% for i in tender.tenderer.all %}
             <tr>
-                <th scope="col" style="text-align: center;">Oferent</th>
                 <th scope="col" style="text-align: center;">Cena</th>
                 <th scope="col" style="text-align: center;">Gwarancja</th>
                 <th scope="col" style="text-align: center;">Termin</th>
-                {% for j in i.other_criteria.all %}
-                <th scope="col" style="text-align: center;">{{ j.criteria_name }}</th>
+                {% for i in tender.other_criteria.all %}
+                <th scope="col" style="text-align: center;">{{ i.criteria_name }}</th>
                 {% endfor %}
             </tr>
-            {% endfor %}
         </thead>
         <tbody>
-            {% for i in tender.tenderer.all %}
             <tr>
-                <td scope="col" style="text-align: center;"><a href="{% url 'company-details' i.tenderer.id %}">{{ i.tenderer.company_name }}</a></td>
-                <td scope="col" style="text-align: center;">{{ i.offer_value }}</td>
-                <td scope="col" style="text-align: center;">{{ i.offer_guarantee }} mies.</td>
-                <td scope="col" style="text-align: center;">{% if i.offer_deadline %} {{ i.offer_deadline }} {% else %} brak {% endif %}</td>
-                {% for j in i.other_criteria.all %}
-                <td scope="col" style="text-align: center;">{{ j.criteria}} - {{ j.value }} <br> {% endfor %}</td>
-            </tr>
-            {% endfor %}
+                <td scope="col" style="text-align: center;">{{ tender.value_weight }} %</td>
+                <td scope="col" style="text-align: center;">{{ tender.guarantee.weight }} %</td>
+                <td scope="col" style="text-align: center;">{% if tender.deadline_weight %} {{ tender.deadline_weight }} {% else %} brak {% endif %}</td>
+                {% for i in tender.other_criteria.all %}
+                <td scope="col" style="text-align: center;">{{ i.weight}}</td>
+                {% endfor %}
+            </tr> 
         </tbody>
     </table>
-
+    <hr>
+    <div class="d-flex flex-row justify-content-center align-items-center">
+        <h4 class="display-5 align-self-center header2"><i>Dodaj Nowe Kryterium</i></h4>
+    </div>
     <form class="d-flex flex-column justify-content-center align-items-center" style="height: 100%; width: 100%;" action="{% url 'add-other-criteria' project.id tender.id %}" method="POST">
         {% csrf_token %}
-        {{ form.as_table }}
+        {{ form.as_p }}
         <button type="submit" id="submit">Dodaj</button>
     </form>
-    
+    <hr>
+    <div class="d-flex flex-row justify-content-center align-items-center" style="padding-left: 0.5%;">
+        <a href="{% url 'add-tender-details' project.id tender.id %}" class="btn btn-outline-primary m-1">Przejdź do modułu dodania wyników</a>
+    </div>
+
 </div>
 
 {% endblock %}

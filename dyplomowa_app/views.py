@@ -1306,7 +1306,7 @@ class AddTenderCriteria(View):
             tender.guarantee = guarantee
             tender.deadline = deadline
             for i in criteria:
-                tender.criteria.add(i)
+                tender.other_criteria.add(i)
             tender.save()
             return redirect(f"/add_other_criteria/{project.id}/{tender.id}")
 
@@ -1327,7 +1327,25 @@ class AddOtherCriteria(View):
         return render(request, "add_other_criteria.html", ctx)
     
     def post(self, request, project_id, tender_id):
-        pass
+        user = User.objects.get(pk=int(request.session["user_id"]))
+        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
+        project = Project.objects.get(id=project_id)
+        tender = Tender.objects.get(id=tender_id)
+        form = AddOtherCriteriaForm(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            criteria_name = data["criteria_name"]
+            criteria_weight = data["criteria_weight"]
+            new_criteria = Criteria.objects.create(weight=criteria_weight, criteria_name=criteria_name)
+            tender.other_criteria.add(new_criteria)
+            tender.save()
+            ctx = {
+            "divisions": divisions,
+            "project": project,
+            "tender": tender,
+            "form": form
+            }
+            return render(request, "add_other_criteria.html", ctx)
 
 
 class AddTenderDetails(View):
@@ -1337,6 +1355,8 @@ class AddTenderDetails(View):
         project = Project.objects.get(id=project_id)
         tender = Tender.objects.get(id=tender_id)
         form = AddTendererForm()
+        # for i in tender.other_criteria.all():
+        #     form.fields[f"{i.criteria_name}"] = AddOtherCriteriaForm.criteria_name #UZUPEŁNIĆ!!!
         ctx = {
             "divisions": divisions,
             "project": project,

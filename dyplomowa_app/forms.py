@@ -193,8 +193,7 @@ class AddCriteriaForm(forms.Form):
 
 
 class AddOtherCriteriaForm(forms.Form):
-    criteria_name = forms.CharField(label="", max_length=64, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Nazwa Kryterium"}))
-    criteria_value = forms.CharField(label="", widget=forms.Textarea(attrs={"rows": 5, "cols": 24, "placeholder": "Treść Kryterium"}), required=False)
+    criteria_name = forms.CharField(label="", max_length=128, widget=forms.TextInput(attrs={"size": 48, "placeholder": "Nazwa Kryterium"}))
     criteria_weight = forms.ModelChoiceField(label="Waga kryterium [%]", queryset=Weight.objects.all())
 
 
