@@ -1349,14 +1349,15 @@ class AddOtherCriteria(View):
 
 
 class AddTenderDetails(View):
+
+
     def get(self, request, project_id, tender_id):
         user = User.objects.get(pk=int(request.session["user_id"]))
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         project = Project.objects.get(id=project_id)
         tender = Tender.objects.get(id=tender_id)
-        form = AddTendererForm()
-        # for i in tender.other_criteria.all():
-        #     form.fields[f"{i.criteria_name}"] = AddOtherCriteriaForm.criteria_name #UZUPEŁNIĆ!!!
+        request.session["tender_id"] = tender_id
+        form = AddTendererForm(request=request)
         ctx = {
             "divisions": divisions,
             "project": project,

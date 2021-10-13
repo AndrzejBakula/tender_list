@@ -224,7 +224,7 @@ class Month(models.Model):
 
     MONTH = []
 
-    for i in range(150):
+    for i in range(360):
         MONTH.append((i+1, i+1))
     
     month = models.IntegerField(unique=True, null=True, default=None, choices=MONTH)
@@ -273,8 +273,8 @@ class Tenderer(models.Model):
 
     tenderer = models.ForeignKey(Company, on_delete=models.CASCADE, null=True, default=None)
     offer_value = models.FloatField(null=True, default=None)
-    offer_guarantee = models.ForeignKey(Guarantee, on_delete=models.CASCADE, null=True, default=None)
-    offer_deadline = models.DateField(null=True, default=None)
+    offer_guarantee = models.ForeignKey(Month, on_delete=models.CASCADE, null=True, default=None, related_name="offer_guarantee")
+    offer_deadline = models.ForeignKey(Month, on_delete=models.CASCADE, null=True, default=None, related_name="offer_deadline")
     other_criteria = models.ManyToManyField(Criteria, default=None)
 
 

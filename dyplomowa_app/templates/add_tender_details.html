@@ -61,12 +61,12 @@
     </table>
     <hr>
     <div class="d-flex flex-row justify-content-center align-items-center">
-        <h3 class="display-5 align-self-center header2"><i>Dodaj Oferenta</i></h3>
+        <h3 class="display-5 align-self-center header2"><i>Dodaj Ofertę</i></h3>
     </div>
-    <form class="d-flex flex-row justify-content-center align-items-center" style="height: 100%; width: 100%;" action="{% url 'add-tender-details' project.id tender.id %}" method="POST">
+    <form class="d-flex flex-column justify-content-center align-items-center" style="height: 100%; width: 100%;" action="{% url 'add-tender-details' project.id tender.id %}" method="POST">
         {% csrf_token %}
-        {{ form.as_table }}
-        <button type="submit" id="submit">Dalej</button>
+        {{ form.as_p }}
+        <button type="submit" id="submit">Dodaj</button>
     </form>
     
 </div>
