@@ -199,12 +199,17 @@ class AddOtherCriteriaForm(forms.Form):
 
 class AddTendererForm(forms.Form):
 
-    def __init__(self, *args, request=None, **kwargs):
+    def __init__(self, *args, **kwargs):
+        # tender = kwargs.pop('tender', None)
+        tender = kwargs.get("tender", None)
+        kwargs.pop('tender', None)
+        self.tender = tender
+        # del kwargs["tender"]
         super(AddTendererForm, self).__init__(*args, **kwargs)
-        self.request = request
-        tender = Tender.objects.get(pk=int(self.request.session["tender_id"]))
+        # self.tender = tender
+        # tender = Tender.objects.get(pk=int(self.request2.session["tender_id"]))
         for i in tender.other_criteria.all():
-            self.fields[f"{i.criteria_value}"] = forms.CharField(label=f"Wartość kryterium {i.criteria_name}", max_length=128, widget=forms.TextInput(attrs={"size": 48, "placeholder": ""}))
+            self.fields[F"criteria_value_{i.id}"] = forms.CharField(label=f"Wartość kryterium: {i.criteria_name}", max_length=128, widget=forms.TextInput(attrs={"size": 48, "placeholder": ""}))
 
     tenderer = forms.ModelChoiceField(label="Oferent", queryset=Company.objects.all().order_by("company_name"))
     offer_value = forms.FloatField(label="Wartość oferty brutto", required=False, widget=forms.NumberInput(attrs={'step': "0.01"}))

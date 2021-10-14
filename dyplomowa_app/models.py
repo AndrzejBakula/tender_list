@@ -261,7 +261,7 @@ class Deadline(models.Model):
 
 class Criteria(models.Model):
 
-    criteria_name = models.CharField(max_length=64, unique=True)
+    criteria_name = models.CharField(max_length=64)
     criteria_value = models.TextField(null=True, default=None)
     weight = models.ForeignKey(Weight, on_delete=models.CASCADE)
 
