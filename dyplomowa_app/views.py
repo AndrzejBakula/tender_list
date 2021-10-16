@@ -1311,18 +1311,19 @@ class AddOtherCriteria(View):
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         project = Project.objects.get(id=project_id)
         tender = Tender.objects.get(id=tender_id)
+        count_value = int(tender.value_weight.weight)
         count_guarantee = 0
         if tender.guarantee:
             count_guarantee = int(tender.guarantee.weight.weight)
         count_deadline = 0
         if tender.deadline:
             count_deadline = int(tender.deadline.weight.weight)
-
-        count = count_guarantee + count_deadline
+        count = count_value + count_guarantee + count_deadline
+        form = None
         if len(tender.other_criteria.all()) > 0:
             for i in tender.other_criteria.all():
                 count += int(i.weight.weight)
-        form = AddOtherCriteriaForm()
+            form = AddOtherCriteriaForm(count=count)
         ctx = {
             "divisions": divisions,
             "project": project,
@@ -1337,7 +1338,19 @@ class AddOtherCriteria(View):
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         project = Project.objects.get(id=project_id)
         tender = Tender.objects.get(id=tender_id)
-        form = AddOtherCriteriaForm(request.POST)
+        count_value = int(tender.value_weight.weight)
+        count_guarantee = 0
+        if tender.guarantee:
+            count_guarantee = int(tender.guarantee.weight.weight)
+        count_deadline = 0
+        if tender.deadline:
+            count_deadline = int(tender.deadline.weight.weight)
+        count = count_value + count_guarantee + count_deadline
+        form = None
+        if len(tender.other_criteria.all()) > 0:
+            for i in tender.other_criteria.all():
+                count += int(i.weight.weight)
+        form = AddOtherCriteriaForm(request.POST, count=count)
         if form.is_valid():
             data = form.cleaned_data
             criteria_name = data["criteria_name"]
@@ -1361,7 +1374,6 @@ class AddTenderDetails(View):
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         project = Project.objects.get(id=project_id)
         tender = Tender.objects.get(id=tender_id)
-        request.session["tender_id"] = tender_id
         form = AddTendererForm(tender=tender)
         ctx = {
             "divisions": divisions,
@@ -1381,7 +1393,7 @@ class AddTenderDetails(View):
             data = form.cleaned_data
             tenderer = data["tenderer"]
             offer_value = data["offer_value"]
-            offer_garantee = None
+            offer_guarantee = None
             if data.get("offer_guarantee") not in ("", None):
                 offer_guarantee = data["offer_guarantee"]
             offer_deadline = None

@@ -13,39 +13,17 @@
     dla zadania <i>{{ project.project_name }}</i>
     <hr>
 
-    <table class="table-responsive-xl table-striped table-bordered" style="width: 100%;">
-        <thead>
-            {% for i in tender.tenderer.all %}
-            <tr>
-                <th scope="col" style="text-align: center;">Oferent</th>
-                <th scope="col" style="text-align: center;">Cena</th>
-                <th scope="col" style="text-align: center;">Gwarancja</th>
-                <th scope="col" style="text-align: center;">Termin</th>
-                {% for j in i.other_criteria.all %}
-                <th scope="col" style="text-align: center;">{{ j.criteria_name }}</th>
-                {% endfor %}
-            </tr>
-            {% endfor %}
-        </thead>
-        <tbody>
-            {% for i in tender.tenderer.all %}
-            <tr>
-                <td scope="col" style="text-align: center;"><a href="{% url 'company-details' i.tenderer.id %}">{{ i.tenderer.company_name }}</a></td>
-                <td scope="col" style="text-align: center;">{{ i.offer_value }}</td>
-                <td scope="col" style="text-align: center;">{{ i.offer_guarantee }} mies.</td>
-                <td scope="col" style="text-align: center;">{% if i.offer_deadline %} {{ i.offer_deadline }} {% else %} brak {% endif %}</td>
-                {% for j in i.other_criteria.all %}
-                <td scope="col" style="text-align: center;">{{ j.criteria}} - {{ j.value }} <br> {% endfor %}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-
     <form class="d-flex flex-column justify-content-center align-items-center" style="height: 100%; width: 100%;" action="{% url 'add-tender-criteria' project.id tender.id %}" method="POST">
         {% csrf_token %}
         {{ form.as_table }}
-        <button type="submit" id="submit">Dodaj</button>
+        <hr>
+        <button type="submit" id="submit">Dalej</button>
     </form>
+    {% if tender.is_other_criteria == True %}
+    <div class="d-flex flex-row justify-content-center align-items-center">
+        <h4 class="display-5 align-self-center header2"><i>Brakujące kryteria będzie można dodać dalej</i></h4>
+    </div>
+    {% endif %}
     
 </div>
 

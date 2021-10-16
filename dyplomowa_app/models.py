@@ -271,7 +271,7 @@ class Criteria(models.Model):
 
 class Tenderer(models.Model):
 
-    tenderer = models.ForeignKey(Company, on_delete=models.CASCADE, null=True, default=None)
+    tenderer = models.OneToOneField(Company, on_delete=models.CASCADE, default=None)
     offer_value = models.FloatField(null=True, default=None)
     offer_guarantee = models.ForeignKey(Month, on_delete=models.CASCADE, null=True, default=None, related_name="offer_guarantee")
     offer_deadline = models.ForeignKey(Month, on_delete=models.CASCADE, null=True, default=None, related_name="offer_deadline")

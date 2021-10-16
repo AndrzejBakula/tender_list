@@ -202,8 +202,14 @@ class AddCriteriaForm(forms.Form):
 
 
 class AddOtherCriteriaForm(forms.Form):
-    criteria_name = forms.CharField(label="", max_length=128, widget=forms.TextInput(attrs={"size": 48, "placeholder": "Nazwa Kryterium"}))
-    criteria_weight = forms.ModelChoiceField(label="Waga kryterium [%]", queryset=Weight.objects.all())
+
+    def __init__(self, *args, **kwargs):
+        count = kwargs.get("count", None)
+        kwargs.pop('count', None)
+        self.count = count
+        super(AddOtherCriteriaForm, self).__init__(*args, **kwargs)
+        self.fields[f"criteria_name"] = forms.CharField(label="", max_length=128, widget=forms.TextInput(attrs={"size": 48, "placeholder": "Nazwa Kryterium"}))
+        self.fields[f"criteria_weight"] = forms.ModelChoiceField(label="Waga kryterium [%]", queryset=Weight.objects.filter(weight__lt=100-count+1))
 
 
 class AddTendererForm(forms.Form):
@@ -212,8 +218,10 @@ class AddTendererForm(forms.Form):
         tender = kwargs.get("tender", None)
         kwargs.pop('tender', None)
         self.tender = tender
-        super(AddTendererForm, self).__init__(*args, **kwargs)
-        self.fields[f"tenderer"] = forms.ModelChoiceField(label="Oferent", queryset=Company.objects.all().order_by("company_name"))
+        super(AddTendererForm, self).__init__(*args, **kwargs)        
+        excluded_tenderers = [i.tenderer.id for i in tender.tenderer.all()]
+        excluded_tenderers.append(self.data.get("tenderer"))
+        self.fields[f"tenderer"] = forms.ModelChoiceField(label="Oferent", queryset=Company.objects.exclude(id__in=excluded_tenderers).order_by("company_name"))
         self.fields[f"offer_value"] = forms.FloatField(label="Wartość oferty brutto", required=False,
         widget=forms.NumberInput(attrs={'step': "0.01"}))
         if tender.is_guarantee:
