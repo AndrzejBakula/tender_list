@@ -261,12 +261,12 @@ class Deadline(models.Model):
 
 class Criteria(models.Model):
 
-    criteria_name = models.CharField(max_length=64)
+    criteria_name = models.CharField(max_length=128)
     criteria_value = models.TextField(null=True, default=None)
     weight = models.ForeignKey(Weight, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.criteria_name
+        return f"{self.criteria_name} - {self.weight} %"
 
 
 class Tenderer(models.Model):

@@ -1255,17 +1255,7 @@ class AddTenderCriteria(View):
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         project = Project.objects.get(id=project_id)
         tender = Tender.objects.get(id=tender_id)
-        form = AddCriteriaForm()
-        if tender.is_guarantee == False:
-            form.fields["guarantee_min"].widget = forms.HiddenInput()
-            form.fields["guarantee_max"].widget = forms.HiddenInput()
-            form.fields["guarantee_weight"].widget = forms.HiddenInput()
-        if tender.is_deadline == False:
-            form.fields["deadline_min"].widget = forms.HiddenInput()
-            form.fields["deadline_max"].widget = forms.HiddenInput()
-            form.fields["deadline_weight"].widget = forms.HiddenInput()
-        if tender.is_other_criteria == False:
-            form.fields["criteria"].widget = forms.HiddenInput()
+        form = AddCriteriaForm(tender=tender)
         ctx = {
             "divisions": divisions,
             "project": project,
@@ -1279,7 +1269,7 @@ class AddTenderCriteria(View):
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         project = Project.objects.get(id=project_id)
         tender = Tender.objects.get(id=tender_id)
-        form = AddCriteriaForm(request.POST)
+        form = AddCriteriaForm(request.POST, tender=tender)
         if form.is_valid():
             data = form.cleaned_data
             guarantee_min = None
@@ -1290,7 +1280,10 @@ class AddTenderCriteria(View):
                 guarantee_min = data["guarantee_min"]
                 guarantee_max = data["guarantee_max"]
                 guarantee_weight = data["guarantee_weight"]
-                guarantee = Guarantee.objects.create(weight=guarantee_weight, months_max=guarantee_max, months_min=guarantee_min)
+                guarantee = Guarantee.objects.create(weight=guarantee_weight, months_max=guarantee_max,
+                months_min=guarantee_min)
+                tender.guarantee = guarantee
+                tender.save()
             deadline_min = None
             deadline_max = None
             deadline_weight = None
@@ -1299,15 +1292,16 @@ class AddTenderCriteria(View):
                 deadline_min = data["deadline_min"]
                 deadline_max = data["deadline_max"]
                 deadline_weight = data["deadline_weight"]
-                deadline = Deadline.objects.create(weight=deadline_weight, months_min=deadline_min, months_max=deadline_max)
+                deadline = Deadline.objects.create(weight=deadline_weight, months_min=deadline_min,
+                months_max=deadline_max)
+                tender.deadline = deadline
+                tender.save()
             criteria = []
             if tender.is_other_criteria == True:
                 criteria = data["criteria"]
-            tender.guarantee = guarantee
-            tender.deadline = deadline
-            for i in criteria:
-                tender.other_criteria.add(i)
-            tender.save()
+                for i in criteria:
+                    tender.other_criteria.add(i)
+                    tender.save()
             return redirect(f"/add_other_criteria/{project.id}/{tender.id}")
 
 
@@ -1317,12 +1311,24 @@ class AddOtherCriteria(View):
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         project = Project.objects.get(id=project_id)
         tender = Tender.objects.get(id=tender_id)
+        count_guarantee = 0
+        if tender.guarantee:
+            count_guarantee = int(tender.guarantee.weight.weight)
+        count_deadline = 0
+        if tender.deadline:
+            count_deadline = int(tender.deadline.weight.weight)
+
+        count = count_guarantee + count_deadline
+        if len(tender.other_criteria.all()) > 0:
+            for i in tender.other_criteria.all():
+                count += int(i.weight.weight)
         form = AddOtherCriteriaForm()
         ctx = {
             "divisions": divisions,
             "project": project,
             "tender": tender,
-            "form": form
+            "form": form,
+            "count": count
         }
         return render(request, "add_other_criteria.html", ctx)
     
@@ -1350,7 +1356,6 @@ class AddOtherCriteria(View):
 
 class AddTenderDetails(View):
 
-
     def get(self, request, project_id, tender_id):
         user = User.objects.get(pk=int(request.session["user_id"]))
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
@@ -1376,8 +1381,12 @@ class AddTenderDetails(View):
             data = form.cleaned_data
             tenderer = data["tenderer"]
             offer_value = data["offer_value"]
-            offer_guarantee = data["offer_guarantee"]
-            offer_deadline = Month.objects.get(month=data["offer_deadline"])
+            offer_garantee = None
+            if data.get("offer_guarantee") not in ("", None):
+                offer_guarantee = data["offer_guarantee"]
+            offer_deadline = None
+            if data.get("offer_deadline") not in ("", None):
+                offer_deadline = data["offer_deadline"]
             tenderer = Tenderer.objects.create(tenderer=tenderer, offer_value=offer_value, offer_guarantee=offer_guarantee,
             offer_deadline=offer_deadline)
             for i in tender.other_criteria.all():

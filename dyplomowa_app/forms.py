@@ -176,20 +176,29 @@ class JoinDivisionForm(forms.Form):
 
 class AddTenderForm(forms.Form):
     investor_budget = forms.FloatField(label="Budżet inwestora", required=False, widget=forms.NumberInput(attrs={'step': "0.01"}))
-    value_weight = forms.ModelChoiceField(label="Waga ceny [%]", queryset=Weight.objects.all())
+    value_weight = forms.ModelChoiceField(label="Waga ceny [%]", queryset=Weight.objects.filter(weight__gt=59))
     is_guarantee = forms.BooleanField(label="Czy jest kryterium gwarancji?", required=False)
     is_deadline = forms.BooleanField(label="Czy jest kryterium terminu wykonania?", required=False)
     is_other_criteria = forms.BooleanField(label="Czy są jakieś inne kryteria?", required=False)
 
 
 class AddCriteriaForm(forms.Form):
-    guarantee_min = forms.ModelChoiceField(label="Gwarancja min [mies.]", queryset=Month.objects.all(), required=False)
-    guarantee_max = forms.ModelChoiceField(label="Gwarancja max [mies.]", queryset=Month.objects.all(), required=False)
-    guarantee_weight = forms.ModelChoiceField(label="Waga gwarancji [%]", queryset=Weight.objects.all(), required=False)
-    deadline_min = forms.ModelChoiceField(label="Termin min [mies.]", queryset=Month.objects.all(), required=False)
-    deadline_max = forms.ModelChoiceField(label="Termin max [mies.]", queryset=Month.objects.all(), required=False)
-    deadline_weight = forms.ModelChoiceField(label="Waga terminu [%]", queryset=Weight.objects.all(), required=False)
-    criteria = forms.ModelMultipleChoiceField(label="Wybierz inne kryteria oceny", required=False, queryset=Criteria.objects.all().order_by("criteria_name"))
+
+    def __init__(self, *args, **kwargs):
+        tender = kwargs.get("tender", None)
+        kwargs.pop('tender', None)
+        self.tender = tender
+        super(AddCriteriaForm, self).__init__(*args, **kwargs)
+        if tender.is_guarantee == True:
+            self.fields[f"guarantee_min"] = forms.ModelChoiceField(label="Gwarancja min [mies.]", queryset=Month.objects.all(), required=False)
+            self.fields[f"guarantee_max"] = forms.ModelChoiceField(label="Gwarancja max [mies.]", queryset=Month.objects.all(), required=False)
+            self.fields[f"guarantee_weight"] = forms.ModelChoiceField(label="Waga gwarancji [%]", queryset=Weight.objects.all(), required=False)
+        if tender.is_deadline == True:
+            self.fields[f"deadline_min"] = forms.ModelChoiceField(label="Termin min [mies.]", queryset=Month.objects.all(), required=False)
+            self.fields[f"deadline_max"] = forms.ModelChoiceField(label="Termin max [mies.]", queryset=Month.objects.all(), required=False)
+            self.fields[f"deadline_weight"] = forms.ModelChoiceField(label="Waga terminu [%]", queryset=Weight.objects.all(), required=False)
+        if tender.is_other_criteria == True:
+            self.fields[f"criteria"] = forms.ModelMultipleChoiceField(label="Wybierz inne kryteria oceny", queryset=Criteria.objects.all().order_by("criteria_name"), required=False)
 
 
 class AddOtherCriteriaForm(forms.Form):
@@ -200,18 +209,26 @@ class AddOtherCriteriaForm(forms.Form):
 class AddTendererForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
-        # tender = kwargs.pop('tender', None)
         tender = kwargs.get("tender", None)
         kwargs.pop('tender', None)
         self.tender = tender
-        # del kwargs["tender"]
         super(AddTendererForm, self).__init__(*args, **kwargs)
-        # self.tender = tender
-        # tender = Tender.objects.get(pk=int(self.request2.session["tender_id"]))
-        for i in tender.other_criteria.all():
-            self.fields[F"criteria_value_{i.id}"] = forms.CharField(label=f"Wartość kryterium: {i.criteria_name}", max_length=128, widget=forms.TextInput(attrs={"size": 48, "placeholder": ""}))
+        self.fields[f"tenderer"] = forms.ModelChoiceField(label="Oferent", queryset=Company.objects.all().order_by("company_name"))
+        self.fields[f"offer_value"] = forms.FloatField(label="Wartość oferty brutto", required=False,
+        widget=forms.NumberInput(attrs={'step': "0.01"}))
+        if tender.is_guarantee:
+            min_guar = int(tender.guarantee.months_min.month)-1
+            max_guar = int(tender.guarantee.months_max.month)+1
+            self.fields[f"offer_guarantee"] = forms.ModelChoiceField(label="Gwarancja", queryset=Month.objects.filter(month__gt=min_guar,
+            month__lt=max_guar), required=False)
+        if tender.is_deadline:
+            min_dead = int(tender.deadline.months_min.month)-1
+            max_dead = int(tender.deadline.months_max.month)+1
+            self.fields[f"offer_deadline"] = forms.ModelChoiceField(label="Termin wykonania", queryset=Month.objects.filter(month__gt=min_dead,
+            month__lt=max_dead), required=False)
+        if tender.is_other_criteria:
+            for i in tender.other_criteria.all():
+                self.fields[f"criteria_value_{i.id}"] = forms.CharField(label=f"Wartość kryterium: {i.criteria_name}",
+                max_length=128, widget=forms.TextInput(attrs={"size": 48, "placeholder": ""}))
 
-    tenderer = forms.ModelChoiceField(label="Oferent", queryset=Company.objects.all().order_by("company_name"))
-    offer_value = forms.FloatField(label="Wartość oferty brutto", required=False, widget=forms.NumberInput(attrs={'step': "0.01"}))
-    offer_guarantee = forms.ModelChoiceField(label="Gwarancja", queryset=Month.objects.all(), required=False)
-    offer_deadline = forms.IntegerField(label="Termin realizacji (miesiące)", required=False)
+    
