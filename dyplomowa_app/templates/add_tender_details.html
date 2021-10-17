@@ -42,7 +42,7 @@
             </tr>
         </thead>
         <tbody>
-            {% for i in tender.tenderer.all %}
+            {% for i in tender.tenderer.all|dictsort:"offer_value" %}
             <tr>
                 <td scope="col" style="text-align: center;"><a href="{% url 'company-details' i.tenderer.id %}">{{ i.tenderer.company_name }}</a></td>
                 <td scope="col" style="text-align: center;">{{ i.offer_value }}</td>
