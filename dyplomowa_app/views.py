@@ -1388,7 +1388,7 @@ class AddTenderDetails(View):
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         project = Project.objects.get(id=project_id)
         tender = Tender.objects.get(id=tender_id)
-        form = AddTendererForm(request.POST, tender=tender)
+        form = AddTendererForm(request.POST)
         if form.is_valid():
             data = form.cleaned_data
             tenderer = data["tenderer"]
@@ -1408,10 +1408,4 @@ class AddTenderDetails(View):
             tenderer.save()                
             tender.tenderer.add(tenderer)
             tender.save()
-            ctx = {
-                "divisions": divisions,
-                "project": project,
-                "tender": tender,
-                "form": form
-            }
-            return render(request, "add_tender_details.html", ctx)
+            return redirect(f"/add_tender_details/{project.id}/{tender.id}")
