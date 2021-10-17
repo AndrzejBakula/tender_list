@@ -99,7 +99,44 @@ class Poviat(models.Model):
         (95, "Mysłowice"), (96, "myszkowski"), (97, "Piekary Śląskie"), (98, "pszczyński"),
         (99, "raciborski"), (100, "Ruda Śląska"), (101, "rybnicki"), (102, "Rybnik"), (103, "Siemanowice Śląskie"),
         (104, "Sosnowiec"), (105, "Świętochłowice"), (106, "tarnogórski"), (107, "Tychy"), (108, "wodzisławski"),
-        (109, "Zabrze"), (110, "zawierciański"), (111, "Żory"), (112, "żywiecki")
+        (109, "Zabrze"), (110, "zawierciański"), (111, "Żory"), (112, "żywiecki"),
+
+        #MAŁOPOLSKIE
+        (113, "Kraków"), (114, "Nowy Sącz"), (115, "Tarnów"), (116, "bocheński"), (117, "brzeski"),
+        (118, "chrzanowski"), (119, "dąbrowski"), (120, "gorlicki"), (121, "krakowski"), (122, "limanowski"),
+        (123, "miechowski"), (124, "myślenicki"), (125, "nowosądecki"), (126, "nowotarski"), (127, "olkulski"),
+        (128, "oświęcimski"), (129, "proszowicki"), (130, "suski"), (131, "tarnowski"), (132, "tatrzański"),
+        (133, "wadowicki"), (134, "wielicki"),
+
+        #PODKARPACKIE
+        (135, "Rzeszów"), (136, "Krosno"), (137, "Przemyśl"), (138, "Tarnobrzeg"), (139, "bieszczadzki"),
+        (140, "brzozowski"), (141, "dębicki"), (142, "jarosławski"), (143, "jasielski"), (144, "kołbuszowski"),
+        (145, "krośnieński"), (146, "leski"), (147, "leżajski"), (148, "lubaczowski"), (149, "łańcucki"),
+        (150, "mielecki"), (151, "niżański"), (152, "przemyski"), (153, "przeworski"),
+        (154, "ropczycko-sędziszowski"), (155, "rzeszowski"), (156, "sanocki"), (157, "stalowowolski"),
+        (158, "strzyżowski"), (159, "tarnobrzeski"),
+
+        #LUBUSKIE
+        (160, "Gorzów Wielkopolski"), (161, "Zielona Góra"), (162, "gorzowski"), (163, "krośnieński"),
+        (164, "międzyrzecki"), (165, "nowosolski"), (166, "słubicki"), (167, "strzelecko-drezdenecki"),
+        (168, "sulęciński"), (169, "świebodziński"), (170, "wschowski"), (171, "zielonogórski"),
+        (172, "żagański"), (173, "żarski"),
+
+        #ZACHODNIOPOMORSKIE
+        (174, "Szczecin"), (175, "Koszalin"), (176, "Świnoujście"), (177, "białogardzki"), (178, "choszczeński"),
+        (179, "drawski"), (180, "goleniowski"), (181, "gryficki"), (182, "gryfiński"), (183, "kamieński"),
+        (184, "kołobrzeski"), (185, "koszaliński"), (186, "łobeski"), (187, "myśliborski"), (188, "policki"),
+        (189, "pyrzycki"), (190, "sławeński"), (191, "stargardzki"), (192, "szczecinecki"), (193, "wałecki"),
+        (194, "świdwiński"),
+
+        #POMORSKIE
+        (195, "Gdańsk"), (196, "Gdynia"), (197, "Słupsk"), (198, "Sopot"), (199, "bytowski"), (200, "chojnicki"),
+        (201, "człuchowski"), (202, "kartuski"), (203, "kościerski"), (204, "kwidzyński"), (205, "lęborski"),
+        (206, "malborski"), (207, "nowodworski"), (208, "gdański"), (209, "pucki"), (210, "słupski"),
+        (211, "starogardzki"), (212, "sztumski"), (213, "tczewski"), (214, "wejherowski"),
+
+        #KUJAWSKO-POMORSKIE
+
     ]
 
     poviat_name = models.CharField(max_length=64, unique=True, choices=POVIAT)
@@ -271,7 +308,7 @@ class Criteria(models.Model):
 
 class Tenderer(models.Model):
 
-    tenderer = models.OneToOneField(Company, on_delete=models.CASCADE, default=None)
+    tenderer = models.ForeignKey(Company, on_delete=models.CASCADE, default=None)
     offer_value = models.FloatField(null=True, default=None)
     offer_guarantee = models.ForeignKey(Month, on_delete=models.CASCADE, null=True, default=None, related_name="offer_guarantee")
     offer_deadline = models.ForeignKey(Month, on_delete=models.CASCADE, null=True, default=None, related_name="offer_deadline")
