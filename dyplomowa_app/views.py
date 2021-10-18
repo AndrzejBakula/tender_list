@@ -79,7 +79,54 @@ def poviat_init():
     if len(poviats) != len(Poviat.POVIAT):
         for i in Poviat.POVIAT:
             if i[1] not in poviats_names:
-                Poviat.objects.create(poviat_name=i[1])
+                if 0 < i[0] < 30:
+                    v = Voivodeship.objects.get(voivodeship_name="dolnośląskie")
+                    Poviat.objects.create(poviat_name=i[1], voivodeship=v)
+                if 29 < i[0] < 42:
+                    v = Voivodeship.objects.get(voivodeship_name="opolskie")
+                    Poviat.objects.create(poviat_name=i[1], voivodeship=v)
+                if 41 < i[0] < 77:
+                    v = Voivodeship.objects.get(voivodeship_name="wielkopolskie")
+                    Poviat.objects.create(poviat_name=i[1], voivodeship=v)
+                if 76 < i[0] < 113:
+                    v = Voivodeship.objects.get(voivodeship_name="śląskie")
+                    Poviat.objects.create(poviat_name=i[1], voivodeship=v)
+                if 112 < i[0] < 135:
+                    v = Voivodeship.objects.get(voivodeship_name="małopolskie")
+                    Poviat.objects.create(poviat_name=i[1], voivodeship=v)
+                if 134 < i[0] < 160:
+                    v = Voivodeship.objects.get(voivodeship_name="podkarpackie")
+                    Poviat.objects.create(poviat_name=i[1], voivodeship=v)
+                if 159 < i[0] < 174:
+                    v = Voivodeship.objects.get(voivodeship_name="lubuskie")
+                    Poviat.objects.create(poviat_name=i[1], voivodeship=v)
+                if 173 < i[0] < 195:
+                    v = Voivodeship.objects.get(voivodeship_name="zachodniopomorskie")
+                    Poviat.objects.create(poviat_name=i[1], voivodeship=v)
+                if 194 < i[0] < 215:
+                    v = Voivodeship.objects.get(voivodeship_name="pomorskie")
+                    Poviat.objects.create(poviat_name=i[1], voivodeship=v)
+                if 214 < i[0] < 238:
+                    v = Voivodeship.objects.get(voivodeship_name="kujawsko-pomorskie")
+                    Poviat.objects.create(poviat_name=i[1], voivodeship=v)
+                if 237 < i[0] < 262:
+                    v = Voivodeship.objects.get(voivodeship_name="łódzkie")
+                    Poviat.objects.create(poviat_name=i[1], voivodeship=v)
+                if 261 < i[0] < 286:
+                    v = Voivodeship.objects.get(voivodeship_name="lubelskie")
+                    Poviat.objects.create(poviat_name=i[1], voivodeship=v)
+                if 285 < i[0] < 328:
+                    v = Voivodeship.objects.get(voivodeship_name="mazowieckie")
+                    Poviat.objects.create(poviat_name=i[1], voivodeship=v)
+                if 327 < i[0] < 342:
+                    v = Voivodeship.objects.get(voivodeship_name="świętokrzyskie")
+                    Poviat.objects.create(poviat_name=i[1], voivodeship=v)
+                if 341 < i[0] < 363:
+                    v = Voivodeship.objects.get(voivodeship_name="warmińsko-mazurskie")
+                    Poviat.objects.create(poviat_name=i[1], voivodeship=v)
+                if 362 < i[0] < 380:
+                    v = Voivodeship.objects.get(voivodeship_name="podlaskie")
+                    Poviat.objects.create(poviat_name=i[1], voivodeship=v)
 
 poviat_init()
 
@@ -105,46 +152,6 @@ weight_init()
 
 
 #AUXILIARY FUNCTIONS
-def set_poviats(voivodeship):
-
-    POVIATS_CHOICE = [
-    ("dolnośląskie", ["milicki", "oleśnicki", "oławski", "strzeliński", "ząbkowicki", "kłodzki",
-    "trzebnicki", "Wrocław", "wrocławski", "dzierżoniowski", "Wałbrzych", "wałbrzyski", "świdnicki",
-    "średzki", "wołowski", "górowski", "głogowski", "polkowicki", "lubiński", "Legnica", "legnicki",
-    "jaworski", "kamiennogórski", "bolesławiecki", "złotoryjski", "Jelenia Góra", "jeleniogórski",
-    "zgorzelecki", "lubański"]),
-    ("opolskie", ["Opole", "opolski", "brzeski", "głupczycki", "kędzierzyńsko-kozielski", "kluczborski",
-    "krapkowicki", "namysłowski", "nyski", "oleski", "prudnicki", "strzelecki"]),
-    ("wielkopolskie", ["Kalisz", "Konin", "Leszno", "Poznań", "chodzieski", "czarnkowski-trzcianecki",
-    "gnieźnieński", "gostyński", "grodziski", "jarociński", "kaliski", "kępiński", "kolski",
-    "koniński", "kościański", "krotoszyński", "leszczyński", "międzychodzki", "nowotomyski",
-    "obornicki", "ostrowski", "ostrzeszowski", "pilski", "pleszewski", "poznański", "rawicki",
-    "słupecki", "szamotulski", "średzki", "śremski", "turecki", "wągrowiecki", "wolsztyński",
-    "wrzesiński", "złotowski"]),
-    ("lubuskie", []),
-    ("śląskie", []),
-    ("zachodniopomorskie", []),
-    ("pomorskie", []),
-    ("kujawsko-pomorskie", []),
-    ("warmińsko-mazurskie", []),
-    ("mazowieckie", []),
-    ("łódzkie", []),
-    ("świętokrzyskie", []),
-    ("małopolskie", []),
-    ("podkarpackie", []),
-    ("lubelskie", []),
-    ("podlaskie", [])
-    ]
-
-    choiced_poviats = []
-    poviats = []
-    for i in POVIATS_CHOICE:
-        if i[0] == voivodeship.voivodeship_name:
-            choiced_poviats = i[1]
-    for i in range(len(choiced_poviats)):
-        poviats.append((i+1, choiced_poviats[i]))
-    return poviats
-
 def validate_email(email):
     for i in User.objects.all():
         if i.email == email:
@@ -544,7 +551,7 @@ class EditCompany(View):
             ctx = {
                 "company": company
             }
-            return redirect("/companies") #ZMIENIĆ NA COMPANY DETAILS
+            return redirect(f"/company_details/{id}")
 
 
 class DeleteCompany(View):

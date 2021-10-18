@@ -58,6 +58,7 @@ class EditCompanyForm(forms.Form):
     company_voivodeship = forms.ModelChoiceField(label="Województwo", queryset=Voivodeship.objects.all())
     company_poviat = forms.ModelChoiceField(label="Powiat", queryset=Poviat.objects.all().order_by("poviat_name"), required=False)
 
+
 class AddDesignerForm(forms.Form):
     designer_name = forms.CharField(label="", max_length=128, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Nazwa Projektanta"}))
     designer_address = forms.CharField(label="", max_length=256, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Adres Projektanta"}))

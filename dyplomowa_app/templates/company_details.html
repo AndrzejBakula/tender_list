@@ -36,7 +36,7 @@
             </tr>
         </tbody>
       </table>
-      {% if user.username == 'admin' %}
+      {% if user == company.company_added_by %}
       <button type="button" class="btn btn-dark"><a style="color:blanchedalmond" href="{% url 'edit-company' company.id %}">Edytuj firmę</a></button>
       <hr>
       <button type="button" class="btn btn-dark"><a style="color:blanchedalmond" href="{% url 'delete-company' company.id %}">Usuń firmę</a></button>

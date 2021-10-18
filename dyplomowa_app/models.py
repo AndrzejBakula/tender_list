@@ -117,7 +117,7 @@ class Poviat(models.Model):
         (158, "strzyżowski"), (159, "tarnobrzeski"),
 
         #LUBUSKIE
-        (160, "Gorzów Wielkopolski"), (161, "Zielona Góra"), (162, "gorzowski"), (163, "krośnieński"),
+        (160, "Gorzów Wielkopolski"), (161, "Zielona Góra"), (162, "gorzowski"), (163, "krośnieński (lubuskie)"),
         (164, "międzyrzecki"), (165, "nowosolski"), (166, "słubicki"), (167, "strzelecko-drezdenecki"),
         (168, "sulęciński"), (169, "świebodziński"), (170, "wschowski"), (171, "zielonogórski"),
         (172, "żagański"), (173, "żarski"),
@@ -136,10 +136,58 @@ class Poviat(models.Model):
         (211, "starogardzki"), (212, "sztumski"), (213, "tczewski"), (214, "wejherowski"),
 
         #KUJAWSKO-POMORSKIE
+        (215, "Bydgoszcz"), (216, "Toruń"), (217, "Włocławek"), (218, "Grudziądz"), (219, "aleksandrowski"),
+        (220, "brodnicki"), (221, "bydgoski"), (222, "chełmiński"), (223, "golubsko-dobrzyński"),
+        (224, "grudziądzki"), (225, "inowrocławski"), (226, "lipnowski"), (227, "mogileński"), (228, "nakielski"),
+        (229, "radziejowski"), (230, "rypiński"), (231, "sępoleński"), (232, "świecki"), (233, "toruński"),
+        (234, "tucholski"), (235, "wąbrzeski"), (236, "włocławski"), (237, "żniński"),
+
+        #ŁÓDZKIE
+        (238, "Łódź"), (239, "Piotrków Trybunalski"), (240, "Skierniewice"), (241, "bełchatowski"),
+        (242, "brzeziński"), (243, "kutnowski"), (244, "łaski"), (245, "łęczycki"), (246, "łowicki"),
+        (247, "łódzki wschodni"), (248, "opoczyński"), (249, "pabianicki"), (250, "pajęczański"), (251, "piotrkowski"),
+        (252, "poddębicki"), (253, "radomszczański"), (254, "rawski"), (255, "sieradzki"), (256, "skierniewicki"),
+        (257, "tomaszowski"), (258, "wieruszowski"), (259, "wieluński"), (260, "zduńskowolski"), (261, "zgierski"),
+
+        #LUBELSKIE
+        (262, "Lublin"), (263, "Biała Podlaska"), (264, "Chełm"), (265, "Zamość"), (266, "bialski"),
+        (267, "biłgorajski"), (268, "chełmski"), (269, "hrubieszowski"), (270, "janowski"), (271, "krasnostawski"),
+        (272, "kraśnicki"), (273, "lubartowski"), (274, "lubelski"), (275, "łęczyński"), (276, "łukowski"),
+        (277, "opolski"), (278, "parczewski"), (279, "puławski"), (280, "radzyński"), (281, "rycki"),
+        (282, "świdnicki"), (283, "tomaszowski"), (284, "włodawski"), (285, "zamojski"),
+
+        #MAZOWIECKIE
+        (286, "Warszawa"), (287, "Ostrołęka"), (288, "Płock"), (289, "Radom"), (290, "Siedlce"), (291, "białobrzeski"),
+        (292, "ciechanowski"), (293, "garwoliński"), (294, "gostyniński"), (295, "grodziski"), (296, "grójecki"),
+        (297, "kozienicki"), (298, "legionowski"), (299, "lipski"), (300, "łosicki"), (301, "makowski"),
+        (302, "miński"), (303, "mławski"), (304, "nowodworski"), (305, "ostrołęcki"), (306, "ostrowski"),
+        (307, "otwocki"), (308, "piaseczyński"), (309, "płocki"), (310, "płoński"), (311, "pruszkowski"),
+        (312, "przasnyski"), (313, "przysuski"), (314, "pułtuski"), (315, "radomski"), (316, "siedlecki"),
+        (317, "sierpecki"), (318, "sochaczewski"), (319, "sokołowski"), (320, "szydłowiecki"), 
+        (321, "warszawski zachodni"), (322, "węgrowski"), (323, "wołomiński"), (324, "wyszkowski"), (325, "zwoleński"),
+        (326, "żuromiński"), (327, "żyrardowski"),
+
+        #ŚWIĘTOKRZYSKIE
+        (328, "Kielce"), (329, "buski"), (330, "jędrzejowski"), (331, "kazimierski"), (332, "kielecki"),
+        (333, "konecki"), (334, "opatowski"), (335, "ostrowiecki"), (336, "pińczowski"), (337, "sandomierski"),
+        (338, "skarżyski"), (339, "starachowicki"), (340, "staszowski"), (341, "włoszczowski"),
+
+        #WARMIŃSKO-MAZURSKIE
+        (342, "Olsztyn"), (343, "Elbląg"), (344, "bartoszycki"), (345, "braniewski"), (346, "działdowski"),
+        (347, "elbląski"), (348, "ełcki"), (349, "giżycki"), (350, "gołdapski"), (351, "iławski"), (352, "kętrzyński"),
+        (353, "lidzbarski"), (354, "mrągowski"), (355, "nidzicki"), (356, "nowomiejski"), (357, "olecki"),
+        (358, "olsztyński"), (359, "ostródzki"), (360, "piski"), (361, "szczycieński"), (362, "węgorzewski"),
+
+        #PODLASKIE
+        (363, "Białystok"), (364, "Łomża"), (365, "Suwałki"), (366, "augustowski"), (367, "białostocki"),
+        (368, "bielski"), (369, "grajewski"), (370, "hajnowski"), (371, "kolneński"), (372, "łomżyński"),
+        (373, "moniecki"), (374, "sejneński"), (375, "siemiatycki"), (376, "sokólski"), (377, "suwalski"),
+        (378, "wysokomazowiecki"), (379, "zambrowski")
 
     ]
 
     poviat_name = models.CharField(max_length=64, unique=True, choices=POVIAT)
+    voivodeship = models.ForeignKey(Voivodeship, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.poviat_name
