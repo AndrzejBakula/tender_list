@@ -25,7 +25,7 @@ from dyplomowa_app.views import AddDivisionView, DivisionDetails, AddAdminView, 
 from dyplomowa_app.views import AddPersonView, DateChoiceView, EditDivisionView, DeleteDivisionView
 from dyplomowa_app.views import DeleteDivisionConfirm, RemoveMemberView, UserDetailsView, AddTenderView
 from dyplomowa_app.views import AddTenderCriteria, AddOtherCriteria, AddTenderDetails, EditCompanyPoviat
-from dyplomowa_app.views import AddInvestorPoviat
+from dyplomowa_app.views import AddInvestorPoviat, EditInvestorPoviat
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -38,6 +38,7 @@ urlpatterns = [
     path('investors/', InvestorsView.as_view(), name='investors'),
     path('investor_details/<int:id>', InvestorDetails.as_view(), name='investor-details'),
     path('edit_investor/<int:id>', EditInvestor.as_view(), name='edit-investor'),
+    path('edit_investor_poviat/<int:id>', EditInvestorPoviat.as_view(), name='edit-investor-poviat'),
     path('add_company/', AddCompany.as_view(), name='add-company'),
     path('add_company_poviat/<int:id>', AddCompanyPoviat.as_view(), name='add-company-poviat'),
     path('companies/', CompaniesView.as_view(), name='companies'),

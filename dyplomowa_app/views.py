@@ -10,7 +10,7 @@ from .forms import EditDesignerForm, LoginForm, AddCompanyForm, EditCompanyForm,
 from .forms import AddDivisionForm, JoinDivisionForm, EditDivisionForm, InvestorNoteForm, DesignerNoteForm
 from .forms import SearchProjectForm, SearchArchiveForm, SearchInvestorForm, SearchCompanyForm
 from .forms import SearchDesignerForm, AddTenderForm, AddCriteriaForm, AddOtherCriteriaForm, AddTendererForm
-from .forms import AddCompanyPoviatForm, EditCompanyPoviatForm, AddInvestorPoviatForm
+from .forms import AddCompanyPoviatForm, EditCompanyPoviatForm, AddInvestorPoviatForm, EditInvestorPoviatForm
 
 
 #INITIAL FUNCTIONS
@@ -421,7 +421,6 @@ class EditInvestor(View):
             "investor_name": investor.investor_name,
             "investor_address": investor.investor_address,
             "investor_voivodeship": investor.investor_voivodeship,
-            "investor_poviat": investor.investor_poviat,
             "investor_administration_level": investor.investor_administration_level,
         }
         form = EditInvestorForm(initial=initial_data)
@@ -440,14 +439,39 @@ class EditInvestor(View):
             investor.investor_name = data["investor_name"]
             investor.investor_address = data["investor_address"]
             investor.investor_voivodeship = data["investor_voivodeship"]
-            investor.investor_poviat = data["investor_poviat"]
             investor.investor_administration_level = data["investor_administration_level"]
             investor.save()
             ctx = {
                 "investor": investor,
                 "form": form
             }
-            return redirect("/investors") #ZMIENIĆ NA INVESTOR DETAILS
+            return redirect(f"/edit_investor_poviat/{id}")
+
+
+class EditInvestorPoviat(View):
+    def get(self, request, id):
+        user = User.objects.get(pk=int(request.session["user_id"]))
+        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
+        investor = Investor.objects.get(id=id)
+        initial_data = {
+            "investor_poviat": investor.investor_poviat
+        }
+        form = EditInvestorPoviatForm(initial=initial_data, investor=investor)
+        ctx = {
+            "investor": investor,
+            "form": form,
+            "divisions": divisions
+        }
+        return render(request, "edit_investor_poviat.html", ctx)
+
+    def post(self, request, id):
+        investor = Investor.objects.get(id=id)
+        form = EditInvestorPoviatForm(request.POST, investor=investor)
+        if form.is_valid():
+            data = form.cleaned_data
+            investor.investor_poviat = data["investor_poviat"]
+            investor.save()
+            return redirect(f"/investor_details/{id}")
 
 
 class DeleteInvestor(View):
