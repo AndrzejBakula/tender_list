@@ -10,6 +10,7 @@ from .forms import EditDesignerForm, LoginForm, AddCompanyForm, EditCompanyForm,
 from .forms import AddDivisionForm, JoinDivisionForm, EditDivisionForm, InvestorNoteForm, DesignerNoteForm
 from .forms import SearchProjectForm, SearchArchiveForm, SearchInvestorForm, SearchCompanyForm
 from .forms import SearchDesignerForm, AddTenderForm, AddCriteriaForm, AddOtherCriteriaForm, AddTendererForm
+from .forms import AddCompanyPoviatForm, EditCompanyPoviatForm
 
 
 #INITIAL FUNCTIONS
@@ -466,12 +467,33 @@ class AddCompany(View):
             company_name = data["company_name"]
             company_address = data["company_address"]
             company_voivodeship = data["company_voivodeship"]
+            company = Company.objects.create(company_name=company_name, company_address=company_address,
+            company_voivodeship=company_voivodeship, company_added_by=user)
+            return redirect(f"/add_company_poviat/{company.id}")
+
+
+class AddCompanyPoviat(View):
+    def get(self, request, id):
+        user = User.objects.get(pk=int(request.session["user_id"]))
+        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
+        company = Company.objects.get(id=id)
+        form = AddCompanyPoviatForm(company=company)
+        ctx = {
+            "form": form,
+            "divisions": divisions,
+            "company": company
+        }
+        return render(request, "add_company_poviat.html", ctx)
+    
+    def post(self, request, id):
+        user = User.objects.get(pk=int(request.session["user_id"]))
+        company = Company.objects.get(id=id)
+        form = AddCompanyPoviatForm(request.POST, company=company)
+        if form.is_valid():
+            data = form.cleaned_data
             company_poviat = data["company_poviat"]
-            Company.objects.create(company_name=company_name, company_address=company_address,
-            company_voivodeship=company_voivodeship, company_poviat=company_poviat, company_added_by=user)
-            ctx = {
-                "form": form
-            }
+            company.company_poviat = company_poviat
+            company.save()
             return redirect("/companies")
 
 
@@ -530,7 +552,7 @@ class EditCompany(View):
             "company_voivodeship": company.company_voivodeship,
             "company_poviat": company.company_poviat
         }
-        form = EditCompanyForm(initial=initial_data)
+        form = EditCompanyForm(initial=initial_data, company=company)
         ctx = {
             "company": company,
             "form": form,
@@ -539,13 +561,41 @@ class EditCompany(View):
         return render(request, "edit_company.html", ctx)
 
     def post(self, request, id):
-        form = EditCompanyForm(request.POST)
+        company = Company.objects.get(id=id)
+        form = EditCompanyForm(request.POST, company=company)
         if form.is_valid():
             data = form.cleaned_data
-            company = Company.objects.get(id=id)
             company.company_name = data["company_name"]
             company.company_address = data["company_address"]
             company.company_voivodeship = data["company_voivodeship"]
+            company.save()
+            ctx = {
+                "company": company
+            }
+            return redirect(f"/edit_company_poviat/{id}")
+
+
+class EditCompanyPoviat(View):
+    def get(self, request, id):
+        user = User.objects.get(pk=int(request.session["user_id"]))
+        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
+        company = Company.objects.get(id=id)
+        initial_data = {
+            "company_poviat": company.company_poviat
+        }
+        form = EditCompanyPoviatForm(initial=initial_data, company=company)
+        ctx = {
+            "company": company,
+            "form": form,
+            "divisions": divisions
+        }
+        return render(request, "edit_company_poviat.html", ctx)
+
+    def post(self, request, id):
+        company = Company.objects.get(id=id)
+        form = EditCompanyPoviatForm(request.POST, company=company)
+        if form.is_valid():
+            data = form.cleaned_data
             company.company_poviat = data["company_poviat"]
             company.save()
             ctx = {

@@ -19,12 +19,12 @@ from dyplomowa_app.views import AddInvestor, AddDesigner, AddProject, Projects, 
 from dyplomowa_app.views import DeleteProject, EditInvestor, InvestorDetails, DesignerDetails, EditDesigner
 from dyplomowa_app.views import LoginView, LogoutView, DeleteProjectConfirm, DeleteInvestor, DeleteInvestorConfirm
 from dyplomowa_app.views import InvestorsView, DesignersView, DeleteDesigner, DeleteDesignerConfirm
-from dyplomowa_app.views import AddCompany, CompaniesView, CompanyDetails, EditCompany, DeleteCompany
+from dyplomowa_app.views import AddCompany, AddCompanyPoviat, CompaniesView, CompanyDetails, EditCompany, DeleteCompany
 from dyplomowa_app.views import ArchivesView, DivisionChoiceView, DivisionChoiceConfirm, RegisterView
 from dyplomowa_app.views import AddDivisionView, DivisionDetails, AddAdminView, CancelAdminView, JoinDivisionView
 from dyplomowa_app.views import AddPersonView, DateChoiceView, EditDivisionView, DeleteDivisionView
 from dyplomowa_app.views import DeleteDivisionConfirm, RemoveMemberView, UserDetailsView, AddTenderView
-from dyplomowa_app.views import AddTenderCriteria, AddOtherCriteria, AddTenderDetails
+from dyplomowa_app.views import AddTenderCriteria, AddOtherCriteria, AddTenderDetails, EditCompanyPoviat
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -35,11 +35,13 @@ urlpatterns = [
     path('add_investor/', AddInvestor.as_view(), name='add-investor'),
     path('investors/', InvestorsView.as_view(), name='investors'),
     path('investor_details/<int:id>', InvestorDetails.as_view(), name='investor-details'),
-    path('edit_investor/<int:id>', EditInvestor.as_view(), name="edit-investor"),
+    path('edit_investor/<int:id>', EditInvestor.as_view(), name='edit-investor'),
     path('add_company/', AddCompany.as_view(), name='add-company'),
+    path('add_company_poviat/<int:id>', AddCompanyPoviat.as_view(), name='add-company-poviat'),
     path('companies/', CompaniesView.as_view(), name='companies'),
     path('company_details/<int:id>', CompanyDetails.as_view(), name='company-details'),
     path('edit_company/<int:id>', EditCompany.as_view(), name='edit-company'),
+    path('edit_company_poviat/<int:id>', EditCompanyPoviat.as_view(), name='edit-company-poviat'),
     path('delete_company/<int:id>', DeleteCompany.as_view(), name='delete-company'),
     path('add_designer/', AddDesigner.as_view(), name='add-designer'),
     path('designers/', DesignersView.as_view(), name='designers'),

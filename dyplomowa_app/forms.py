@@ -36,7 +36,8 @@ class EditInvestorForm(forms.Form):
     investor_address = forms.CharField(
         label="", max_length=256, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Adres Inwestora"}))
     investor_voivodeship = forms.ModelChoiceField(label="Województwo", queryset=Voivodeship.objects.all())
-    investor_poviat = forms.ModelChoiceField(label="Powiat", queryset=Poviat.objects.all().order_by("poviat_name"), required=False)
+    investor_poviat = forms.ModelChoiceField(label="Powiat", queryset=Poviat.objects.all().order_by("poviat_name"),
+        required=False)
     investor_administration_level = forms.ModelChoiceField(
         label="Poziom administracyjny", queryset=AdministrationLevel.objects.all())
 
@@ -46,17 +47,48 @@ class InvestorNoteForm(forms.Form):
 
 
 class AddCompanyForm(forms.Form):
-    company_name = forms.CharField(label="", max_length=128, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Nazwa Firmy"}))
-    company_address = forms.CharField(label="", max_length=256, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Adres Firmy"}))
+    company_name = forms.CharField(label="", max_length=128,
+        widget=forms.TextInput(attrs={"size": 38, "placeholder": "Nazwa Firmy"}))
+    company_address = forms.CharField(label="", max_length=256,
+        widget=forms.TextInput(attrs={"size": 38, "placeholder": "Adres Firmy"}))
     company_voivodeship = forms.ModelChoiceField(label="Województwo", queryset=Voivodeship.objects.all())
-    company_poviat = forms.ModelChoiceField(label="Powiat", queryset=Poviat.objects.all().order_by("poviat_name"), required=False)
+
+
+class AddCompanyPoviatForm(forms.Form):
+
+    def __init__(self, *args, **kwargs):
+        company = kwargs.get("company", None)
+        kwargs.pop('company', None)
+        self.company = company
+        super(AddCompanyPoviatForm, self).__init__(*args, **kwargs)
+        self.fields["company_poviat"] = forms.ModelChoiceField(label="Powiat", queryset=Poviat.objects.filter(voivodeship=company.company_voivodeship).order_by("poviat_name"),
+        required=False)
 
 
 class EditCompanyForm(forms.Form):
-    company_name = forms.CharField(label="", max_length=128, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Nazwa Firmy"}))
-    company_address = forms.CharField(label="", max_length=256, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Adres Firmy"}))
-    company_voivodeship = forms.ModelChoiceField(label="Województwo", queryset=Voivodeship.objects.all())
-    company_poviat = forms.ModelChoiceField(label="Powiat", queryset=Poviat.objects.all().order_by("poviat_name"), required=False)
+
+    def __init__(self, *args, **kwargs):
+        company = kwargs.get("company", None)
+        kwargs.pop('company', None)
+        self.company = company
+        super(EditCompanyForm, self).__init__(*args, **kwargs)
+        self.fields["company_name"] = forms.CharField(label="", max_length=128,
+            widget=forms.TextInput(attrs={"size": 38, "placeholder": "Nazwa Firmy"}))
+        self.fields["company_address"] = forms.CharField(label="",
+            max_length=256, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Adres Firmy"}))
+        self.fields["company_voivodeship"] = forms.ModelChoiceField(label="Województwo", queryset=Voivodeship.objects.all())
+
+
+class EditCompanyPoviatForm(forms.Form):
+
+    def __init__(self, *args, **kwargs):
+        company = kwargs.get("company", None)
+        kwargs.pop('company', None)
+        self.company = company
+        super(EditCompanyPoviatForm, self).__init__(*args, **kwargs)
+        self.fields["company_poviat"] = forms.ModelChoiceField(label="Powiat",
+            queryset=Poviat.objects.filter(voivodeship=company.company_voivodeship).order_by("poviat_name"),
+            required=False)
 
 
 class AddDesignerForm(forms.Form):
