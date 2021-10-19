@@ -11,6 +11,7 @@ from .forms import AddDivisionForm, JoinDivisionForm, EditDivisionForm, Investor
 from .forms import SearchProjectForm, SearchArchiveForm, SearchInvestorForm, SearchCompanyForm
 from .forms import SearchDesignerForm, AddTenderForm, AddCriteriaForm, AddOtherCriteriaForm, AddTendererForm
 from .forms import AddCompanyPoviatForm, EditCompanyPoviatForm, AddInvestorPoviatForm, EditInvestorPoviatForm
+from .forms import AddDesignerPoviatForm
 
 
 #INITIAL FUNCTIONS
@@ -687,10 +688,9 @@ class AddDesigner(View):
             designer_name = data["designer_name"]
             designer_address = data["designer_address"]
             designer_voivodeship = data["designer_voivodeship"]
-            designer_poviat = data["designer_poviat"]
             designer_note = data["designer_note"]
             designer = Designer.objects.create(designer_name=designer_name, designer_address=designer_address,
-            designer_voivodeship=designer_voivodeship, designer_poviat=designer_poviat, designer_added_by=user)
+            designer_voivodeship=designer_voivodeship, designer_added_by=user)
             if designer_note:
                 new_designer_note = DesignerNote.objects.create(designer_note_designer=designer,
                 designer_note_note=designer_note, designer_note_user=user)
@@ -701,6 +701,30 @@ class AddDesigner(View):
             ctx = {
                 "form": form
             }
+            return redirect(f"/add_designer_poviat/{designer.id}")
+
+
+class AddDesignerPoviat(View):
+    def get(self, request, id):
+        user = User.objects.get(pk=int(request.session["user_id"]))
+        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
+        designer = Designer.objects.get(id=id)
+        form = AddDesignerPoviatForm(designer=designer)
+        ctx = {
+            "form": form,
+            "divisions": divisions,
+            "designer": designer
+        }
+        return render(request, "add_designer_poviat.html", ctx)
+    
+    def post(self, request, id):
+        designer = Designer.objects.get(id=id)
+        form = AddDesignerPoviatForm(request.POST, designer=designer)
+        if form.is_valid():
+            data = form.cleaned_data
+            designer_poviat = data["designer_poviat"]
+            designer.designer_poviat = designer_poviat
+            designer.save()
             return redirect("/designers")
 
 

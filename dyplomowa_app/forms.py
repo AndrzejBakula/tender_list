@@ -113,11 +113,24 @@ class EditCompanyPoviatForm(forms.Form):
 
 
 class AddDesignerForm(forms.Form):
-    designer_name = forms.CharField(label="", max_length=128, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Nazwa Projektanta"}))
-    designer_address = forms.CharField(label="", max_length=256, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Adres Projektanta"}))
+    designer_name = forms.CharField(label="", max_length=128,
+        widget=forms.TextInput(attrs={"size": 38, "placeholder": "Nazwa Projektanta"}))
+    designer_address = forms.CharField(label="", max_length=256,
+        widget=forms.TextInput(attrs={"size": 38, "placeholder": "Adres Projektanta"}))
     designer_voivodeship = forms.ModelChoiceField(label="Województwo", queryset=Voivodeship.objects.all())
-    designer_poviat = forms.ModelChoiceField(label="Powiat", queryset=Poviat.objects.all().order_by("poviat_name"), required=False)
     designer_note = forms.ModelChoiceField(label="Ocena projektanta", queryset=Note.objects.all(), required=False)
+
+
+class AddDesignerPoviatForm(forms.Form):
+
+    def __init__(self, *args, **kwargs):
+        designer = kwargs.get("designer", None)
+        kwargs.pop('designer', None)
+        self.designer = designer
+        super(AddDesignerPoviatForm, self).__init__(*args, **kwargs)
+        self.fields["designer_poviat"] = forms.ModelChoiceField(label="Powiat",
+            queryset=Poviat.objects.filter(voivodeship=designer.designer_voivodeship).order_by("poviat_name"),
+            required=False)
 
 
 class DesignerNoteForm(forms.Form):
