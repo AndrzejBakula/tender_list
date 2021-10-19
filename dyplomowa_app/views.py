@@ -11,7 +11,7 @@ from .forms import AddDivisionForm, JoinDivisionForm, EditDivisionForm, Investor
 from .forms import SearchProjectForm, SearchArchiveForm, SearchInvestorForm, SearchCompanyForm
 from .forms import SearchDesignerForm, AddTenderForm, AddCriteriaForm, AddOtherCriteriaForm, AddTendererForm
 from .forms import AddCompanyPoviatForm, EditCompanyPoviatForm, AddInvestorPoviatForm, EditInvestorPoviatForm
-from .forms import AddDesignerPoviatForm
+from .forms import AddDesignerPoviatForm, EditDesignerPoviatForm
 
 
 #INITIAL FUNCTIONS
@@ -322,7 +322,10 @@ class AddInvestor(View):
                 note_to_add = sum(notes)/len(notes)
                 investor.investor_note = note_to_add
             investor.save()
-            return redirect(f"/add_investor_poviat/{investor.id}")
+            if investor.investor_voivodeship != None and investor.investor_voivodeship.voivodeship_name != "nieokreślono":
+                return redirect(f"/add_investor_poviat/{investor.id}")
+            else:
+                return redirect("/investors")
 
 
 class AddInvestorPoviat(View):
@@ -515,7 +518,10 @@ class AddCompany(View):
             company_voivodeship = data["company_voivodeship"]
             company = Company.objects.create(company_name=company_name, company_address=company_address,
             company_voivodeship=company_voivodeship, company_added_by=user)
-            return redirect(f"/add_company_poviat/{company.id}")
+            if company.company_voivodeship != None and company.company_voivodeship.voivodeship_name != "nieokreślono":
+                return redirect(f"/add_company_poviat/{company.id}")
+            else:
+                return redirect("/companies")
 
 
 class AddCompanyPoviat(View):
@@ -698,10 +704,10 @@ class AddDesigner(View):
                 note_to_add = sum(notes)/len(notes)
                 designer.designer_note = note_to_add
             designer.save()
-            ctx = {
-                "form": form
-            }
-            return redirect(f"/add_designer_poviat/{designer.id}")
+            if designer.designer_voivodeship != None and designer.designer_voivodeship.voivodeship_name != "nieokreślono":
+                return redirect(f"/add_designer_poviat/{designer.id}")
+            else:
+                return redirect("/designers")
 
 
 class AddDesignerPoviat(View):
@@ -800,8 +806,6 @@ class EditDesigner(View):
             "designer_name": designer.designer_name,
             "designer_address": designer.designer_address,
             "designer_voivodeship": designer.designer_voivodeship,
-            "designer_poviat": designer.designer_poviat,
-            "designer_note": designer.designer_note
         }
         form = EditDesignerForm(initial=initial_data)
         ctx = {
@@ -812,20 +816,44 @@ class EditDesigner(View):
         return render(request, "edit_designer.html", ctx)
 
     def post(self, request, id):
+        designer = Designer.objects.get(id=id)
         form = EditDesignerForm(request.POST)
         if form.is_valid():
             data = form.cleaned_data
-            designer = Designer.objects.get(id=id)
             designer.designer_name = data["designer_name"]
             designer.designer_address = data["designer_address"]
             designer.designer_voivodeship = data["designer_voivodeship"]
-            designer.designer_poviat = data["designer_poviat"]
-            designer.designer_note = data["designer_note"]
             designer.save()
             ctx = {
                 "designer": designer,
             }
-            return redirect("/designers") #ZMIENIĆ NA DESIGNER DETAILS
+            return redirect(f"/edit_designer_poviat/{id}")
+
+
+class EditDesignerPoviat(View):
+    def get(self, request, id):
+        user = User.objects.get(pk=int(request.session["user_id"]))
+        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
+        designer = Designer.objects.get(id=id)
+        initial_data = {
+            "designer_poviat": designer.designer_poviat
+        }
+        form = EditDesignerPoviatForm(initial=initial_data, designer=designer)
+        ctx = {
+            "designer": designer,
+            "form": form,
+            "divisions": divisions
+        }
+        return render(request, "edit_designer_poviat.html", ctx)
+
+    def post(self, request, id):
+        designer = Designer.objects.get(id=id)
+        form = EditDesignerPoviatForm(request.POST, designer=designer)
+        if form.is_valid():
+            data = form.cleaned_data
+            designer.designer_poviat = data["designer_poviat"]
+            designer.save()
+            return redirect(f"/designer_details/{id}")
 
 
 class DeleteDesigner(View):
