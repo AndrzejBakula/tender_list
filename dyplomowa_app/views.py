@@ -10,7 +10,7 @@ from .forms import EditDesignerForm, LoginForm, AddCompanyForm, EditCompanyForm,
 from .forms import AddDivisionForm, JoinDivisionForm, EditDivisionForm, InvestorNoteForm, DesignerNoteForm
 from .forms import SearchProjectForm, SearchArchiveForm, SearchInvestorForm, SearchCompanyForm
 from .forms import SearchDesignerForm, AddTenderForm, AddCriteriaForm, AddOtherCriteriaForm, AddTendererForm
-from .forms import AddCompanyPoviatForm, EditCompanyPoviatForm
+from .forms import AddCompanyPoviatForm, EditCompanyPoviatForm, AddInvestorPoviatForm
 
 
 #INITIAL FUNCTIONS
@@ -309,12 +309,11 @@ class AddInvestor(View):
             investor_name = data["investor_name"]
             investor_address = data["investor_address"]
             investor_voivodeship = data["investor_voivodeship"]
-            investor_poviat = data["investor_poviat"]
             investor_administration_level = data["investor_administration_level"]
             investor_note = data["investor_note"]
             investor = Investor.objects.create(investor_name=investor_name, investor_address=investor_address,
-            investor_voivodeship=investor_voivodeship, investor_poviat=investor_poviat,
-            investor_administration_level=investor_administration_level, investor_added_by=user)
+            investor_voivodeship=investor_voivodeship, investor_administration_level=investor_administration_level,
+            investor_added_by=user)
             if investor_note:
                 new_investor_note = InvestorNote.objects.create(investor_note_investor=investor,
                 investor_note_note=investor_note, investor_note_user=user)
@@ -322,9 +321,31 @@ class AddInvestor(View):
                 note_to_add = sum(notes)/len(notes)
                 investor.investor_note = note_to_add
             investor.save()
-            ctx = {
-                "form": form
-            }
+            return redirect(f"/add_investor_poviat/{investor.id}")
+
+
+class AddInvestorPoviat(View):
+    def get(self, request, id):
+        user = User.objects.get(pk=int(request.session["user_id"]))
+        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
+        investor = Investor.objects.get(id=id)
+        form = AddInvestorPoviatForm(investor=investor)
+        ctx = {
+            "form": form,
+            "divisions": divisions,
+            "investor": investor
+        }
+        return render(request, "add_investor_poviat.html", ctx)
+    
+    def post(self, request, id):
+        user = User.objects.get(pk=int(request.session["user_id"]))
+        investor = Investor.objects.get(id=id)
+        form = AddInvestorPoviatForm(request.POST, investor=investor)
+        if form.is_valid():
+            data = form.cleaned_data
+            investor_poviat = data["investor_poviat"]
+            investor.investor_poviat = investor_poviat
+            investor.save()
             return redirect("/investors")
 
 

@@ -24,10 +24,21 @@ class AddInvestorForm(forms.Form):
     investor_address = forms.CharField(
         label="", max_length=256, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Adres Inwestora"}))
     investor_voivodeship = forms.ModelChoiceField(label="Województwo", queryset=Voivodeship.objects.all())
-    investor_poviat = forms.ModelChoiceField(label="Powiat", queryset=Poviat.objects.all().order_by("poviat_name"), required=False)
     investor_administration_level = forms.ModelChoiceField(
         label="Poziom administracyjny", queryset=AdministrationLevel.objects.all())
     investor_note = forms.ModelChoiceField(label="Ocena inwestora", queryset=Note.objects.all(), required=False)
+
+
+class AddInvestorPoviatForm(forms.Form):
+
+    def __init__(self, *args, **kwargs):
+        investor = kwargs.get("investor", None)
+        kwargs.pop("investor", None)
+        self.investor = investor
+        super(AddInvestorPoviatForm, self).__init__(*args, **kwargs)
+        self.fields["investor_poviat"] = forms.ModelChoiceField(label="Powiat",
+            queryset=Poviat.objects.filter(voivodeship=investor.investor_voivodeship).order_by("poviat_name"),
+            required=False)
 
 
 class EditInvestorForm(forms.Form):
