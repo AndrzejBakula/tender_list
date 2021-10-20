@@ -353,3 +353,9 @@ class AddTendererForm(forms.Form):
                 max_length=128, widget=forms.TextInput(attrs={"size": 48, "placeholder": ""}))
 
     
+class EditTenderForm(forms.Form):
+    investor_budget = forms.FloatField(label="Budżet inwestora", required=False, widget=forms.NumberInput(attrs={'step': "0.01"}))
+    value_weight = forms.ModelChoiceField(label="Waga ceny [%]", queryset=Weight.objects.filter(weight__gt=59))
+    is_guarantee = forms.BooleanField(label="Czy jest kryterium gwarancji?", required=False)
+    is_deadline = forms.BooleanField(label="Czy jest kryterium terminu wykonania?", required=False)
+    is_other_criteria = forms.BooleanField(label="Czy są jakieś inne kryteria?", required=False)

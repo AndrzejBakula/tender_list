@@ -67,6 +67,14 @@
             {% endfor %}
         </tbody>
     </table>
+    {% if user.is_staff and request.session.division_id in divisions %}
+    <hr>
+    <button type="button" class="btn btn-dark"><a style="color:blanchedalmond"
+    href="{% url 'edit-tender' project.id tender.id %}">Edytuj Przetarg</a></button>
+    <hr>
+    <button type="button" class="btn btn-dark"><a style="color:blanchedalmond"
+    href="{% url 'delete-tender' project.id tender.id %}">Usuń Przetarg</a></button>
+    {% endif %}
     
 </div>
 

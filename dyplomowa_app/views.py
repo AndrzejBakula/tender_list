@@ -12,6 +12,7 @@ from .forms import SearchProjectForm, SearchArchiveForm, SearchInvestorForm, Sea
 from .forms import SearchDesignerForm, AddTenderForm, AddCriteriaForm, AddOtherCriteriaForm, AddTendererForm
 from .forms import AddCompanyPoviatForm, EditCompanyPoviatForm, AddInvestorPoviatForm, EditInvestorPoviatForm
 from .forms import AddDesignerPoviatForm, EditDesignerPoviatForm, AddProjectPoviatForm, EditProjectPoviatForm
+from .forms import EditTenderForm
 
 
 #INITIAL FUNCTIONS
@@ -1192,6 +1193,8 @@ class DeleteProject(View):
 class DeleteProjectConfirm(View):
     def get(self, request, id):
         project = Project.objects.get(id=id)
+        if project.tender:
+            project.tender.delete()
         project.delete()
         return redirect("/projects")
 
@@ -1660,3 +1663,65 @@ class TenderDetailsView(View):
             "tender": tender
         }
         return render(request, "tender_details.html", ctx)
+
+
+class EditTenderView(View):
+    def get(self, request, project_id, tender_id):
+        user = User.objects.get(pk=int(request.session["user_id"]))
+        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
+        project = Project.objects.get(id=project_id)
+        tender = Tender.objects.get(id=tender_id)
+        initial_data = {
+            "investor_budget": tender.investor_budget,
+            "value_weight": tender.value_weight,
+            "is_guarantee": tender.is_guarantee,
+            "is_deadline": tender.is_deadline,
+            "is_other_criteria": tender.is_other_criteria
+        }
+        form = EditTenderForm(initial=initial_data)
+        ctx = {
+            "project": project,
+            "tender": tender,
+            "divisions": divisions,
+            "form": form
+        }
+        return render(request, "edit_tender.html", ctx)
+    
+    def post(self, request, id):
+        user = User.objects.get(pk=int(request.session["user_id"]))
+        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
+        project = Project.objects.get(id=id)
+        form = AddTenderForm(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            budget = data["investor_budget"]
+            value_weight = data["value_weight"]
+            is_guarantee = data["is_guarantee"]
+            is_deadline = data["is_deadline"]
+            is_other_criteria = data["is_other_criteria"]
+            tender = Tender.objects.create(investor_budget=budget, value_weight=value_weight, is_guarantee=is_guarantee,
+                is_deadline=is_deadline, is_other_criteria=is_other_criteria)
+            project.tender = tender
+            project.save()
+            return redirect(f"/add_tender_criteria/{project.id}/{tender.id}")
+
+
+class DeleteTenderView(View):
+    def get(self, request, project_id, tender_id):
+        user = User.objects.get(pk=int(request.session["user_id"]))
+        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
+        project = Project.objects.get(id=project_id)
+        tender = Tender.objects.get(id=tender_id)
+        ctx = {
+            "tender": tender,
+            "project": project,
+            "divisions": divisions
+        }
+        return render(request, "delete_tender.html", ctx)
+
+
+class DeleteTenderConfirm(View):
+    def get(self, request, project_id, tender_id):
+        tender = Tender.objects.get(id=tender_id)
+        tender.delete()
+        return redirect("/projects")
