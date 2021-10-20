@@ -165,7 +165,6 @@ class AddProjectForm(forms.Form):
     announcement_number = forms.CharField(label="", widget=forms.TextInput(attrs={"size": 38, "placeholder": "Numer ogłoszenia"}), required=False)
     announcement_date = forms.CharField(label="Data ogłoszenia", widget=forms.TextInput(attrs={"type": "date"}), required=False)
     voivodeship = forms.ModelChoiceField(label="Województwo", queryset=Voivodeship.objects.all())
-    poviat = forms.ModelChoiceField(label="Powiat", queryset=Poviat.objects.all().order_by("poviat_name"), required=False)
     tender_date = forms.CharField(label="Data złożenia", widget=forms.TextInput(attrs={"type": "date", 'min': date.today()}), required=False)
     project_name = forms.CharField(label="", widget=forms.TextInput(attrs={"size": 64, "placeholder": "Nazwa Projektu"}))
     estimated_value = forms.FloatField(label="Szacunkowa wartość", required=False)
@@ -188,6 +187,16 @@ class AddProjectForm(forms.Form):
     designer = forms.ModelChoiceField(label="Projektant", required=False, queryset=Designer.objects.all().order_by("designer_name"))
     status = forms.ModelChoiceField(label="Status projektu", queryset=Status.objects.all())
 
+
+class AddProjectPoviatForm(forms.Form):
+
+    def __init__(self, *args, **kwargs):
+        project = kwargs.get("project", None)
+        kwargs.pop('project', None)
+        self.project = project
+        super(AddProjectPoviatForm, self).__init__(*args, **kwargs)
+        self.fields["poviat"] = forms.ModelChoiceField(label="Powiat",
+            queryset=Poviat.objects.filter(voivodeship=project.voivodeship).order_by("poviat_name"), required=False)
 
 
 class EditProjectForm(forms.Form):

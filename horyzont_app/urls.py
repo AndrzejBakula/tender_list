@@ -18,7 +18,7 @@ from django.urls import path
 from dyplomowa_app.views import AddInvestor, AddDesigner, AddProject, Projects, ProjectDetails, EditProject
 from dyplomowa_app.views import DeleteProject, EditInvestor, InvestorDetails, DesignerDetails, EditDesigner
 from dyplomowa_app.views import LoginView, LogoutView, DeleteProjectConfirm, DeleteInvestor, DeleteInvestorConfirm
-from dyplomowa_app.views import InvestorsView, DesignersView, DeleteDesigner, DeleteDesignerConfirm
+from dyplomowa_app.views import InvestorsView, DesignersView, DeleteDesigner, DeleteDesignerConfirm, AddProjectPoviat
 from dyplomowa_app.views import AddCompany, AddCompanyPoviat, CompaniesView, CompanyDetails, EditCompany, DeleteCompany
 from dyplomowa_app.views import ArchivesView, DivisionChoiceView, DivisionChoiceConfirm, RegisterView, DeleteCompanyConfirm
 from dyplomowa_app.views import AddDivisionView, DivisionDetails, AddAdminView, CancelAdminView, JoinDivisionView
@@ -55,6 +55,7 @@ urlpatterns = [
     path('edit_designer_poviat/<int:id>', EditDesignerPoviat.as_view(), name='edit-designer-poviat'),
     path('date_choice/', DateChoiceView.as_view(), name='date-choice'),
     path('add_project/', AddProject.as_view(), name='add-project'),
+    path('add_project_poviat/<int:id>', AddProjectPoviat.as_view(), name='add-project-poviat'),
     path('projects/', Projects.as_view(), name='projects'),
     path('project_details/<int:id>', ProjectDetails.as_view(), name='project-details'),
     path('edit_project/<int:id>', EditProject.as_view(), name='edit-project'),

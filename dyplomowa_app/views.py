@@ -11,7 +11,7 @@ from .forms import AddDivisionForm, JoinDivisionForm, EditDivisionForm, Investor
 from .forms import SearchProjectForm, SearchArchiveForm, SearchInvestorForm, SearchCompanyForm
 from .forms import SearchDesignerForm, AddTenderForm, AddCriteriaForm, AddOtherCriteriaForm, AddTendererForm
 from .forms import AddCompanyPoviatForm, EditCompanyPoviatForm, AddInvestorPoviatForm, EditInvestorPoviatForm
-from .forms import AddDesignerPoviatForm, EditDesignerPoviatForm
+from .forms import AddDesignerPoviatForm, EditDesignerPoviatForm, AddProjectPoviatForm
 
 
 #INITIAL FUNCTIONS
@@ -908,7 +908,6 @@ class AddProject(View):
             if announcement_date == "":
                 announcement_date = None
             voivodeship = data["voivodeship"]
-            poviat = data["poviat"]
             tender_date = data["tender_date"]
             if tender_date == "":
                 tender_date = None
@@ -941,7 +940,7 @@ class AddProject(View):
             project = Project.objects.create(
                 project_number=project_number, tender_time=tender_time, open_time=open_time, deposit=deposit,
                 announcement_number=announcement_number, announcement_date=announcement_date,
-                voivodeship=voivodeship, poviat=poviat, tender_date=tender_date, project_name=project_name,
+                voivodeship=voivodeship, tender_date=tender_date, project_name=project_name,
                 estimated_value=estimated_value, investor=investor, project_deadline_date=project_deadline_date,
                 project_deadline_months=project_deadline_months, project_deadline_days=project_deadline_days,
                 mma_quantity=mma_quantity, payment_method=payment_method, project_url=project_url,
@@ -955,6 +954,27 @@ class AddProject(View):
             ctx = {
                 "form": form
             }
+            return redirect(f"/add_project_poviat/{project.id}")
+
+
+class AddProjectPoviat(View):
+    def get(self, request, id):
+        project = Project.objects.get(id=id)
+        form = AddProjectPoviatForm(project=project)
+        ctx = {
+            "form": form,
+            "project": project
+        }
+        return render(request, "add_project_poviat.html", ctx)
+    
+    def post(self, request, id):
+        project = Project.objects.get(id=id)
+        form = AddProjectPoviatForm(request.POST, project=project)
+        if form.is_valid():
+            data = form.cleaned_data
+            poviat = data["poviat"]
+            project.poviat = poviat
+            project.save()
             return redirect("/projects")
 
 

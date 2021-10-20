@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %} Określ Powiat Projektu {% endblock %}
+
+{% block content %}
+
+<div class="d-flex flex-column align-items-center" style="height: 100%; width: 100%;">
+
+    <div class="d-flex flex-row justify-content-center align-items-center">
+        <h2 class="display-5 align-self-center header2"><i>Określ Powiat Projektu</i></h2>
+    </div>
+
+    {% if error_message %}
+
+    <div class="d-flex flex-row justify-content-center align-items-center">
+        <h3 class="display-5 align-self-center header">
+            {{ error_message }}
+        </h3>
+    </div>
+    <hr>
+    {% endif %}
+    
+    <form class="d-flex flex-column align-items-center" style="height: 100%; width: 100%;" action="{% url 'add-project-poviat' project.id %}" method="POST">
+        {% csrf_token %}
+
+        {{ form.as_p }}
+
+        <button type="submit" id="submit">Dodaj Powiat</button>
+    </form>
+
+</div>
+
+{% endblock %}
