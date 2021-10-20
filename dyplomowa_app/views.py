@@ -445,11 +445,14 @@ class EditInvestor(View):
             investor.investor_voivodeship = data["investor_voivodeship"]
             investor.investor_administration_level = data["investor_administration_level"]
             investor.save()
-            ctx = {
-                "investor": investor,
-                "form": form
-            }
-            return redirect(f"/edit_investor_poviat/{id}")
+            if investor.investor_voivodeship != None and investor.investor_voivodeship.voivodeship_name != "nieokreślono":
+                return redirect(f"/edit_investor_poviat/{id}")
+            elif (investor.investor_poviat != None and investor.investor_poviat.poviat_name != "nieokreślono") and (investor.investor_voivodeship == None or investor.investor_voivodeship.voivodeship_name == "nieokreślono"):
+                investor.investor_poviat = None
+                investor.save()
+                return redirect("/investors")
+            else:
+                return redirect("/investors")
 
 
 class EditInvestorPoviat(View):
@@ -624,7 +627,14 @@ class EditCompany(View):
             ctx = {
                 "company": company
             }
-            return redirect(f"/edit_company_poviat/{id}")
+            if company.company_voivodeship != None and company.company_voivodeship.voivodeship_name != "nieokreślono":
+                return redirect(f"/edit_company_poviat/{id}")
+            elif (company.company_poviat != None and company.company_poviat.poviat_name != "nieokreślono") and (company.company_voivodeship == None or company.company_voivodeship.voivodeship_name == "nieokreślono"):
+                company.company_poviat = None
+                company.save()
+                return redirect("/companies")
+            else:
+                return redirect("/companies")
 
 
 class EditCompanyPoviat(View):
@@ -827,7 +837,14 @@ class EditDesigner(View):
             ctx = {
                 "designer": designer,
             }
-            return redirect(f"/edit_designer_poviat/{id}")
+            if designer.designer_voivodeship != None and designer.designer_voivodeship.voivodeship_name != "nieokreślono":
+                return redirect(f"/edit_designer_poviat/{id}")
+            elif (designer.designer_poviat != None and designer.designer_poviat.poviat_name != "nieokreślono") and (designer.designer_voivodeship == None or designer.designer_voivodeship.voivodeship_name == "nieokreślono"):
+                designer.designer_poviat = None
+                designer.save()
+                return redirect("/designers")
+            else:
+                return redirect("/designers")
 
 
 class EditDesignerPoviat(View):
@@ -954,7 +971,10 @@ class AddProject(View):
             ctx = {
                 "form": form
             }
-            return redirect(f"/add_project_poviat/{project.id}")
+            if project.voivodeship != None and project.voivodeship.voivodeship_name != "nieokreślono":
+                return redirect(f"/add_project_poviat/{project.id}")
+            else:
+                return redirect("/projects")
 
 
 class AddProjectPoviat(View):
@@ -1121,7 +1141,14 @@ class EditProject(View):
             ctx = {
                 "project": project,
             }
-            return redirect(f"/edit_project_poviat/{project.id}")
+            if project.voivodeship != None and project.voivodeship.voivodeship_name != "nieokreślono":
+                return redirect(f"/edit_project_poviat/{id}")
+            elif (project.poviat != None and project.poviat.poviat_name != "nieokreślono") and (project.voivodeship == None or project.voivodeship.voivodeship_name == "nieokreślono"):
+                project.poviat = None
+                project.save()
+                return redirect("/projects")
+            else:
+                return redirect("/projects")
 
 
 class EditProjectPoviat(View):
@@ -1522,7 +1549,7 @@ class AddOtherCriteria(View):
         if len(tender.other_criteria.all()) > 0:
             for i in tender.other_criteria.all():
                 count += int(i.weight.weight)
-            form = AddOtherCriteriaForm(count=count)
+        form = AddOtherCriteriaForm(count=count)
         ctx = {
             "divisions": divisions,
             "project": project,
@@ -1554,6 +1581,15 @@ class AddOtherCriteria(View):
             data = form.cleaned_data
             criteria_name = data["criteria_name"]
             criteria_weight = data["criteria_weight"]
+            for i in Criteria.objects.all():
+                if criteria_name in (i.criteria_name, "termin", "Termin", "termin wykonania", "Termin wykonania",
+                "gwarancja","Gwarancja", "Cena", "cena", "Wartość oferty",
+                "wartość oferty") and criteria_weight.weight == i.weight.weight:
+                    return redirect(f"/add_other_criteria/{project_id}/{tender_id}")
+            for i in Criteria.objects.filter(tender=tender):
+                if criteria_name in (i.criteria_name, "termin", "Termin", "termin wykonania", "Termin wykonania",
+                "gwarancja","Gwarancja", "Cena", "cena", "Wartość oferty", "wartość oferty"):
+                    return redirect(f"/add_other_criteria/{project_id}/{tender_id}")
             new_criteria = Criteria.objects.create(weight=criteria_weight, criteria_name=criteria_name)
             tender.other_criteria.add(new_criteria)
             tender.save()
@@ -1563,7 +1599,7 @@ class AddOtherCriteria(View):
             "tender": tender,
             "form": form
             }
-            return render(request, "add_other_criteria.html", ctx)
+            return redirect(f"/add_other_criteria/{project_id}/{tender_id}")
 
 
 class AddTenderDetails(View):
