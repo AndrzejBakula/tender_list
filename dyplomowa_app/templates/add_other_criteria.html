@@ -58,11 +58,12 @@
         <button type="submit" id="submit">Dodaj</button>
     </form>
     {% endif %}
+    {% if 100 == count %}
     <hr>
     <div class="d-flex flex-row justify-content-center align-items-center" style="padding-left: 0.5%;">
         <a href="{% url 'add-tender-details' project.id tender.id %}" class="btn btn-outline-primary m-1">Przejdź do modułu dodania wyników</a>
     </div>
-
+    {% endif %}
 </div>
 
 {% endblock %}

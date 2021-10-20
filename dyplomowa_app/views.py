@@ -1623,7 +1623,7 @@ class AddTenderDetails(View):
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         project = Project.objects.get(id=project_id)
         tender = Tender.objects.get(id=tender_id)
-        form = AddTendererForm(request.POST)
+        form = AddTendererForm(request.POST, tender=tender)
         if form.is_valid():
             data = form.cleaned_data
             tenderer = data["tenderer"]
@@ -1632,13 +1632,14 @@ class AddTenderDetails(View):
             if data.get("offer_guarantee") not in ("", None):
                 offer_guarantee = data["offer_guarantee"]
             offer_deadline = None
-            if data.get("offer_deadline") not in ("", None):
-                offer_deadline = data["offer_deadline"]
+            if data.get("offer_deadline", None) not in ("", None):
+                offer_deadline = data.get("offer_deadline", None)
             tenderer = Tenderer.objects.create(tenderer=tenderer, offer_value=offer_value, offer_guarantee=offer_guarantee,
             offer_deadline=offer_deadline)
             for i in tender.other_criteria.all():
+                criteria_value = data.get(f"criteria_value_{i.id}", None)
                 criterium = Criteria.objects.create(criteria_name=i.criteria_name, weight=i.weight,
-                criteria_value=data[f"criteria_value_{i.id}"])
+                criteria_value=criteria_value)
                 tenderer.other_criteria.add(criterium)
             tenderer.save()                
             tender.tenderer.add(tenderer)
