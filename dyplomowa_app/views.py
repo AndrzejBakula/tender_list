@@ -11,7 +11,7 @@ from .forms import AddDivisionForm, JoinDivisionForm, EditDivisionForm, Investor
 from .forms import SearchProjectForm, SearchArchiveForm, SearchInvestorForm, SearchCompanyForm
 from .forms import SearchDesignerForm, AddTenderForm, AddCriteriaForm, AddOtherCriteriaForm, AddTendererForm
 from .forms import AddCompanyPoviatForm, EditCompanyPoviatForm, AddInvestorPoviatForm, EditInvestorPoviatForm
-from .forms import AddDesignerPoviatForm, EditDesignerPoviatForm, AddProjectPoviatForm
+from .forms import AddDesignerPoviatForm, EditDesignerPoviatForm, AddProjectPoviatForm, EditProjectPoviatForm
 
 
 #INITIAL FUNCTIONS
@@ -1091,7 +1091,6 @@ class EditProject(View):
             if data["announcement_date"] not in (None, ""):
                 project.announcement_date = data["announcement_date"]
             project.voivodeship = data["voivodeship"]
-            project.poviat = data["poviat"]
             if data["tender_date"] not in (None, ""):
                 project.tender_date = data["tender_date"]
             project_name = data["project_name"]
@@ -1122,7 +1121,33 @@ class EditProject(View):
             ctx = {
                 "project": project,
             }
-            return redirect(f"/project_details/{project.id}")
+            return redirect(f"/edit_project_poviat/{project.id}")
+
+
+class EditProjectPoviat(View):
+    def get(self, request, id):
+        user = User.objects.get(pk=int(request.session["user_id"]))
+        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
+        project = Project.objects.get(id=id)
+        initial_data = {
+            "poviat": project.poviat
+        }
+        form = EditProjectPoviatForm(initial=initial_data, project=project)
+        ctx = {
+            "project": project,
+            "form": form,
+            "divisions": divisions
+        }
+        return render(request, "edit_project_poviat.html", ctx)
+    
+    def post(self, request, id):
+        project = Project.objects.get(id=id)
+        form = EditProjectPoviatForm(request.POST, project=project)
+        if form.is_valid():
+            data = form.cleaned_data
+            project.poviat = data["poviat"]
+            project.save()
+            return redirect(f"/project_details/{id}")
 
 
 class DeleteProject(View):

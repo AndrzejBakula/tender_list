@@ -22,7 +22,7 @@ from dyplomowa_app.views import InvestorsView, DesignersView, DeleteDesigner, De
 from dyplomowa_app.views import AddCompany, AddCompanyPoviat, CompaniesView, CompanyDetails, EditCompany, DeleteCompany
 from dyplomowa_app.views import ArchivesView, DivisionChoiceView, DivisionChoiceConfirm, RegisterView, DeleteCompanyConfirm
 from dyplomowa_app.views import AddDivisionView, DivisionDetails, AddAdminView, CancelAdminView, JoinDivisionView
-from dyplomowa_app.views import AddPersonView, DateChoiceView, EditDivisionView, DeleteDivisionView
+from dyplomowa_app.views import AddPersonView, DateChoiceView, EditDivisionView, DeleteDivisionView, EditProjectPoviat
 from dyplomowa_app.views import DeleteDivisionConfirm, RemoveMemberView, UserDetailsView, AddTenderView
 from dyplomowa_app.views import AddTenderCriteria, AddOtherCriteria, AddTenderDetails, EditCompanyPoviat
 from dyplomowa_app.views import AddInvestorPoviat, EditInvestorPoviat, AddDesignerPoviat, EditDesignerPoviat
@@ -59,6 +59,7 @@ urlpatterns = [
     path('projects/', Projects.as_view(), name='projects'),
     path('project_details/<int:id>', ProjectDetails.as_view(), name='project-details'),
     path('edit_project/<int:id>', EditProject.as_view(), name='edit-project'),
+    path('edit_project_poviat/<int:id>', EditProjectPoviat.as_view(), name='edit-project-poviat'),
     path('delete_project/<int:id>', DeleteProject.as_view(), name='delete-project'),
     path('delete_project_confirm/<int:id>', DeleteProjectConfirm.as_view(), name='delete-project-confirm'),
     path('delete_investor/<int:id>', DeleteInvestor.as_view(), name='delete-investor'),
