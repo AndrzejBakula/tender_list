@@ -1645,3 +1645,18 @@ class AddTenderDetails(View):
             tender.tenderer.add(tenderer)
             tender.save()
             return redirect(f"/add_tender_details/{project.id}/{tender.id}")
+    
+
+class TenderDetailsView(View):
+
+    def get(self, request, project_id, tender_id):
+        user = User.objects.get(pk=int(request.session["user_id"]))
+        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
+        project = Project.objects.get(id=project_id)
+        tender = Tender.objects.get(id=tender_id)
+        ctx = {
+            "divisions": divisions,
+            "project": project,
+            "tender": tender
+        }
+        return render(request, "tender_details.html", ctx)
