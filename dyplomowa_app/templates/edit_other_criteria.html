@@ -27,7 +27,9 @@
                 <th scope="col" style="text-align: center;">Termin</th>
                 {% endif %}
                 {% for i in tender.other_criteria.all %}
-                <th scope="col" style="text-align: center;">{{ i.criteria_name }}</th>
+                <th scope="col" style="text-align: center;">
+                    {{ i.criteria_name }}       <a href="{% url 'delete-other-criteria' project.id tender.id i.id %}">(usuń)</a>
+                </th>
                 {% endfor %}
             </tr>
         </thead>

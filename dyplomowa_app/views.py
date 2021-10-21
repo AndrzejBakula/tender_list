@@ -1843,7 +1843,18 @@ class EditOtherCriteria(View):
             "tender": tender,
             "form": form
             }
-            return redirect(f"/add_other_criteria/{project_id}/{tender_id}")
+            return redirect(f"/edit_other_criteria/{project_id}/{tender_id}")
+
+
+class DeleteOtherCriteriaView(View):
+    def get(self, request, project_id, tender_id, criteria_id):
+        user = User.objects.get(pk=int(request.session["user_id"]))
+        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
+        project = Project.objects.get(id=project_id)
+        tender = Tender.objects.get(id=tender_id)
+        criterium = Criteria.objects.get(id=criteria_id)
+        criterium.delete()
+        return redirect(f"/edit_other_criteria/{project_id}/{tender_id}")
 
 
 class DeleteTenderView(View):
