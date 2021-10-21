@@ -77,6 +77,10 @@
         {{ form.as_p }}
         <button type="submit" id="submit">Dodaj</button>
     </form>
+    <hr>
+    <div class="d-flex flex-row justify-content-center align-items-center" style="padding-left: 0.5%;">
+        <a href="{% url 'tender-details' project.id tender.id %}" class="btn btn-outline-primary m-1">Zakończ dodawanie oferentów</a>
+    </div>
     
 </div>
 

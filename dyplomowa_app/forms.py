@@ -299,15 +299,22 @@ class AddCriteriaForm(forms.Form):
         self.tender = tender
         super(AddCriteriaForm, self).__init__(*args, **kwargs)
         if tender.is_guarantee == True:
-            self.fields[f"guarantee_min"] = forms.ModelChoiceField(label="Gwarancja min [mies.]", queryset=Month.objects.all(), required=False)
-            self.fields[f"guarantee_max"] = forms.ModelChoiceField(label="Gwarancja max [mies.]", queryset=Month.objects.all(), required=False)
-            self.fields[f"guarantee_weight"] = forms.ModelChoiceField(label="Waga gwarancji [%]", queryset=Weight.objects.all(), required=False)
+            self.fields[f"guarantee_min"] = forms.ModelChoiceField(label="Gwarancja min [mies.]",
+                queryset=Month.objects.all(), required=False)
+            self.fields[f"guarantee_max"] = forms.ModelChoiceField(label="Gwarancja max [mies.]",
+                queryset=Month.objects.all(), required=False)
+            self.fields[f"guarantee_weight"] = forms.ModelChoiceField(label="Waga gwarancji [%]",
+                queryset=Weight.objects.all(), required=False)
         if tender.is_deadline == True:
-            self.fields[f"deadline_min"] = forms.ModelChoiceField(label="Termin min [mies.]", queryset=Month.objects.all(), required=False)
-            self.fields[f"deadline_max"] = forms.ModelChoiceField(label="Termin max [mies.]", queryset=Month.objects.all(), required=False)
-            self.fields[f"deadline_weight"] = forms.ModelChoiceField(label="Waga terminu [%]", queryset=Weight.objects.all(), required=False)
+            self.fields[f"deadline_min"] = forms.ModelChoiceField(label="Termin min [mies.]",
+                queryset=Month.objects.all(), required=False)
+            self.fields[f"deadline_max"] = forms.ModelChoiceField(label="Termin max [mies.]",
+                queryset=Month.objects.all(), required=False)
+            self.fields[f"deadline_weight"] = forms.ModelChoiceField(label="Waga terminu [%]",
+                queryset=Weight.objects.all(), required=False)
         if tender.is_other_criteria == True:
-            self.fields[f"criteria"] = forms.ModelMultipleChoiceField(label="Wybierz inne kryteria oceny", queryset=Criteria.objects.all().order_by("criteria_name"), required=False)
+            self.fields[f"criteria"] = forms.ModelMultipleChoiceField(label="Wybierz inne kryteria oceny",
+                queryset=Criteria.objects.all().order_by("criteria_name"), required=False)
 
 
 class AddOtherCriteriaForm(forms.Form):
@@ -317,8 +324,10 @@ class AddOtherCriteriaForm(forms.Form):
         kwargs.pop('count', None)
         self.count = count
         super(AddOtherCriteriaForm, self).__init__(*args, **kwargs)
-        self.fields[f"criteria_name"] = forms.CharField(label="", max_length=128, widget=forms.TextInput(attrs={"size": 48, "placeholder": "Nazwa Kryterium"}))
-        self.fields[f"criteria_weight"] = forms.ModelChoiceField(label="Waga kryterium [%]", queryset=Weight.objects.filter(weight__lt=100-count+1))
+        self.fields[f"criteria_name"] = forms.CharField(label="", max_length=128,
+            widget=forms.TextInput(attrs={"size": 48, "placeholder": "Nazwa Kryterium"}))
+        self.fields[f"criteria_weight"] = forms.ModelChoiceField(label="Waga kryterium [%]",
+            queryset=Weight.objects.filter(weight__lt=100-count+1))
 
 
 class AddTendererForm(forms.Form):
@@ -359,3 +368,42 @@ class EditTenderForm(forms.Form):
     is_guarantee = forms.BooleanField(label="Czy jest kryterium gwarancji?", required=False)
     is_deadline = forms.BooleanField(label="Czy jest kryterium terminu wykonania?", required=False)
     is_other_criteria = forms.BooleanField(label="Czy są jakieś inne kryteria?", required=False)
+
+
+class EditCriteriaForm(forms.Form):
+
+    def __init__(self, *args, **kwargs):
+        tender = kwargs.get("tender", None)
+        kwargs.pop('tender', None)
+        self.tender = tender
+        super(EditCriteriaForm, self).__init__(*args, **kwargs)
+        if tender.is_guarantee == True:
+            self.fields[f"guarantee_min"] = forms.ModelChoiceField(label="Gwarancja min [mies.]",
+                queryset=Month.objects.all())
+            self.fields[f"guarantee_max"] = forms.ModelChoiceField(label="Gwarancja max [mies.]",
+                queryset=Month.objects.all())
+            self.fields[f"guarantee_weight"] = forms.ModelChoiceField(label="Waga gwarancji [%]",
+                queryset=Weight.objects.all())
+        if tender.is_deadline == True:
+            self.fields[f"deadline_min"] = forms.ModelChoiceField(label="Termin min [mies.]",
+                queryset=Month.objects.all())
+            self.fields[f"deadline_max"] = forms.ModelChoiceField(label="Termin max [mies.]",
+                queryset=Month.objects.all())
+            self.fields[f"deadline_weight"] = forms.ModelChoiceField(label="Waga terminu [%]",
+                queryset=Weight.objects.all())
+        if tender.is_other_criteria == True:
+            self.fields[f"criteria"] = forms.ModelMultipleChoiceField(label="Wybierz inne kryteria oceny",
+                queryset=Criteria.objects.all().order_by("criteria_name"), required=False)
+
+
+class EditOtherCriteriaForm(forms.Form):
+
+    def __init__(self, *args, **kwargs):
+        count = kwargs.get("count", None)
+        kwargs.pop('count', None)
+        self.count = count
+        super(EditOtherCriteriaForm, self).__init__(*args, **kwargs)
+        self.fields[f"criteria_name"] = forms.CharField(label="", max_length=128,
+            widget=forms.TextInput(attrs={"size": 48, "placeholder": "Nazwa Kryterium"}))
+        self.fields[f"criteria_weight"] = forms.ModelChoiceField(label="Waga kryterium [%]",
+            queryset=Weight.objects.filter(weight__lt=100-count+1))
