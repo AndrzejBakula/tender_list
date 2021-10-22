@@ -404,7 +404,7 @@ class Project(models.Model):
     payment_criteria = models.TextField(null=True, default=None)
     jv_partners = models.ManyToManyField(Company, default=None)
     remarks = models.TextField(null=True, default=None)
-    tender = models.OneToOneField(Tender, on_delete=models.CASCADE, null=True, default=None)
+    tender = models.OneToOneField(Tender, on_delete=models.DO_NOTHING, null=True, default=None)
     priority = models.ForeignKey(Priority, on_delete=models.CASCADE, null=True, default=None)
     designer = models.ForeignKey(Designer, null=True, default=None, on_delete=models.CASCADE)
     status = models.ForeignKey(Status, on_delete=models.CASCADE, default=Status.STATUS[0][0])

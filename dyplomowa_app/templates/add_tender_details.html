@@ -52,6 +52,7 @@
             <tr>
                 <td scope="col" style="text-align: center;">
                     <a href="{% url 'company-details' i.tenderer.id %}">{{ i.tenderer.company_name }}</a>
+                    <a href="{% url 'delete-tenderer' project.id tender.id i.id %}">(usuń)</a>
                 </td>
                 <td scope="col" style="text-align: center;">{{ i.offer_value }}</td>
                 {% if i.offer_guarantee %}
