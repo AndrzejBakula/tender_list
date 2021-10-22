@@ -1002,15 +1002,18 @@ class AddProjectPoviat(View):
 class Projects(View):
     def get(self, request):
         user = None
+        division = None
         if request.session.get("user_id") not in ("", None):
             user = User.objects.get(pk=int(request.session["user_id"]))
+        if request.session.get("division_id") not in ("", None):
+            division = Division.objects.get(id=request.session.get("division_id"))
+        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         form = SearchProjectForm()
         today = date.today()
         finish  = today + timedelta(days=100)
-        projects1 = Project.objects.filter(tender_date__range=[today, finish], status=2).order_by("tender_date", "tender_time", "project_number")
-        projects2 = Project.objects.filter(tender_date__isnull=True, status=2)
+        projects1 = Project.objects.filter(division=division, tender_date__range=[today, finish], status=2).order_by("tender_date", "tender_time", "project_number")
+        projects2 = Project.objects.filter(division=division, tender_date__isnull=True, status=2)
         projects = projects1 | projects2
-        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         ctx = {
             "projects": projects,
             "divisions": divisions,
@@ -1201,12 +1204,16 @@ class DeleteProjectConfirm(View):
 
 class ArchivesView(View):
     def get(self, request):
-        user = User.objects.get(pk=int(request.session["user_id"]))
+        user = None
+        if request.session.get("user_id") not in ("", None):
+            user = User.objects.get(pk=int(request.session["user_id"]))
+        if request.session.get("division_id") not in ("", None):
+            division = Division.objects.get(id=request.session.get("division_id"))
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         form = SearchArchiveForm()
         archives_date = date.today() + timedelta(days=-1)
-        archives1 = Project.objects.filter(tender_date__range=["2021-01-01", archives_date])
-        archives2 = Project.objects.all().exclude(status=2)
+        archives1 = Project.objects.filter(division=division, tender_date__range=["2021-01-01", archives_date])
+        archives2 = Project.objects.filter(division=division).exclude(status=2)
         archives = archives1 | archives2
         archives = archives.order_by("-tender_date", "-tender_time", "-project_number")
         ctx = {

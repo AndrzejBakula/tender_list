@@ -5,6 +5,8 @@
 
 {% block content %}
 
+{% if user.is_authenticated %}
+{% if request.session.division_id %}
 <div class="d-flex flex-column align-items-center" style="height: 100%; width: 100%; padding: 0.5%;">
   <div class="d-flex flex-row justify-content-center align-items-center">
     <h2 class="display-5 align-self-center">Archiwum Projektów</a></h2>
@@ -56,5 +58,7 @@
 
 
 </div>
+{% endif %}
+{% endif %}
 
 {% endblock %}
