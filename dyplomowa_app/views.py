@@ -699,6 +699,7 @@ class AddDesigner(View):
     
     def post(self, request):
         user = User.objects.get(pk=int(request.session["user_id"]))
+        division = Division.objects.get(id=request.session["division_id"])
         form = AddDesignerForm(request.POST)
         if form.is_valid():
             data = form.cleaned_data
@@ -706,13 +707,18 @@ class AddDesigner(View):
             designer_address = data["designer_address"]
             designer_voivodeship = data["designer_voivodeship"]
             designer_note = data["designer_note"]
-            designer = Designer.objects.create(designer_name=designer_name, designer_address=designer_address,
-            designer_voivodeship=designer_voivodeship, designer_added_by=user)
+            designers_names = [i.designer_name for i in Designer.objects.all()]
+            if designer_name not in designers_names:
+                designer = Designer.objects.create(designer_name=designer_name, designer_address=designer_address,
+                designer_voivodeship=designer_voivodeship, designer_added_by=user)
+            else:
+                designer = Designer.objects.get(designer_name=designer_name)
+            designer.division.add(division)
             if designer_note:
                 new_designer_note = DesignerNote.objects.create(designer_note_designer=designer,
                 designer_note_note=designer_note, designer_note_user=user)
                 notes = [i.designer_note_note.note for i in DesignerNote.objects.filter(designer_note_designer=designer)]
-                note_to_add = sum(notes)/len(notes)
+                note_to_add = round(sum(notes)/len(notes), 2)
                 designer.designer_note = note_to_add
             designer.save()
             if designer.designer_voivodeship != None and designer.designer_voivodeship.voivodeship_name != "nieokreślono":
@@ -749,8 +755,11 @@ class DesignersView(View):
     def get(self, request):
         user = User.objects.get(pk=int(request.session["user_id"]))
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
+        division = None
+        if request.session.get("division_id"):
+            division = request.session["division_id"]
         form = SearchDesignerForm()
-        designers = Designer.objects.all().order_by("designer_name")
+        designers = Designer.objects.filter(division=division).order_by("designer_name")
         ctx = {
             "designers": designers,
             "divisions": divisions,
@@ -802,7 +811,7 @@ class DesignerDetails(View):
             new_designer_note = DesignerNote.objects.create(designer_note_designer=designer,
             designer_note_note=designer_note, designer_note_user=user)
             notes = [i.designer_note_note.note for i in DesignerNote.objects.filter(designer_note_designer=designer)]
-            note_to_add = sum(notes)/len(notes)
+            note_to_add = round(sum(notes)/len(notes), 2)
             designer.designer_note = note_to_add
             designer.save()
             return redirect(f"/designer_details/{designer.id}")

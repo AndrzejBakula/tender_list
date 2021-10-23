@@ -52,7 +52,6 @@
           </button>
         </a>
       </div>
-      {% endif %}
       <div class="d-flex flex-row justify-content-center align-items-center" style="padding-right: 0.5%; padding-left: 0.5%;">
         <a href="{% url 'investors' %}" style="color: black; padding-right: 0.5%;">
           <button type="button" class="btn btn-outline-primary align-self-center" style="text-align: center">
@@ -70,7 +69,8 @@
           </button>
         </a>
       </div>
-      {% if user.is_staff %}
+      {% endif %}
+      {% if user.is_staff and request.session.division_id %}
       <div class="d-flex flex-row justify-content-center align-items-center" style="padding-bottom: 0.5%; padding-top: 0.5%; padding-left: 0.5%;">
         {% if request.session.division_id in divisions %}
         <a href="{% url 'add-project' %}" style="color: black;">
@@ -78,7 +78,6 @@
             Dodaj Projekt
           </button>
         </a>
-        {% endif %}
         <a href="{% url 'add-investor' %}" style="color: black;">
           <button type="button" class="btn btn-outline-primary align-self-center" style="text-align: center;">
             Dodaj Inwestora
@@ -94,6 +93,7 @@
             Dodaj Projektanta
           </button>
         </a>
+        {% endif %}
       </div>
       {% endif %}
       <div class="d-flex flex-row justify-content-center align-items-center" style="padding-left: 0.5%;">

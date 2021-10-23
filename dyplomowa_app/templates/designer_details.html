@@ -40,11 +40,10 @@
             </tr>
         </tbody>
       </table>
-      {% if user not in noters %}
 
+      {% if user not in noters %}
       <form class="d-flex flex-column align-items-center" style="height: 100%; width: 100%;" action="{% url 'designer-details' designer.id %}" method="POST">
         {% csrf_token %}
-
         {{ form.as_p }}
 
         <button type="submit" id="submit">Oceń</button>
@@ -53,8 +52,10 @@
       {% endif %}
       {% if user == designer.designer_added_by %}
       <button type="button" class="btn btn-dark"><a style="color:blanchedalmond" href="{% url 'edit-designer' designer.id %}">Edytuj projektanta</a></button>
+      {% if user.is_superuser %}
       <hr>
       <button type="button" class="btn btn-dark"><a style="color:blanchedalmond" href="{% url 'delete-designer' designer.id %}">Usuń projektanta</a></button>
+      {% endif %}
       {% endif %}
     </div>
 

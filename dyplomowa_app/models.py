@@ -2,6 +2,17 @@ from django.db import models
 from django.contrib.auth.models import User
 
 
+class Division(models.Model):
+
+    division_name = models.CharField(max_length=64, unique=True)
+    division_person = models.ManyToManyField(User, related_name="division_person")
+    division_admin = models.ManyToManyField(User, related_name="division_admin")
+    division_creator = models.ForeignKey(User, on_delete=models.CASCADE, null=True, default=None, related_name="division_creator")
+    division_wannabe = models.ManyToManyField(User, related_name="division_wannabe")
+
+    def __str__(self):
+        return self.division_name
+
 
 class AdministrationLevel(models.Model):
 
@@ -202,6 +213,7 @@ class Investor(models.Model):
     investor_administration_level = models.ForeignKey(AdministrationLevel, on_delete=models.CASCADE)
     investor_note = models.FloatField(max_length=4, null=True, default=None)
     investor_added_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    division = models.ManyToManyField(Division)
 
     def __str__(self):
         return self.investor_name
@@ -221,6 +233,7 @@ class Designer(models.Model):
     designer_poviat = models.ForeignKey(Poviat, on_delete=models.CASCADE, null=True, default=None)
     designer_note = models.FloatField(max_length=4, null=True, default=None)
     designer_added_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    division = models.ManyToManyField(Division)
 
     def __str__(self):
         return self.designer_name
@@ -280,18 +293,6 @@ class PaymentMethod(models.Model):
     def __str__(self):
         return self.payment_method_name
 
-    
-class Division(models.Model):
-
-    division_name = models.CharField(max_length=64, unique=True)
-    division_person = models.ManyToManyField(User, related_name="division_person")
-    division_admin = models.ManyToManyField(User, related_name="division_admin")
-    division_creator = models.ForeignKey(User, on_delete=models.CASCADE, null=True, default=None, related_name="division_creator")
-    division_wannabe = models.ManyToManyField(User, related_name="division_wannabe")
-
-    def __str__(self):
-        return self.division_name
-
 
 class Company(models.Model):
 
@@ -300,6 +301,8 @@ class Company(models.Model):
     company_voivodeship = models.ForeignKey(Voivodeship, on_delete=models.CASCADE, default=Voivodeship.VOIVODESHIP[0][0])
     company_poviat = models.ForeignKey(Poviat, on_delete=models.CASCADE, null=True, default=None)
     company_added_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    division = models.ManyToManyField(Division)
+
 
     def __str__(self):
         return self.company_name
@@ -349,6 +352,7 @@ class Criteria(models.Model):
     criteria_name = models.CharField(max_length=128)
     criteria_value = models.TextField(null=True, default=None)
     weight = models.ForeignKey(Weight, on_delete=models.CASCADE)
+    division = models.ManyToManyField(Division)
 
     def __str__(self):
         return f"{self.criteria_name} - {self.weight} %"
