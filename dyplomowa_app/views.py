@@ -514,14 +514,21 @@ class AddCompany(View):
     
     def post(self, request):
         user = User.objects.get(pk=int(request.session["user_id"]))
+        division = Division.objects.get(id=request.session.get("division_id"))
         form = AddCompanyForm(request.POST)
         if form.is_valid():
             data = form.cleaned_data
             company_name = data["company_name"]
             company_address = data["company_address"]
             company_voivodeship = data["company_voivodeship"]
-            company = Company.objects.create(company_name=company_name, company_address=company_address,
-            company_voivodeship=company_voivodeship, company_added_by=user)
+            companies_names = [i.company_name for i in Company.objects.all()]
+            if company_name not in companies_names:
+                company = Company.objects.create(company_name=company_name, company_address=company_address,
+                company_voivodeship=company_voivodeship, company_added_by=user)
+            else:
+                company = Company.objects.get(company_name=company_name)
+            company.division.add(division)
+            company.save()
             if company.company_voivodeship != None and company.company_voivodeship.voivodeship_name != "nieokreślono":
                 return redirect(f"/add_company_poviat/{company.id}")
             else:
@@ -557,8 +564,11 @@ class CompaniesView(View):
     def get(self, request):
         user = User.objects.get(pk=int(request.session["user_id"]))
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
+        division = None
+        if request.session.get("division_id"):
+            division = request.session["division_id"]
         form = SearchCompanyForm()
-        companies = Company.objects.all().order_by("company_name")
+        companies = Company.objects.filter(division=division).order_by("company_name")
         ctx = {
             "companies": companies,
             "divisions": divisions,
