@@ -12,7 +12,7 @@ from .forms import SearchProjectForm, SearchArchiveForm, SearchInvestorForm, Sea
 from .forms import SearchDesignerForm, AddTenderForm, AddCriteriaForm, AddOtherCriteriaForm, AddTendererForm
 from .forms import AddCompanyPoviatForm, EditCompanyPoviatForm, AddInvestorPoviatForm, EditInvestorPoviatForm
 from .forms import AddDesignerPoviatForm, EditDesignerPoviatForm, AddProjectPoviatForm, EditProjectPoviatForm
-from .forms import EditTenderForm, EditCriteriaForm, EditOtherCriteriaForm
+from .forms import EditTenderForm, EditCriteriaForm, EditOtherCriteriaForm, AddMissingCriteriaForm
 
 
 #INITIAL FUNCTIONS
@@ -1613,6 +1613,22 @@ class AddOtherCriteria(View):
             return redirect(f"/add_other_criteria/{project_id}/{tender_id}")
 
 
+class AddMissingCriteria(View):
+    def post(self, request, project_id, tender_id, criteria_id):
+        user = User.objects.get(pk=int(request.session["user_id"]))
+        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
+        project = Project.objects.get(id=project_id)
+        tender = Tender.objects.get(id=tender_id)
+        form_minor = AddMissingCriteriaForm(request.POST, tender=tender)
+        if form_minor.is_valid():
+            data = form_minor.cleaned_data
+            criteria_value = data["criteria_value"]
+            criteria = Criteria.objects.get(id=criteria_id)
+            criteria.criteria_value = criteria_value
+            criteria.save()
+            return redirect(f"/add_tender_details/{project.id}/{tender.id}")
+
+
 class AddTenderDetails(View):
 
     def get(self, request, project_id, tender_id):
@@ -1620,12 +1636,14 @@ class AddTenderDetails(View):
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         project = Project.objects.get(id=project_id)
         tender = Tender.objects.get(id=tender_id)
-        form = AddTendererForm(tender=tender)
+        form_major = AddTendererForm(tender=tender)
+        form_minor = AddMissingCriteriaForm(tender=tender)
         ctx = {
             "divisions": divisions,
             "project": project,
             "tender": tender,
-            "form": form
+            "form_major": form_major,
+            "form_minor": form_minor
         }
         return render(request, "add_tender_details.html", ctx)
 
@@ -1634,9 +1652,9 @@ class AddTenderDetails(View):
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         project = Project.objects.get(id=project_id)
         tender = Tender.objects.get(id=tender_id)
-        form = AddTendererForm(request.POST, tender=tender)
-        if form.is_valid():
-            data = form.cleaned_data
+        form_major = AddTendererForm(request.POST, tender=tender)
+        if form_major.is_valid():
+            data = form_major.cleaned_data
             tenderer = data["tenderer"]
             offer_value = data["offer_value"]
             offer_guarantee = None
@@ -1787,6 +1805,12 @@ class EditTenderCriteria(View):
             if tender.is_other_criteria:
                 criteria = data["criteria"]
                 tender.other_criteria.set(criteria)
+                for i in tender.tenderer.all():
+                    i.other_criteria.set([])
+                    for j in criteria:
+                        criterium = Criteria.objects.create(criteria_name=j.criteria_name, weight=j.weight)
+                        i.other_criteria.add(criterium)
+                        i.save()
                 tender.save()
             return redirect(f"/add_other_criteria/{project.id}/{tender.id}")
 

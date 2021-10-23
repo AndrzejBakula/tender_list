@@ -61,8 +61,19 @@
                 {% if i.offer_deadline %}
                 <td scope="col" style="text-align: center;">{{ i.offer_deadline }}</td>
                 {% endif %}
-                {% for j in i.other_criteria.all %}
-                <td scope="col" style="text-align: center;">{{ j.criteria_value }}</td>
+                {% for j in i.other_criteria.all|dictsort:"id" %}
+                <td scope="col" style="text-align: center;">
+                    {% if j.criteria_value %}
+                        {{ j.criteria_value }}
+                    {% else %}
+                        <form class="d-flex flex-column justify-content-center align-items-center" style="height: 100%; width: 100%;"
+                            action="{% url 'add-missing-criteria' project.id tender.id j.id %}" method="POST">
+                            {% csrf_token %}
+                            {{ form_minor.as_p }}
+                            <!-- <button type="submit" id="submit">Dodaj</button> -->
+                        </form>
+                    {% endif %}
+                </td>
                 {% endfor %}
             </tr>
             {% endfor %}
@@ -75,12 +86,18 @@
     <form class="d-flex flex-column justify-content-center align-items-center" style="height: 100%; width: 100%;"
         action="{% url 'add-tender-details' project.id tender.id %}" method="POST">
         {% csrf_token %}
-        {{ form.as_p }}
+        {{ form_major.as_p }}
         <button type="submit" id="submit">Dodaj</button>
     </form>
     <hr>
     <div class="d-flex flex-row justify-content-center align-items-center" style="padding-left: 0.5%;">
         <a href="{% url 'tender-details' project.id tender.id %}" class="btn btn-outline-primary m-1">Zakończ dodawanie oferentów</a>
+    </div>
+    <div class="d-flex flex-row justify-content-center align-items-center" style="padding-left: 0.5%;">
+        <a href="{% url 'edit-tender-criteria' project.id tender.id %}" class="btn btn-outline-primary m-1">Edytuj główne kryteria</a>
+    </div>
+    <div class="d-flex flex-row justify-content-center align-items-center" style="padding-left: 0.5%;">
+        <a href="{% url 'edit-tender' project.id tender.id %}" class="btn btn-outline-primary m-1">Edytuj przetarg od początku</a>
     </div>
     
 </div>

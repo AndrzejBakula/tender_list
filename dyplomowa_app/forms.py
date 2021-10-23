@@ -330,6 +330,17 @@ class AddOtherCriteriaForm(forms.Form):
             queryset=Weight.objects.filter(weight__lt=100-count+1))
 
 
+class AddMissingCriteriaForm(forms.Form):
+
+    def __init__(self, *args, **kwargs):
+        tender = kwargs.get("tender", None)
+        kwargs.pop('tender', None)
+        self.tender = tender
+        super(AddMissingCriteriaForm, self).__init__(*args, **kwargs)
+        self.fields[f"criteria_value"] = forms.CharField(label="", max_length=64,
+            widget=forms.TextInput(attrs={"size": 8, "placeholder": "Wpisz"}))
+
+
 class AddTendererForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
