@@ -305,6 +305,7 @@ class AddInvestor(View):
     
     def post(self, request):
         user = User.objects.get(pk=int(request.session["user_id"]))
+        division = Division.objects.get(id=request.session.get("division_id"))
         form = AddInvestorForm(request.POST)
         if form.is_valid():
             data = form.cleaned_data
@@ -313,14 +314,20 @@ class AddInvestor(View):
             investor_voivodeship = data["investor_voivodeship"]
             investor_administration_level = data["investor_administration_level"]
             investor_note = data["investor_note"]
-            investor = Investor.objects.create(investor_name=investor_name, investor_address=investor_address,
-            investor_voivodeship=investor_voivodeship, investor_administration_level=investor_administration_level,
-            investor_added_by=user)
-            if investor_note:
+            investors_names = [i.investor_name for i in Investor.objects.all()]
+            if not investor_name in investors_names:
+                investor = Investor.objects.create(investor_name=investor_name, investor_address=investor_address,
+                investor_voivodeship=investor_voivodeship, investor_administration_level=investor_administration_level,
+                investor_added_by=user)
+            else:
+                investor = Investor.objects.get(investor_name=investor_name)
+            investor.division.add(division)
+            noters = [i.investor_note_user for i in InvestorNote.objects.filter(investor_note_investor=investor)]
+            if investor_note and not user in noters:
                 new_investor_note = InvestorNote.objects.create(investor_note_investor=investor,
                 investor_note_note=investor_note, investor_note_user=user)
                 notes = [i.investor_note_note.note for i in InvestorNote.objects.filter(investor_note_investor=investor)]
-                note_to_add = sum(notes)/len(notes)
+                note_to_add = round(sum(notes)/len(notes), 2)
                 investor.investor_note = note_to_add
             investor.save()
             if investor.investor_voivodeship != None and investor.investor_voivodeship.voivodeship_name != "nieokreślono":
@@ -358,8 +365,9 @@ class InvestorsView(View):
     def get(self, request):
         user = User.objects.get(pk=int(request.session["user_id"]))
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
+        division = Division.objects.get(id=request.session.get("division_id"))
         form = SearchInvestorForm()
-        investors = Investor.objects.all().order_by("investor_name")
+        investors = Investor.objects.filter(division=division).order_by("investor_name")
         ctx = {
             "investors": investors,
             "divisions": divisions,
@@ -411,7 +419,7 @@ class InvestorDetails(View):
             new_investor_note = InvestorNote.objects.create(investor_note_investor=investor,
             investor_note_note=investor_note, investor_note_user=user)
             notes = [i.investor_note_note.note for i in InvestorNote.objects.filter(investor_note_investor=investor)]
-            note_to_add = sum(notes)/len(notes)
+            note_to_add = round(sum(notes)/len(notes), 2)
             investor.investor_note = note_to_add
             investor.save()
             return redirect(f"/investor_details/{investor.id}")
@@ -724,7 +732,8 @@ class AddDesigner(View):
             else:
                 designer = Designer.objects.get(designer_name=designer_name)
             designer.division.add(division)
-            if designer_note:
+            noters = [i.designer_note_user for i in DesignerNote.objects.filter(designer_note_designer=designer)]
+            if designer_note and not user in noters:
                 new_designer_note = DesignerNote.objects.create(designer_note_designer=designer,
                 designer_note_note=designer_note, designer_note_user=user)
                 notes = [i.designer_note_note.note for i in DesignerNote.objects.filter(designer_note_designer=designer)]
