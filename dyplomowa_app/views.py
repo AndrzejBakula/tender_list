@@ -4,6 +4,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import get_user_model, authenticate, login, logout
 from django.contrib.auth.models import User
 from datetime import timezone, date, timedelta
+from django.core.paginator import Paginator
 from .models import *
 from .forms import AddInvestorForm, AddDesignerForm, AddProjectForm, EditProjectForm, EditInvestorForm
 from .forms import EditDesignerForm, LoginForm, AddCompanyForm, EditCompanyForm, RegisterForm
@@ -368,6 +369,11 @@ class InvestorsView(View):
         division = Division.objects.get(id=request.session.get("division_id"))
         form = SearchInvestorForm()
         investors = Investor.objects.filter(division=division).order_by("investor_name")
+
+        paginator = Paginator(investors, 15)
+        page = request.GET.get("page")
+        investors = paginator.get_page(page)
+
         ctx = {
             "investors": investors,
             "divisions": divisions,
@@ -580,6 +586,11 @@ class CompaniesView(View):
             division = request.session["division_id"]
         form = SearchCompanyForm()
         companies = Company.objects.filter(division=division).order_by("company_name")
+
+        paginator = Paginator(companies, 15)
+        page = request.GET.get("page")
+        companies = paginator.get_page(page)
+
         ctx = {
             "companies": companies,
             "divisions": divisions,
@@ -785,6 +796,11 @@ class DesignersView(View):
             division = request.session["division_id"]
         form = SearchDesignerForm()
         designers = Designer.objects.filter(division=division).order_by("designer_name")
+
+        paginator = Paginator(designers, 15)
+        page = request.GET.get("page")
+        designers = paginator.get_page(page)
+
         ctx = {
             "designers": designers,
             "divisions": divisions,

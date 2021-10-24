@@ -40,7 +40,25 @@
         </tbody>
       </table>
 
-
+      <div class="d-flex flex-row justify-content-center align-items-center">
+        <nav aria-label="Page navigation example">
+        <ul class="pagination">
+            {% if designers.has_previous %}
+            <li class="page-item"><a class="page-link" href="?page=1">pierwsza</a></li>
+            <li class="page-item"><a class="page-link" href="?page={{ designers.previous_page_number }}">poprzednia</a></li>
+            {% endif %}
+            {% for num in designers.paginator.page_range %}
+            {% if designers.number == num %}
+                <li class="page-item"><a class="page-link" href="?page={{ designers.page_number }}"><strong>{{ num }}/{{ designers.paginator.num_pages }}</strong></a></li>
+            {% endif %}
+            {% endfor %}
+            {% if designers.has_next %}
+            <li class="page-item"><a class="page-link" href="?page={{ designers.next_page_number }}">następna</a></li>
+            <li class="page-item"><a class="page-link" href="?page={{ designers.paginator.num_pages }}">ostatnia</a></li>
+            {% endif %}
+        </ul>
+        </nav>
+      </div>
 </div>
 
 {% endblock %}
