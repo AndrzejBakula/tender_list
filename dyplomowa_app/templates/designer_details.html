@@ -50,7 +50,7 @@
       </form>
       <hr>
       {% endif %}
-      {% if user == designer.designer_added_by %}
+      {% if user in division.division_admin.all %}
       <button type="button" class="btn btn-dark"><a style="color:blanchedalmond" href="{% url 'edit-designer' designer.id %}">Edytuj projektanta</a></button>
       {% if user.is_superuser %}
       <hr>

@@ -18,7 +18,7 @@
     <table class="table-responsive-xl table-striped table-bordered" style="width: 100%;">
         <thead>
           <tr>
-            <th scope="col" style="text-align: center;">ID</th>
+            <th scope="col" style="text-align: center;">Lp</th>
             <th scope="col" style="text-align: center;">Nazwa</th>
             <th scope="col" style="text-align: center;">Adres</th>
             <th scope="col" style="text-align: center;">Województwo</th>
@@ -28,7 +28,7 @@
         <tbody>
             {% for i in companies %}
           <tr>
-            <th scope="col" style="text-align: center;">{{ i.id }}</th>
+            <th scope="col" style="text-align: center;">{{ forloop.counter }}</th>
             <td scope="col" style="text-align: center;"><a href="{% url 'company-details' i.id %}">{{ i.company_name }}</a></td>
             <td scope="col" style="text-align: center;">{{ i.company_address }}</td>
             <td scope="col" style="text-align: center;">{{ i.company_voivodeship }}</td>

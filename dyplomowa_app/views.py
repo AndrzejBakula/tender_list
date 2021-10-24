@@ -314,13 +314,13 @@ class AddInvestor(View):
             investor_voivodeship = data["investor_voivodeship"]
             investor_administration_level = data["investor_administration_level"]
             investor_note = data["investor_note"]
-            investors_names = [i.investor_name for i in Investor.objects.all()]
+            investors_names = [i.investor_name for i in Investor.objects.filter(division=division)]
             if not investor_name in investors_names:
                 investor = Investor.objects.create(investor_name=investor_name, investor_address=investor_address,
                 investor_voivodeship=investor_voivodeship, investor_administration_level=investor_administration_level,
                 investor_added_by=user)
             else:
-                investor = Investor.objects.get(investor_name=investor_name)
+                return redirect("/investors")
             investor.division.add(division)
             noters = [i.investor_note_user for i in InvestorNote.objects.filter(investor_note_investor=investor)]
             if investor_note and not user in noters:
@@ -398,12 +398,14 @@ class InvestorDetails(View):
     def get(self, request, id):
         user = User.objects.get(pk=int(request.session["user_id"]))
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
+        division = Division.objects.get(id=request.session.get("division_id"))
         investor = Investor.objects.get(id=id)
         noters = [i.investor_note_user for i in InvestorNote.objects.filter(investor_note_investor=investor)]
         form = InvestorNoteForm()
         ctx = {
             "investor": investor,
             "divisions": divisions,
+            "division": division,
             "noters": noters,
             "form": form
         }
@@ -529,12 +531,13 @@ class AddCompany(View):
             company_name = data["company_name"]
             company_address = data["company_address"]
             company_voivodeship = data["company_voivodeship"]
-            companies_names = [i.company_name for i in Company.objects.all()]
+            companies_names = [i.company_name for i in Company.objects.filter(division=division)]
+            company = None
             if company_name not in companies_names:
                 company = Company.objects.create(company_name=company_name, company_address=company_address,
                 company_voivodeship=company_voivodeship, company_added_by=user)
             else:
-                company = Company.objects.get(company_name=company_name)
+                return redirect("/companies")
             company.division.add(division)
             company.save()
             if company.company_voivodeship != None and company.company_voivodeship.voivodeship_name != "nieokreślono":
@@ -607,10 +610,12 @@ class CompanyDetails(View):
     def get(self, request, id):
         user = User.objects.get(pk=int(request.session["user_id"]))
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
+        division = Division.objects.get(id=request.session.get("division_id"))
         company = Company.objects.get(id=id)
         ctx = {
             "company": company,
-            "divisions": divisions
+            "divisions": divisions,
+            "division": division
         }
         return render(request, "company_details.html", ctx)
 
@@ -725,12 +730,13 @@ class AddDesigner(View):
             designer_address = data["designer_address"]
             designer_voivodeship = data["designer_voivodeship"]
             designer_note = data["designer_note"]
-            designers_names = [i.designer_name for i in Designer.objects.all()]
+            designers_names = [i.designer_name for i in Designer.objects.filter(division=division)]
+            designer = None
             if designer_name not in designers_names:
                 designer = Designer.objects.create(designer_name=designer_name, designer_address=designer_address,
                 designer_voivodeship=designer_voivodeship, designer_added_by=user)
             else:
-                designer = Designer.objects.get(designer_name=designer_name)
+                return redirect("/designers")
             designer.division.add(division)
             noters = [i.designer_note_user for i in DesignerNote.objects.filter(designer_note_designer=designer)]
             if designer_note and not user in noters:
@@ -809,12 +815,14 @@ class DesignerDetails(View):
     def get(self, request, id):
         user = User.objects.get(pk=int(request.session["user_id"]))
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
+        division = Division.objects.get(id=request.session.get("division_id"))
         designer = Designer.objects.get(id=id)
         noters = [i.designer_note_user for i in DesignerNote.objects.filter(designer_note_designer=designer)]
         form = DesignerNoteForm()
         ctx = {
             "designer": designer,
             "divisions": divisions,
+            "division": division,
             "form": form,
             "noters": noters
         }

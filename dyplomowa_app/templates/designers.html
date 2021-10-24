@@ -18,7 +18,7 @@
     <table class="table-responsive-xl table-striped table-bordered" style="width: 100%;">
         <thead>
           <tr>
-            <th scope="col" style="text-align: center;">ID</th>
+            <th scope="col" style="text-align: center;">LP</th>
             <th scope="col" style="text-align: center;">Nazwa</th>
             <th scope="col" style="text-align: center;">Adres</th>
             <th scope="col" style="text-align: center;">Województwo</th>
@@ -29,7 +29,7 @@
         <tbody>
             {% for i in designers %}
           <tr>
-            <th scope="col" style="text-align: center;">{{ i.id }}</th>
+            <th scope="col" style="text-align: center;">{{ forloop.counter }}.</th>
             <td scope="col" style="text-align: center;"><a href="{% url 'designer-details' i.id %}">{{ i.designer_name }}</a></td>
             <td scope="col" style="text-align: center;">{{ i.designer_address }}</td>
             <td scope="col" style="text-align: center;">{{ i.designer_voivodeship }}</td>

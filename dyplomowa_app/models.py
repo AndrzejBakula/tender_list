@@ -206,7 +206,7 @@ class Poviat(models.Model):
 
 class Investor(models.Model):
 
-    investor_name = models.CharField(max_length=128, unique=True)
+    investor_name = models.CharField(max_length=128)
     investor_address = models.CharField(max_length=256)
     investor_voivodeship = models.ForeignKey(Voivodeship, on_delete=models.CASCADE, default=Voivodeship.VOIVODESHIP[0][0])
     investor_poviat = models.ForeignKey(Poviat, on_delete=models.CASCADE, null=True, default=None)
@@ -227,7 +227,7 @@ class InvestorNote(models.Model):
 
 
 class Designer(models.Model):
-    designer_name = models.CharField(max_length=128, unique=True)
+    designer_name = models.CharField(max_length=128)
     designer_address = models.CharField(max_length=128)
     designer_voivodeship = models.ForeignKey(Voivodeship, on_delete=models.CASCADE, default=Voivodeship.VOIVODESHIP[0][0])
     designer_poviat = models.ForeignKey(Poviat, on_delete=models.CASCADE, null=True, default=None)
@@ -296,7 +296,7 @@ class PaymentMethod(models.Model):
 
 class Company(models.Model):
 
-    company_name  = models.CharField(max_length=64, unique=True)
+    company_name  = models.CharField(max_length=64)
     company_address = models.CharField(max_length=128)
     company_voivodeship = models.ForeignKey(Voivodeship, on_delete=models.CASCADE, default=Voivodeship.VOIVODESHIP[0][0])
     company_poviat = models.ForeignKey(Poviat, on_delete=models.CASCADE, null=True, default=None)

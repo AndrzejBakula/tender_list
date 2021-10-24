@@ -36,10 +36,12 @@
             </tr>
         </tbody>
       </table>
-      {% if user == company.company_added_by %}
+      {% if user in division.division_admin.all %}
       <button type="button" class="btn btn-dark"><a style="color:blanchedalmond" href="{% url 'edit-company' company.id %}">Edytuj firmę</a></button>
+      {% if user.is_superuser %}
       <hr>
       <button type="button" class="btn btn-dark"><a style="color:blanchedalmond" href="{% url 'delete-company' company.id %}">Usuń firmę</a></button>
+      {% endif %}
       {% endif %}
     </div>
 
