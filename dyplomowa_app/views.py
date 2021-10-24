@@ -406,12 +406,14 @@ class InvestorDetails(View):
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         division = Division.objects.get(id=request.session.get("division_id"))
         investor = Investor.objects.get(id=id)
+        division_investor = Project.objects.filter(investor=investor, division=division)
         noters = [i.investor_note_user for i in InvestorNote.objects.filter(investor_note_investor=investor)]
         form = InvestorNoteForm()
         ctx = {
             "investor": investor,
             "divisions": divisions,
             "division": division,
+            "division_investor": division_investor,
             "noters": noters,
             "form": form
         }
@@ -833,12 +835,14 @@ class DesignerDetails(View):
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         division = Division.objects.get(id=request.session.get("division_id"))
         designer = Designer.objects.get(id=id)
+        division_designer = Project.objects.filter(designer=designer, division=division)
         noters = [i.designer_note_user for i in DesignerNote.objects.filter(designer_note_designer=designer)]
         form = DesignerNoteForm()
         ctx = {
             "designer": designer,
             "divisions": divisions,
             "division": division,
+            "division_designer": division_designer,
             "form": form,
             "noters": noters
         }
@@ -1499,8 +1503,13 @@ class RemoveMemberView(View):
 class UserDetailsView(View):
     def get(self, request, id):
         user = User.objects.get(id=id)
+        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
+        division = Division.objects.get(id=request.session.get("division_id"))
+        user_projects = Project.objects.filter(person=user, division=division)
         ctx = {
-            "user": user
+            "user": user,
+            "divisions": divisions,
+            "user_projects": user_projects
         }
         return render(request, "user_details.html", ctx)
 

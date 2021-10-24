@@ -15,12 +15,12 @@
         <table class="table table-striped table-bordered">
             <tbody>
                 <tr>
-                    <th scope="col">ID</th>
-                    <td scope="col">{{ user.id }}</th>
-                </tr>
-                <tr>
                     <th scope="col">Nazwa użytkownika</th>
                     <td scope="col">{{ user.username }}</td>
+                </tr>
+                <tr>
+                    <th scope="col">Liczba projektów</th>
+                    <td scope="col">{{ user_projects.count }}</th>
                 </tr>
             </tbody>
         </table>

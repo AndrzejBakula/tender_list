@@ -59,7 +59,9 @@
             </tr>
             <tr>
                 <th scope="col">Inwestor</th>
-                <td scope="col">{{ project.investor.investor_name }}</td>
+                <td scope="col" style="text-align: center;">
+                    <a href="{% url 'investor-details' project.investor.id %}">{{ project.investor.investor_name }}</a>
+                </td>
             </tr>
             <tr>
                 <th scope="col">Termin realizacji</th>
@@ -111,7 +113,13 @@
             </tr>
             <tr>
                 <th scope="col">Projektant</th>
-                <td scope="col">{% if project.designer %} {{ project.designer }} {% else %} nieokreślono {% endif %}</td>
+                <td scope="col">
+                    {% if project.designer %}
+                        <a href="{% url 'designer-details' project.designer.id %}">{{ project.designer.designer_name }}</a>
+                    {% else %}
+                        nieokreślono
+                    {% endif %}
+                </td>
             </tr>
             <tr>
                 <th scope="col">Priorytet</th>
