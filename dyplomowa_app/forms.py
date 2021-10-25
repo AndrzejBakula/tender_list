@@ -403,8 +403,9 @@ class EditCriteriaForm(forms.Form):
             self.fields[f"deadline_weight"] = forms.ModelChoiceField(label="Waga terminu [%]",
                 queryset=Weight.objects.all())
         if tender.is_other_criteria:
+            queryset = Criteria.objects.all().order_by("criteria_name", "weight").distinct("criteria_name", "weight")
             self.fields[f"criteria"] = forms.ModelMultipleChoiceField(label="Wybierz inne kryteria oceny",
-                queryset=Criteria.objects.all().order_by("criteria_name"), required=False)
+                queryset=queryset, required=False)
 
 
 class EditOtherCriteriaForm(forms.Form):
