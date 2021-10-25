@@ -8,14 +8,21 @@
 {% if user.is_authenticated %}
 {% if request.session.division_id %}
 <div class="d-flex flex-column align-items-center" style="height: 100%; width: 100%; padding: 0.5%;">
+  {% if projects.count == 0 %}
+  <div class="d-flex flex-row justify-content-center align-items-center">
+    <h2 class="display-5 align-self-center">Brak Aktualnych Projektów</a></h2>
+  </div>
+  {% else %}
   <div class="d-flex flex-row justify-content-center align-items-center">
     <h2 class="display-5 align-self-center">Aktualne Projekty</a></h2>
   </div>
 
+  {% if projects.count > 15 %}
   <form class="d-flex flex-row justify-content-center align-items-center" style="height: 100%; width: 100%;" action="{% url 'projects' %}" method="POST">
     {% csrf_token %}
     {{ form.as_p }}
   </form>
+  {% endif %}
 
     <table class="table-responsive-xl table-striped table-bordered" style="width: 100%;">
         <thead>
@@ -61,7 +68,7 @@
             {% endfor %}
         </tbody>
       </table>
-
+  {% endif %}
 </div>
 {% endif %}
 {% endif %}

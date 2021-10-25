@@ -313,8 +313,9 @@ class AddCriteriaForm(forms.Form):
             self.fields[f"deadline_weight"] = forms.ModelChoiceField(label="Waga terminu [%]",
                 queryset=Weight.objects.all(), required=False)
         if tender.is_other_criteria:
+            queryset = Criteria.objects.all().order_by("criteria_name", "weight").distinct("criteria_name", "weight")
             self.fields[f"criteria"] = forms.ModelMultipleChoiceField(label="Wybierz inne kryteria oceny",
-                queryset=Criteria.objects.all().order_by("criteria_name"), required=False)
+                queryset=queryset, required=False)
 
 
 class AddOtherCriteriaForm(forms.Form):
@@ -355,18 +356,18 @@ class AddTendererForm(forms.Form):
         else:
             self.fields[f"tenderer"] = forms.ModelChoiceField(label="Oferent",
                 queryset=Company.objects.all().order_by("company_name"))
-        self.fields[f"offer_value"] = forms.FloatField(label="Wartość oferty brutto", required=False,
+        self.fields[f"offer_value"] = forms.FloatField(label="Wartość oferty brutto",
         widget=forms.NumberInput(attrs={'step': "0.01"}))
         if tender.is_guarantee:
             min_guar = int(tender.guarantee.months_min.month)-1
             max_guar = int(tender.guarantee.months_max.month)+1
             self.fields[f"offer_guarantee"] = forms.ModelChoiceField(label="Gwarancja",
-                queryset=Month.objects.filter(month__gt=min_guar, month__lt=max_guar), required=False)
+                queryset=Month.objects.filter(month__gt=min_guar, month__lt=max_guar))
         if tender.is_deadline:
             min_dead = int(tender.deadline.months_min.month)-1
             max_dead = int(tender.deadline.months_max.month)+1
             self.fields[f"offer_deadline"] = forms.ModelChoiceField(label="Termin wykonania",
-                queryset=Month.objects.filter(month__gt=min_dead, month__lt=max_dead), required=False)
+                queryset=Month.objects.filter(month__gt=min_dead, month__lt=max_dead))
         if tender.is_other_criteria:
             for i in tender.other_criteria.all():
                 self.fields[f"criteria_value_{i.id}"] = forms.CharField(label=f"Wartość kryterium: {i.criteria_name}",
