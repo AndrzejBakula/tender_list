@@ -959,9 +959,18 @@ class DateChoiceView(View):
 
 class AddProject(View):
     def get(self, request):
-        form = AddProjectForm()
+        user = None
+        division = None
+        if request.session.get("user_id") not in ("", None):
+            user = User.objects.get(pk=int(request.session["user_id"]))
+        if request.session.get("division_id") not in ("", None):
+            division = Division.objects.get(id=request.session.get("division_id"))
+        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
+        form = AddProjectForm(user=user, division=division)
         ctx = {
-            "form": form
+            "form": form,
+            "division": division,
+            "divisions": divisions
         }
         return render(request, "add_project.html", ctx)
     
@@ -1036,6 +1045,13 @@ class AddProject(View):
 
 class AddProjectPoviat(View):
     def get(self, request, id):
+        user = None
+        division = None
+        if request.session.get("user_id") not in ("", None):
+            user = User.objects.get(pk=int(request.session["user_id"]))
+        if request.session.get("division_id") not in ("", None):
+            division = Division.objects.get(id=request.session.get("division_id"))
+        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         project = Project.objects.get(id=id)
         form = AddProjectPoviatForm(project=project)
         ctx = {
