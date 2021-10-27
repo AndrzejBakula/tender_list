@@ -367,8 +367,8 @@ class InvestorsView(View):
         user = User.objects.get(pk=int(request.session["user_id"]))
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         division = Division.objects.get(id=request.session.get("division_id"))
-        form = SearchInvestorForm()
         investors = Investor.objects.filter(division=division).order_by("investor_name")
+        form = SearchInvestorForm()
 
         paginator = Paginator(investors, 15)
         page = request.GET.get("page")

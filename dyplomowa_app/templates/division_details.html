@@ -28,14 +28,14 @@
                     <th scope="col">Członkowie zespołu</th>
                     <td scope="col">
                         {% for i in division.division_person.all %}
-                            {{ i.username }}
-                                {% if not i in division.division_admin.all and user == division.division_creator and not i == division.division_creator %}
-                                    <a href="{% url 'add-admin' division.id i.id %}">(Zrób adminem)</a>
-                                {% endif %}
-                                {% if user == division.division_creator and not i == division.division_creator %}
-                                    <a href="{% url 'remove-member' division.id i.id %}">(Usuń z zespołu)</a>
-                                {% endif %}
-                                <hr>
+                            <a href="{% url 'user-details' i.id %}">{{ i.username }}</a>
+                            {% if not i in division.division_admin.all and user == division.division_creator and not i == division.division_creator %}
+                                <a href="{% url 'add-admin' division.id i.id %}">(Zrób adminem)</a>
+                            {% endif %}
+                            {% if user == division.division_creator and not i == division.division_creator %}
+                                <a href="{% url 'remove-member' division.id i.id %}">(Usuń z zespołu)</a>
+                            {% endif %}
+                            <hr>
                         {% endfor %}
                     </td>
                 </tr>
@@ -43,20 +43,20 @@
                     <th scope="col">Admini zespołu</th>
                     <td scope="col">
                         {% for i in division.division_admin.all %}
-                            {{ i.username }}
-                                {% if user == division.division_creator and not i == division.division_creator %}
-                                    <a href="{% url 'cancel-admin' division.id i.id %}">(Odbierz admina)</a>
-                                {% endif %}<hr>
+                            <a href="{% url 'user-details' i.id %}">{{ i.username }}</a>
+                            {% if user == division.division_creator and not i == division.division_creator %}
+                                <a href="{% url 'cancel-admin' division.id i.id %}">(Odbierz admina)</a>
+                            {% endif %}<hr>
                         {% endfor %}</td>
                 </tr>
                 <tr>
                     <th scope="col">Chcą dołączyć</th>
                     <td scope="col">
                         {% for i in division.division_wannabe.all %}
-                            {{ i.username }}
-                                {% if user == division.division_creator %}
-                                <a href="{% url 'add-person' division.id i.id %}">(Dodaj)</a>
-                                {% endif %}
+                            <a href="{% url 'user-details' i.id %}">{{ i.username }}</a>
+                            {% if user == division.division_creator %}
+                            <a href="{% url 'add-person' division.id i.id %}">(Dodaj)</a>
+                            {% endif %}
                         {% endfor %}
                         <hr>
                     </td>

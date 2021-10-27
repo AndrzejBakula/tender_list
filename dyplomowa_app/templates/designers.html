@@ -30,7 +30,7 @@
         <tbody>
             {% for i in designers %}
           <tr>
-            <th scope="col" style="text-align: center;">{{ forloop.counter }}.</th>
+            <th scope="col" style="text-align: center;">{{ forloop.counter0|add:designers.start_index }}</th>
             <td scope="col" style="text-align: center;"><a href="{% url 'designer-details' i.id %}">{{ i.designer_name }}</a></td>
             <td scope="col" style="text-align: center;">{{ i.designer_address }}</td>
             <td scope="col" style="text-align: center;">{{ i.designer_voivodeship }}</td>

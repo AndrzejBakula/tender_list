@@ -10,10 +10,12 @@
         <h2 class="display-5 align-self-center">Zestawienie Inwestorów</a></h2>
     </div>
 
+    {% if investors.all > 15 %}
     <form class="d-flex flex-row justify-content-center align-items-center" style="height: 100%; width: 100%;" action="{% url 'investors' %}" method="POST">
       {% csrf_token %}
       {{ form.as_p }}
     </form>
+    {% endif %}
 
     <table class="table-responsive-xl table-striped table-bordered" style="width: 100%;">
         <thead>
@@ -30,7 +32,7 @@
         <tbody>
             {% for i in investors %}
           <tr>
-            <th scope="col" style="text-align: center;">{{ forloop.counter }}</th>
+            <th scope="col" style="text-align: center;">{{ forloop.counter0|add:investors.start_index }}</th>
             <td scope="col" style="text-align: center;"><a href="{% url 'investor-details' i.id %}">{{ i.investor_name }}</a></td>
             <td scope="col" style="text-align: center;">{{ i.investor_address }}</td>
             <td scope="col" style="text-align: center;">{{ i.investor_administration_level }}</td>

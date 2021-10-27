@@ -18,7 +18,8 @@
   </div>
 
   {% if archives.count > 15 %}
-  <form class="d-flex flex-row justify-content-center align-items-center" style="height: 100%; width: 100%;" action="{% url 'archives' %}" method="POST">
+  <form class="d-flex flex-row justify-content-center align-items-center" style="height: 100%; width: 100%;"
+    action="{% url 'archives' %}" method="POST">
     {% csrf_token %}
     {{ form.as_p }}
   </form>

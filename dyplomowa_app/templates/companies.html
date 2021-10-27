@@ -28,7 +28,7 @@
         <tbody>
             {% for i in companies %}
           <tr>
-            <th scope="col" style="text-align: center;">{{ forloop.counter }}</th>
+            <th scope="col" style="text-align: center;">{{ forloop.counter0|add:companies.start_index }}</th>
             <td scope="col" style="text-align: center;"><a href="{% url 'company-details' i.id %}">{{ i.company_name }}</a></td>
             <td scope="col" style="text-align: center;">{{ i.company_address }}</td>
             <td scope="col" style="text-align: center;">{{ i.company_voivodeship }}</td>
