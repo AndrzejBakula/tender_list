@@ -23,7 +23,7 @@ from dyplomowa_app.views import AddCompany, AddCompanyPoviat, CompaniesView, Com
 from dyplomowa_app.views import ArchivesView, DivisionChoiceView, DivisionChoiceConfirm, RegisterView, DeleteCompanyConfirm
 from dyplomowa_app.views import AddDivisionView, DivisionDetails, AddAdminView, CancelAdminView, JoinDivisionView
 from dyplomowa_app.views import AddPersonView, DateChoiceView, EditDivisionView, DeleteDivisionView, EditProjectPoviat
-from dyplomowa_app.views import DeleteDivisionConfirm, RemoveMemberView, UserDetailsView, AddTenderView
+from dyplomowa_app.views import DeleteDivisionConfirm, RemoveMemberView, PersonDetailsView, AddTenderView
 from dyplomowa_app.views import AddTenderCriteria, AddOtherCriteria, AddTenderDetails, EditCompanyPoviat
 from dyplomowa_app.views import AddInvestorPoviat, EditInvestorPoviat, AddDesignerPoviat, EditDesignerPoviat
 from dyplomowa_app.views import TenderDetailsView, EditTenderView, DeleteTenderView, DeleteTenderConfirm, EditTenderCriteria
@@ -77,11 +77,11 @@ urlpatterns = [
     path('edit_division/<int:id>', EditDivisionView.as_view(), name='edit-division'),
     path('delete_division/<int:id>', DeleteDivisionView.as_view(), name='delete-division'),
     path('delete_division_confirm/<int:id>', DeleteDivisionConfirm.as_view(), name='delete-division-confirm'),
-    path('add_admin/<int:division_id>/<int:user_id>', AddAdminView.as_view(), name='add-admin'),
-    path('cancel_admin/<int:division_id>/<int:user_id>', CancelAdminView.as_view(), name='cancel-admin'),
-    path('add_person/<int:division_id>/<int:user_id>', AddPersonView.as_view(), name='add-person'),
-    path('remove_member/<int:division_id>/<int:user_id>', RemoveMemberView.as_view(), name='remove-member'),
-    path('user_details/<int:id>', UserDetailsView.as_view(), name='user-details'),
+    path('add_admin/<int:division_id>/<int:person_id>', AddAdminView.as_view(), name='add-admin'),
+    path('cancel_admin/<int:division_id>/<int:person_id>', CancelAdminView.as_view(), name='cancel-admin'),
+    path('add_person/<int:division_id>/<int:person_id>', AddPersonView.as_view(), name='add-person'),
+    path('remove_member/<int:division_id>/<int:person_id>', RemoveMemberView.as_view(), name='remove-member'),
+    path('person_details/<int:id>', PersonDetailsView.as_view(), name='person-details'),
     path('add_tender/<int:id>', AddTenderView.as_view(), name='add-tender'),
     path('add_tender_criteria/<int:project_id>/<int:tender_id>', AddTenderCriteria.as_view(), name='add-tender-criteria'),
     path('add_other_criteria/<int:project_id>/<int:tender_id>', AddOtherCriteria.as_view(), name='add-other-criteria'),

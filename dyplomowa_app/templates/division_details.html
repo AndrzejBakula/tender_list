@@ -27,8 +27,8 @@
                 <tr>
                     <th scope="col">Członkowie zespołu</th>
                     <td scope="col">
-                        {% for i in division.division_person.all %}
-                            <a href="{% url 'user-details' i.id %}">{{ i.username }}</a>
+                        {% for i in division.division_person.all|dictsort:"username" %}
+                            <a href="{% url 'person-details' i.id %}">{{ i.username }}</a>
                             {% if not i in division.division_admin.all and user == division.division_creator and not i == division.division_creator %}
                                 <a href="{% url 'add-admin' division.id i.id %}">(Zrób adminem)</a>
                             {% endif %}
@@ -42,8 +42,8 @@
                 <tr>
                     <th scope="col">Admini zespołu</th>
                     <td scope="col">
-                        {% for i in division.division_admin.all %}
-                            <a href="{% url 'user-details' i.id %}">{{ i.username }}</a>
+                        {% for i in division.division_admin.all|dictsort:"username" %}
+                            <a href="{% url 'person-details' i.id %}">{{ i.username }}</a>
                             {% if user == division.division_creator and not i == division.division_creator %}
                                 <a href="{% url 'cancel-admin' division.id i.id %}">(Odbierz admina)</a>
                             {% endif %}<hr>
@@ -52,8 +52,8 @@
                 <tr>
                     <th scope="col">Chcą dołączyć</th>
                     <td scope="col">
-                        {% for i in division.division_wannabe.all %}
-                            <a href="{% url 'user-details' i.id %}">{{ i.username }}</a>
+                        {% for i in division.division_wannabe.all|dictsort:"username" %}
+                            <a href="{% url 'person-details' i.id %}">{{ i.username }}</a>
                             {% if user == division.division_creator %}
                             <a href="{% url 'add-person' division.id i.id %}">(Dodaj)</a>
                             {% endif %}

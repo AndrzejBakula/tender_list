@@ -10,8 +10,9 @@
         <h2 class="display-5 align-self-center">Zestawienie Inwestorów</a></h2>
     </div>
 
-    {% if investors.all > 15 %}
-    <form class="d-flex flex-row justify-content-center align-items-center" style="height: 100%; width: 100%;" action="{% url 'investors' %}" method="POST">
+    {% if investors.all.count != 0 %}
+    <form class="d-flex flex-row justify-content-center align-items-center"
+      style="height: 100%; width: 100%;" action="{% url 'investors' %}" method="POST">
       {% csrf_token %}
       {{ form.as_p }}
     </form>

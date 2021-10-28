@@ -1474,21 +1474,22 @@ class DeleteDivisionConfirm(View):
 
 
 class AddAdminView(View):
-    def get(self, request, division_id, user_id):
+    def get(self, request, division_id, person_id):
         division = Division.objects.get(id=division_id)
-        user = User.objects.get(id=user_id)
-        division.division_admin.add(user)
+        person = User.objects.get(id=person_id)
+        division.division_admin.add(person)
         division.save()
-        user.is_staff = True
-        user.save()
+        person.is_staff = True
+        person.save()
         return redirect(f"/division_details/{division.id}")
 
 
 class CancelAdminView(View):
-    def get(self, request, division_id, user_id):
+    def get(self, request, division_id, person_id):
+        user = User.objects.get(pk=int(request.session["user_id"]))
         division = Division.objects.get(id=division_id)
-        user = User.objects.get(id=user_id)
-        division.division_admin.remove(user)
+        person = User.objects.get(id=person_id)
+        division.division_admin.remove(person)
         division.save()
         divisions = Division.objects.filter(division_admin=user)
         if len(divisions) == 0:
@@ -1498,36 +1499,37 @@ class CancelAdminView(View):
 
 
 class AddPersonView(View):
-    def get(self, request, division_id, user_id):
+    def get(self, request, division_id, person_id):
         division = Division.objects.get(id=division_id)
-        user = User.objects.get(id=user_id)
-        division.division_person.add(user)
-        division.division_wannabe.remove(user)
+        person = User.objects.get(id=person_id)
+        division.division_person.add(person)
+        division.division_wannabe.remove(person)
         division.save()
         return redirect(f"/division_details/{division.id}")
 
 
 class RemoveMemberView(View):
-    def get(self, request, division_id, user_id):
+    def get(self, request, division_id, person_id):
         division = Division.objects.get(id=division_id)
-        user = User.objects.get(id=user_id)
-        division.division_person.remove(user)
+        person = User.objects.get(id=person_id)
+        division.division_person.remove(person)
         division.save()
         return redirect(f"/division_details/{division.id}")
 
 
-class UserDetailsView(View):
+class PersonDetailsView(View):
     def get(self, request, id):
-        user = User.objects.get(id=id)
+        person = User.objects.get(id=id)
+        user = User.objects.get(pk=int(request.session["user_id"]))
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         division = Division.objects.get(id=request.session.get("division_id"))
-        user_projects = Project.objects.filter(person=user, division=division)
+        person_projects = Project.objects.filter(person=person, division=division)
         ctx = {
-            "user": user,
+            "person": person,
             "divisions": divisions,
-            "user_projects": user_projects
+            "person_projects": person_projects
         }
-        return render(request, "user_details.html", ctx)
+        return render(request, "person_details.html", ctx)
 
 
 class AddTenderView(View):

@@ -71,8 +71,9 @@
       </div>
       {% endif %}
       {% if user.is_staff and request.session.division_id %}
-      <div class="d-flex flex-row justify-content-center align-items-center" style="padding-bottom: 0.5%; padding-top: 0.5%; padding-left: 0.5%;">
-        {% if request.session.division_id in divisions %}
+      {% if request.session.division_id in divisions %}
+      <div class="d-flex flex-row justify-content-center align-items-center"
+        style="padding-bottom: 0.5%; padding-top: 0.5%; padding-left: 0.5%;">
         <a href="{% url 'add-project' %}" style="color: black;">
           <button type="button" class="btn btn-outline-primary align-self-center" style="text-align: center;">
             Dodaj Projekt
@@ -93,8 +94,8 @@
             Dodaj Projektanta
           </button>
         </a>
-        {% endif %}
       </div>
+      {% endif %}
       {% endif %}
       <div class="d-flex flex-row justify-content-center align-items-center" style="padding-left: 0.5%;">
         <a href="{% url 'division-choice' %}" class="btn btn-outline-primary m-1">Moje zespoły</a>
