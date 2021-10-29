@@ -365,6 +365,7 @@ class Tenderer(models.Model):
     offer_guarantee = models.ForeignKey(Month, on_delete=models.CASCADE, null=True, default=None, related_name="offer_guarantee")
     offer_deadline = models.ForeignKey(Month, on_delete=models.CASCADE, null=True, default=None, related_name="offer_deadline")
     other_criteria = models.ManyToManyField(Criteria, default=None)
+    is_winner = models.BooleanField(default=False)
 
 
 class Tender(models.Model):
