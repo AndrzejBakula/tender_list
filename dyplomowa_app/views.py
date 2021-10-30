@@ -1762,12 +1762,25 @@ class TenderDetailsView(View):
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         project = Project.objects.get(id=project_id)
         tender = Tender.objects.get(id=tender_id)
+        winner = Tenderer.objects.filter(tender=tender, is_winner=True)
         ctx = {
             "divisions": divisions,
             "project": project,
-            "tender": tender
+            "tender": tender,
+            "winner": winner
         }
         return render(request, "tender_details.html", ctx)
+
+
+class MakeWinnerView(View):
+    
+    def get(self, request, tender_id, tenderer_id):
+        tenderer = Tenderer.objects.get(id=tenderer_id)
+        tenderer.is_winner = True
+        tenderer.save()
+        tender = Tender.objects.get(id=tender_id)
+        project = Project.objects.get(tender_id=tender_id)
+        return redirect(f"/tender_details/{project.id}/{tender.id}")
 
 
 class EditTenderView(View):

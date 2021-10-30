@@ -52,6 +52,12 @@
             <tr>
                 <td scope="col" style="text-align: center;">
                     <a href="{% url 'company-details' i.tenderer.id %}">{{ i.tenderer.company_name }}</a>
+                    {% if not i.is_winner and not winner %}
+                    <a href="{% url 'make-winner' tender.id i.id %}"> (Oznacz jako wygranego)</a>
+                    {% elif i.is_winner %}
+                    WYGRANY!
+                    <a href="{% url 'make-winner' tender.id i.id %}">(Zmień)</a>
+                    {% endif %}
                 </td>
                 <td scope="col" style="text-align: center;">{{ i.offer_value }}</td>
                 {% if i.offer_guarantee %}
