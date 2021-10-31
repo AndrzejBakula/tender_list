@@ -1762,12 +1762,25 @@ class TenderDetailsView(View):
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         project = Project.objects.get(id=project_id)
         tender = Tender.objects.get(id=tender_id)
-        winner = Tenderer.objects.filter(tender=tender, is_winner=True)
+        winner = None
+        rest = None
+        for i in tender.tenderer.all():
+            if i.is_winner:
+                winner = i
+                break
+        tenderers = None
+        if winner:
+            rest = tender.tenderer.filter().exclude(id=winner.id).order_by("offer_value")
+            tenderers = [winner] + [i for i in rest]
+        else:
+            rest = tender.tenderer.all().order_by("offer_value")
+            tenderers = [i for i in rest]
         ctx = {
             "divisions": divisions,
             "project": project,
             "tender": tender,
-            "winner": winner
+            "winner": winner,
+            "tenderers": tenderers
         }
         return render(request, "tender_details.html", ctx)
 
@@ -1777,6 +1790,17 @@ class MakeWinnerView(View):
     def get(self, request, tender_id, tenderer_id):
         tenderer = Tenderer.objects.get(id=tenderer_id)
         tenderer.is_winner = True
+        tenderer.save()
+        tender = Tender.objects.get(id=tender_id)
+        project = Project.objects.get(tender_id=tender_id)
+        return redirect(f"/tender_details/{project.id}/{tender.id}")
+
+
+class RemoveWinnerView(View):
+    
+    def get(self, request, tender_id, tenderer_id):
+        tenderer = Tenderer.objects.get(id=tenderer_id)
+        tenderer.is_winner = False
         tenderer.save()
         tender = Tender.objects.get(id=tender_id)
         project = Project.objects.get(tender_id=tender_id)

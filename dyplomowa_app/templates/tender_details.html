@@ -48,7 +48,7 @@
             </tr>
         </thead>
         <tbody>
-            {% for i in tender.tenderer.all|dictsort:"offer_value" %}
+            {% for i in tenderers %}
             <tr>
                 <td scope="col" style="text-align: center;">
                     <a href="{% url 'company-details' i.tenderer.id %}">{{ i.tenderer.company_name }}</a>
@@ -56,7 +56,7 @@
                     <a href="{% url 'make-winner' tender.id i.id %}"> (Oznacz jako wygranego)</a>
                     {% elif i.is_winner %}
                     WYGRANY!
-                    <a href="{% url 'make-winner' tender.id i.id %}">(Zmień)</a>
+                    <a href="{% url 'remove-winner' tender.id i.id %}">(Zmień)</a>
                     {% endif %}
                 </td>
                 <td scope="col" style="text-align: center;">{{ i.offer_value }}</td>
