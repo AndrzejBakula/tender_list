@@ -314,12 +314,13 @@ class AddCriteriaForm(forms.Form):
         self.tender = tender
         super(AddCriteriaForm, self).__init__(*args, **kwargs)
         if tender.is_guarantee:
+            used_weight = 100-int(tender.value_weight.weight)+1
             self.fields[f"guarantee_min"] = forms.ModelChoiceField(label="Gwarancja min [mies.]",
                 queryset=Month.objects.all(), required=False)
             self.fields[f"guarantee_max"] = forms.ModelChoiceField(label="Gwarancja max [mies.]",
                 queryset=Month.objects.all(), required=False)
             self.fields[f"guarantee_weight"] = forms.ModelChoiceField(label="Waga gwarancji [%]",
-                queryset=Weight.objects.all(), required=False)
+                queryset=Weight.objects.filter(weight__lt=used_weight), required=False)
         if tender.is_deadline:
             self.fields[f"deadline_min"] = forms.ModelChoiceField(label="Termin min [mies.]",
                 queryset=Month.objects.all(), required=False)

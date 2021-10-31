@@ -589,10 +589,17 @@ class CompaniesView(View):
         form = SearchCompanyForm()
         companies = Company.objects.filter(division=division).order_by("company_name")
         division_company = None
+        rest = None
         for i in companies:
             if i.division_company:
                 division_company = i
                 break
+        if division_company:
+            rest = companies.filter().exclude(id=division_company.id).order_by("company_name")
+            companies = [division_company] + [i for i in rest]
+        else:
+            rest = companies.all().order_by("company_name")
+            companies = [i for i in rest]
 
         paginator = Paginator(companies, 15)
         page = request.GET.get("page")
@@ -1007,7 +1014,13 @@ class AddProject(View):
         return render(request, "add_project.html", ctx)
     
     def post(self, request):
-        form = AddProjectForm(request.POST)
+        user = None
+        division = None
+        if request.session.get("user_id") not in ("", None):
+            user = User.objects.get(pk=int(request.session["user_id"]))
+        if request.session.get("division_id") not in ("", None):
+            division = Division.objects.get(id=request.session.get("division_id"))
+        form = AddProjectForm(request.POST, user=user, division=division)
         if form.is_valid():
             data = form.cleaned_data
             project_number = data["project_number"]
@@ -1040,7 +1053,6 @@ class AddProject(View):
             if project_url == "":
                 project_url = None
             person = data["person"]
-            division = data["division"]
             rc_date = data["rc_date"]
             if rc_date == "":
                 rc_date = None
@@ -1066,9 +1078,6 @@ class AddProject(View):
             for i in jv_partners:
                 project.jv_partners.add(i)
             project.save()
-            ctx = {
-                "form": form
-            }
             if project.voivodeship != None and project.voivodeship.voivodeship_name != "nieokreślono":
                 return redirect(f"/add_project_poviat/{project.id}")
             else:

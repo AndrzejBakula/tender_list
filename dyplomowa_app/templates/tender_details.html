@@ -49,30 +49,15 @@
         </thead>
         <tbody>
             {% for i in tenderers %}
-            {% if i.is_winner %}
+            {% if i.is_winner and i.tenderer.division_company %}
+            <tr style="color: red; background-color: lightblue;">
+            {% elif i.is_winner %}
             <tr style="color: red;">
-                <td scope="col" style="text-align: center;">
-                    <a href="{% url 'company-details' i.tenderer.id %}">{{ i.tenderer.company_name }}</a>
-                    {% if not i.is_winner and not winner %}
-                    <a href="{% url 'make-winner' tender.id i.id %}"> (Oznacz jako wygranego)</a>
-                    {% elif i.is_winner %}
-                    WYGRANY!
-                    <a href="{% url 'remove-winner' tender.id i.id %}">(Zmień)</a>
-                    {% endif %}
-                </td>
-                <td scope="col" style="text-align: center;">{{ i.offer_value }}</td>
-                {% if i.offer_guarantee %}
-                <td scope="col" style="text-align: center;">{{ i.offer_guarantee }} mies.</td>
-                {% endif %}
-                {% if i.offer_deadline %}
-                <td scope="col" style="text-align: center;">{{ i.offer_deadline }}</td>
-                {% endif %}
-                {% for j in i.other_criteria.all %}
-                <td scope="col" style="text-align: center;">{{ j.criteria_value }}</td>
-                {% endfor %}
-            </tr>
+            {% elif i.tenderer.division_company %}
+            <tr style="background-color: lightblue;">
             {% else %}
             <tr>
+            {% endif %}
                 <td scope="col" style="text-align: center;">
                     <a href="{% url 'company-details' i.tenderer.id %}">{{ i.tenderer.company_name }}</a>
                     {% if not i.is_winner and not winner %}
@@ -93,7 +78,8 @@
                 <td scope="col" style="text-align: center;">{{ j.criteria_value }}</td>
                 {% endfor %}
             </tr>
-            {% endif %}
+
+
             {% endfor %}
         </tbody>
     </table>
