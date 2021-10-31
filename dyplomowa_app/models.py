@@ -158,14 +158,14 @@ class Poviat(models.Model):
         (242, "brzeziński"), (243, "kutnowski"), (244, "łaski"), (245, "łęczycki"), (246, "łowicki"),
         (247, "łódzki wschodni"), (248, "opoczyński"), (249, "pabianicki"), (250, "pajęczański"), (251, "piotrkowski"),
         (252, "poddębicki"), (253, "radomszczański"), (254, "rawski"), (255, "sieradzki"), (256, "skierniewicki"),
-        (257, "tomaszowski"), (258, "wieruszowski"), (259, "wieluński"), (260, "zduńskowolski"), (261, "zgierski"),
+        (257, "tomaszowski (łódzkie)"), (258, "wieruszowski"), (259, "wieluński"), (260, "zduńskowolski"), (261, "zgierski"),
 
         #LUBELSKIE
         (262, "Lublin"), (263, "Biała Podlaska"), (264, "Chełm"), (265, "Zamość"), (266, "bialski"),
         (267, "biłgorajski"), (268, "chełmski"), (269, "hrubieszowski"), (270, "janowski"), (271, "krasnostawski"),
         (272, "kraśnicki"), (273, "lubartowski"), (274, "lubelski"), (275, "łęczyński"), (276, "łukowski"),
         (277, "opolski"), (278, "parczewski"), (279, "puławski"), (280, "radzyński"), (281, "rycki"),
-        (282, "świdnicki"), (283, "tomaszowski"), (284, "włodawski"), (285, "zamojski"),
+        (282, "świdnicki"), (283, "tomaszowski (lubelskie)"), (284, "włodawski"), (285, "zamojski"),
 
         #MAZOWIECKIE
         (286, "Warszawa"), (287, "Ostrołęka"), (288, "Płock"), (289, "Radom"), (290, "Siedlce"), (291, "białobrzeski"),
@@ -301,7 +301,8 @@ class Company(models.Model):
     company_voivodeship = models.ForeignKey(Voivodeship, on_delete=models.CASCADE, default=Voivodeship.VOIVODESHIP[0][0])
     company_poviat = models.ForeignKey(Poviat, on_delete=models.CASCADE, null=True, default=None)
     company_added_by = models.ForeignKey(User, on_delete=models.CASCADE)
-    division = models.ManyToManyField(Division)
+    division = models.ManyToManyField(Division, related_name="division")
+    division_company = models.ForeignKey(Division, on_delete=models.CASCADE, null=True, default=None, related_name="division_company")
 
 
     def __str__(self):
