@@ -588,6 +588,11 @@ class CompaniesView(View):
             division = request.session["division_id"]
         form = SearchCompanyForm()
         companies = Company.objects.filter(division=division).order_by("company_name")
+        division_company = None
+        for i in companies:
+            if i.division_company:
+                division_company = i
+                break
 
         paginator = Paginator(companies, 15)
         page = request.GET.get("page")
@@ -596,7 +601,8 @@ class CompaniesView(View):
         ctx = {
             "companies": companies,
             "divisions": divisions,
-            "form": form
+            "form": form,
+            "division_company": division_company
         }
         return render(request, "companies.html", ctx)
     
@@ -617,6 +623,32 @@ class CompaniesView(View):
                 "divisions": divisions
             }
             return render(request, "companies.html", ctx)
+
+
+class AddMyCompanyView(View):
+
+    def get(self, request, company_id):
+        user = User.objects.get(pk=int(request.session["user_id"]))
+        division = None
+        if request.session.get("division_id"):
+            division = Division.objects.get(id=request.session["division_id"])
+        company = Company.objects.get(id=company_id)
+        company.division_company = division
+        company.save()
+        return redirect("/companies")
+
+
+class RemoveMyCompanyView(View):
+
+    def get(self, request, company_id):
+        user = User.objects.get(pk=int(request.session["user_id"]))
+        division = None
+        if request.session.get("division_id"):
+            division = Division.objects.get(id=request.session["division_id"])
+        company = Company.objects.get(id=company_id)
+        company.division_company = None
+        company.save()
+        return redirect("/companies")
 
 
 class CompanyDetails(View):

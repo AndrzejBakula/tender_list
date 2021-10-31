@@ -28,7 +28,7 @@ from dyplomowa_app.views import AddTenderCriteria, AddOtherCriteria, AddTenderDe
 from dyplomowa_app.views import AddInvestorPoviat, EditInvestorPoviat, AddDesignerPoviat, EditDesignerPoviat
 from dyplomowa_app.views import TenderDetailsView, EditTenderView, DeleteTenderView, DeleteTenderConfirm, EditTenderCriteria
 from dyplomowa_app.views import DeleteOtherCriteriaView, DeleteTendererView, AddMissingCriteria, MakeWinnerView
-from dyplomowa_app.views import RemoveWinnerView
+from dyplomowa_app.views import RemoveWinnerView, AddMyCompanyView, RemoveMyCompanyView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -45,6 +45,8 @@ urlpatterns = [
     path('add_company/', AddCompany.as_view(), name='add-company'),
     path('add_company_poviat/<int:id>', AddCompanyPoviat.as_view(), name='add-company-poviat'),
     path('companies/', CompaniesView.as_view(), name='companies'),
+    path('add_my_company/<int:company_id>', AddMyCompanyView.as_view(), name='add-my-company'),
+    path('remove_my_company/<int:company_id>', RemoveMyCompanyView.as_view(), name='remove-my-company'),
     path('company_details/<int:id>', CompanyDetails.as_view(), name='company-details'),
     path('edit_company/<int:id>', EditCompany.as_view(), name='edit-company'),
     path('edit_company_poviat/<int:id>', EditCompanyPoviat.as_view(), name='edit-company-poviat'),
