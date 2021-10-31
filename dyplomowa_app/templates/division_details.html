@@ -25,6 +25,18 @@
                     <td scope="col">{{ division.division_name }}</td>
                 </tr>
                 <tr>
+                    <th scope="col">Przypisana firma</th>
+                    <td scope="col">
+                        {% if division.division_company.all.0 %}
+                            <a href="{% url 'company-details' division.division_company.all.0.id %}">
+                                {{ division.division_company.all.0.company_name }}
+                            </a>
+                        {% else %}
+                            Brak
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
                     <th scope="col">Członkowie zespołu</th>
                     <td scope="col">
                         {% for i in division.division_person.all|dictsort:"username" %}
