@@ -1724,6 +1724,10 @@ class AddOtherCriteria(View):
             new_criteria = Criteria.objects.create(weight=criteria_weight, criteria_name=criteria_name)
             tender.other_criteria.add(new_criteria)
             tender.save()
+            for i in tender.tenderer.all():
+                new_criteria = Criteria.objects.create(weight=criteria_weight, criteria_name=criteria_name)
+                i.other_criteria.add(new_criteria)
+                i.save()
             ctx = {
             "divisions": divisions,
             "project": project,
