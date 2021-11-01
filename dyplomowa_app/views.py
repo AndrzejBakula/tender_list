@@ -14,6 +14,7 @@ from .forms import SearchDesignerForm, AddTenderForm, AddCriteriaForm, AddOtherC
 from .forms import AddCompanyPoviatForm, EditCompanyPoviatForm, AddInvestorPoviatForm, EditInvestorPoviatForm
 from .forms import AddDesignerPoviatForm, EditDesignerPoviatForm, AddProjectPoviatForm, EditProjectPoviatForm
 from .forms import EditTenderForm, EditCriteriaForm, EditOtherCriteriaForm, AddMissingCriteriaForm
+from .forms import AddMissingDeadlineForm
 
 
 #INITIAL FUNCTIONS
@@ -1753,6 +1754,22 @@ class AddMissingCriteria(View):
             return redirect(f"/add_tender_details/{project.id}/{tender.id}")
 
 
+class AddMissingDeadline(View):
+    def post(self, request, project_id, tender_id, tenderer_id):
+        user = User.objects.get(pk=int(request.session["user_id"]))
+        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
+        project = Project.objects.get(id=project_id)
+        tender = Tender.objects.get(id=tender_id)
+        tenderer = Tenderer.objects.get(id=tenderer_id)
+        form_deadline = AddMissingDeadlineForm(request.POST, tender=tender)
+        if form_deadline.is_valid():
+            data = form_deadline.cleaned_data
+            deadline = data["deadline"]
+            tenderer.offer_deadline = deadline
+            tenderer.save()
+            return redirect(f"/add_tender_details/{project.id}/{tender.id}")
+
+
 class AddTenderDetails(View):
 
     def get(self, request, project_id, tender_id):
@@ -1762,12 +1779,14 @@ class AddTenderDetails(View):
         tender = Tender.objects.get(id=tender_id)
         form_major = AddTendererForm(tender=tender)
         form_minor = AddMissingCriteriaForm(tender=tender)
+        form_deadline = AddMissingDeadlineForm(tender=tender)
         ctx = {
             "divisions": divisions,
             "project": project,
             "tender": tender,
             "form_major": form_major,
-            "form_minor": form_minor
+            "form_minor": form_minor,
+            "form_deadline": form_deadline
         }
         return render(request, "add_tender_details.html", ctx)
 

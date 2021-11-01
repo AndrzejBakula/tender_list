@@ -358,6 +358,19 @@ class AddMissingCriteriaForm(forms.Form):
             widget=forms.TextInput(attrs={"size": 8, "placeholder": "Wpisz"}))
 
 
+class AddMissingDeadlineForm(forms.Form):
+
+    def __init__(self, *args, **kwargs):
+        tender = kwargs.get("tender", None)
+        kwargs.pop('tender', None)
+        self.tender = tender
+        super(AddMissingDeadlineForm, self).__init__(*args, **kwargs)
+        min_dead = int(tender.deadline.months_min.month)-1
+        max_dead = int(tender.deadline.months_max.month)+1
+        self.fields[f"deadline"] = forms.ModelChoiceField(label="",
+            queryset=Month.objects.filter(month__gt=min_dead, month__lt=max_dead))
+
+
 class AddTendererForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
@@ -405,20 +418,21 @@ class EditCriteriaForm(forms.Form):
         kwargs.pop('tender', None)
         self.tender = tender
         super(EditCriteriaForm, self).__init__(*args, **kwargs)
+        used_weight = 100-int(tender.value_weight.weight)+1
         if tender.is_guarantee:
             self.fields[f"guarantee_min"] = forms.ModelChoiceField(label="Gwarancja min [mies.]",
                 queryset=Month.objects.all())
             self.fields[f"guarantee_max"] = forms.ModelChoiceField(label="Gwarancja max [mies.]",
                 queryset=Month.objects.all())
             self.fields[f"guarantee_weight"] = forms.ModelChoiceField(label="Waga gwarancji [%]",
-                queryset=Weight.objects.all())
+                queryset=Weight.objects.filter(weight__lt=used_weight))
         if tender.is_deadline:
             self.fields[f"deadline_min"] = forms.ModelChoiceField(label="Termin min [mies.]",
                 queryset=Month.objects.all())
             self.fields[f"deadline_max"] = forms.ModelChoiceField(label="Termin max [mies.]",
                 queryset=Month.objects.all())
             self.fields[f"deadline_weight"] = forms.ModelChoiceField(label="Waga terminu [%]",
-                queryset=Weight.objects.all())
+                queryset=Weight.objects.filter(weight__lt=used_weight))
         if tender.is_other_criteria:
             queryset = Criteria.objects.all().order_by("criteria_name", "weight").distinct("criteria_name", "weight")
             self.fields[f"criteria"] = forms.ModelMultipleChoiceField(label="Wybierz inne kryteria oceny",

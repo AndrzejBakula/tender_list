@@ -62,9 +62,20 @@
                 {% if i.offer_guarantee %}
                 <td scope="col" style="text-align: center;">{{ i.offer_guarantee }} mies.</td>
                 {% endif %}
-                {% if i.offer_deadline %}
-                <td scope="col" style="text-align: center;">{{ i.offer_deadline }}</td>
+                {% if tender.is_deadline %}
+                <td scope="col" style="text-align: center;">
+                    {% if i.offer_deadline %}
+                    {{ i.offer_deadline }}
+                    {% else %}
+                    <form class="d-flex flex-column justify-content-center align-items-center" style="height: 100%; width: 100%;"
+                        action="{% url 'add-missing-deadline' project.id tender.id i.id %}" method="POST">
+                        {% csrf_token %}
+                        {{ form_deadline.as_p }}
+                        <button type="submit" id="submit">Dodaj</button>
+                    </form>
+                    {% endif %}
                 {% endif %}
+                </td>
                 {% for j in i.other_criteria.all|dictsort:"id" %}
                 <td scope="col" style="text-align: center;">
                     {% if j.criteria_value %}
