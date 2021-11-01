@@ -18,6 +18,10 @@
                     <td scope="col">{{ tender.project.project_name }}</td>
                 </tr>
                 <tr>
+                    <th scope="col">Inwestor</th>
+                    <td scope="col">{{ tender.project.investor.investor_name }}</td>
+                </tr>
+                <tr>
                     <th scope="col">Kwota zamawiającego</th>
                     <td scope="col">
                         {% if tender.investor_budget %}
