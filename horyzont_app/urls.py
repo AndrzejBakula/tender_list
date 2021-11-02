@@ -28,7 +28,7 @@ from dyplomowa_app.views import AddTenderCriteria, AddOtherCriteria, AddTenderDe
 from dyplomowa_app.views import AddInvestorPoviat, EditInvestorPoviat, AddDesignerPoviat, EditDesignerPoviat
 from dyplomowa_app.views import TenderDetailsView, EditTenderView, DeleteTenderView, DeleteTenderConfirm, EditTenderCriteria
 from dyplomowa_app.views import DeleteOtherCriteriaView, DeleteTendererView, AddMissingCriteria, MakeWinnerView
-from dyplomowa_app.views import RemoveWinnerView, AddMyCompanyView, RemoveMyCompanyView, AddMissingDeadline
+from dyplomowa_app.views import RemoveWinnerView, AddMyCompanyView, RemoveMyCompanyView, AddMissingDeadline, AddMissingGuarantee
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -96,6 +96,7 @@ urlpatterns = [
     path('edit_tender_criteria/<int:project_id>/<int:tender_id>', EditTenderCriteria.as_view(), name='edit-tender-criteria'),
     path('add_missing_criteria/<int:project_id>/<int:tender_id>/<int:criteria_id>', AddMissingCriteria.as_view(), name='add-missing-criteria'),
     path('add_missing_deadline/<int:project_id>/<int:tender_id>/<int:tenderer_id>', AddMissingDeadline.as_view(), name='add-missing-deadline'),
+    path('add_missing_guarantee/<int:project_id>/<int:tender_id>/<int:tenderer_id>', AddMissingGuarantee.as_view(), name='add-missing-guarantee'),
     path('delete_other_criteria/<int:project_id>/<int:tender_id>/<int:criteria_id>', DeleteOtherCriteriaView.as_view(), name='delete-other-criteria'),
     path('delete_tenderer/<int:project_id>/<int:tender_id>/<int:tenderer_id>', DeleteTendererView.as_view(), name='delete-tenderer'),
     path('delete_tender/<int:project_id>/<int:tender_id>', DeleteTenderView.as_view(), name='delete-tender'),

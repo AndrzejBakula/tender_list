@@ -371,6 +371,19 @@ class AddMissingDeadlineForm(forms.Form):
             queryset=Month.objects.filter(month__gt=min_dead, month__lt=max_dead))
 
 
+class AddMissingGuaranteeForm(forms.Form):
+
+    def __init__(self, *args, **kwargs):
+        tender = kwargs.get("tender", None)
+        kwargs.pop('tender', None)
+        self.tender = tender
+        super(AddMissingGuaranteeForm, self).__init__(*args, **kwargs)
+        min_guar = int(tender.guarantee.months_min.month)-1
+        max_guar = int(tender.guarantee.months_max.month)+1
+        self.fields[f"guarantee"] = forms.ModelChoiceField(label="",
+            queryset=Month.objects.filter(month__gt=min_guar, month__lt=max_guar))
+
+
 class AddTendererForm(forms.Form):
 
     def __init__(self, *args, **kwargs):

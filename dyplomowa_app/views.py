@@ -14,7 +14,7 @@ from .forms import SearchDesignerForm, AddTenderForm, AddCriteriaForm, AddOtherC
 from .forms import AddCompanyPoviatForm, EditCompanyPoviatForm, AddInvestorPoviatForm, EditInvestorPoviatForm
 from .forms import AddDesignerPoviatForm, EditDesignerPoviatForm, AddProjectPoviatForm, EditProjectPoviatForm
 from .forms import EditTenderForm, EditCriteriaForm, EditOtherCriteriaForm, AddMissingCriteriaForm
-from .forms import AddMissingDeadlineForm
+from .forms import AddMissingDeadlineForm, AddMissingGuaranteeForm
 
 
 #INITIAL FUNCTIONS
@@ -1770,6 +1770,22 @@ class AddMissingDeadline(View):
             return redirect(f"/add_tender_details/{project.id}/{tender.id}")
 
 
+class AddMissingGuarantee(View):
+    def post(self, request, project_id, tender_id, tenderer_id):
+        user = User.objects.get(pk=int(request.session["user_id"]))
+        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
+        project = Project.objects.get(id=project_id)
+        tender = Tender.objects.get(id=tender_id)
+        tenderer = Tenderer.objects.get(id=tenderer_id)
+        form_guarantee = AddMissingGuaranteeForm(request.POST, tender=tender)
+        if form_guarantee.is_valid():
+            data = form_guarantee.cleaned_data
+            guarantee = data["guarantee"]
+            tenderer.offer_guarantee = guarantee
+            tenderer.save()
+            return redirect(f"/add_tender_details/{project.id}/{tender.id}")
+
+
 class AddTenderDetails(View):
 
     def get(self, request, project_id, tender_id):
@@ -1779,14 +1795,20 @@ class AddTenderDetails(View):
         tender = Tender.objects.get(id=tender_id)
         form_major = AddTendererForm(tender=tender)
         form_minor = AddMissingCriteriaForm(tender=tender)
-        form_deadline = AddMissingDeadlineForm(tender=tender)
+        form_deadline = None
+        if tender.is_deadline:
+            form_deadline = AddMissingDeadlineForm(tender=tender)
+        form_guarantee = None
+        if tender.is_guarantee:
+            form_guarantee = AddMissingGuaranteeForm(tender=tender)
         ctx = {
             "divisions": divisions,
             "project": project,
             "tender": tender,
             "form_major": form_major,
             "form_minor": form_minor,
-            "form_deadline": form_deadline
+            "form_deadline": form_deadline,
+            "form_guarantee": form_guarantee
         }
         return render(request, "add_tender_details.html", ctx)
 
@@ -1907,14 +1929,23 @@ class EditTenderView(View):
             if tender.is_guarantee == False:
                 tender.guarantee = None
                 tender.save()
+                for i in tender.tenderer.all():
+                    i.offer_guarantee = None
+                    i.save()
             tender.is_deadline = data["is_deadline"]
             if tender.is_deadline == False:
                 tender.deadline = None
                 tender.save()
+                for i in tender.tenderer.all():
+                    i.offer_deadline = None
+                    i.save()
             tender.is_other_criteria = data["is_other_criteria"]
             if tender.is_other_criteria == False:
                 tender.other_criteria.set([])
                 tender.save()
+                for i in tender.tenderer.all():
+                    i.other_criteria.set([])
+                    i.save()
             tender.save()
             return redirect(f"/edit_tender_criteria/{project.id}/{tender.id}")
 
