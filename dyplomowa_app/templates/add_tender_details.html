@@ -39,15 +39,15 @@
         <thead>
             <tr>
                 <th scope="col" style="text-align: center;">Oferent</th>
-                <th scope="col" style="text-align: center;">Cena</th>
+                <th scope="col" style="text-align: center;">Cena ({{ tender.value_weight.weight }}%)</th>
                 {% if tender.is_guarantee %}
-                <th scope="col" style="text-align: center;">Gwarancja</th>
+                <th scope="col" style="text-align: center;">Gwarancja ({{ tender.guarantee.weight.weight }}%)</th>
                 {% endif %}
                 {% if tender.is_deadline %}
-                <th scope="col" style="text-align: center;">Termin</th>
+                <th scope="col" style="text-align: center;">Termin ({{ tender.deadline.weight.weight }}%)</th>
                 {% endif %}
                 {% for i in tender.other_criteria.all %}
-                <th scope="col" style="text-align: center;">{{ i.criteria_name }}</th>
+                <th scope="col" style="text-align: center;">{{ i.criteria_name }} ({{ i.weight }}%)</th>
                 {% endfor %}
             </tr>
         </thead>

@@ -391,7 +391,12 @@ class InvestorsView(View):
         if form.is_valid():
             data = form.cleaned_data
             text = data["text"]
-            investors = Investor.objects.filter(investor_name__icontains=text).order_by("investor_name")                           
+            investors = Investor.objects.filter(investor_name__icontains=text).order_by("investor_name")
+
+            paginator = Paginator(investors, 15)
+            page = request.GET.get("page")
+            investors = paginator.get_page(page)
+
             ctx = {
                 "form": form,
                 "investors": investors,
@@ -619,16 +624,37 @@ class CompaniesView(View):
         if request.session.get("user_id") not in ("", None):
             user = User.objects.get(pk=int(request.session["user_id"]))
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
+        division = None
+        if request.session.get("division_id"):
+            division = request.session["division_id"]
         form = SearchCompanyForm(request.POST)
         if form.is_valid():
             data = form.cleaned_data
             text = data["text"]
-            companies = Company.objects.filter(company_name__icontains=text).order_by("company_name")                           
+            companies = Company.objects.filter(division=division, company_name__icontains=text).order_by("company_name")
+            division_company = None
+            rest = None
+            for i in companies:
+                if i.division_company:
+                    division_company = i
+                    break
+            if division_company:
+                rest = companies.filter().exclude(id=division_company.id).order_by("company_name")
+                companies = [division_company] + [i for i in rest]
+            else:
+                rest = companies.all().order_by("company_name")
+                companies = [i for i in rest]
+
+            paginator = Paginator(companies, 15)
+            page = request.GET.get("page")
+            companies = paginator.get_page(page)
+
             ctx = {
                 "form": form,
                 "companies": companies,
                 "post": request.POST,
-                "divisions": divisions
+                "divisions": divisions,
+                "division_company": division_company
             }
             return render(request, "companies.html", ctx)
 
@@ -859,7 +885,12 @@ class DesignersView(View):
         if form.is_valid():
             data = form.cleaned_data
             text = data["text"]
-            designers = Designer.objects.filter(designer_name__icontains=text).order_by("designer_name")                           
+            designers = Designer.objects.filter(designer_name__icontains=text).order_by("designer_name")
+
+            paginator = Paginator(designers, 15)
+            page = request.GET.get("page")
+            designers = paginator.get_page(page)
+
             ctx = {
                 "form": form,
                 "designers": designers,

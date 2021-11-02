@@ -59,6 +59,8 @@
 
         <button type="submit" id="submit">Dodaj</button>
     </form>
+    {% elif 100 > count %}
+    UWAGA! Suma wagi kryteriów jest mniejsza od 100%!
     {% endif %}
     {% if 100 == count %}
     <hr>
@@ -67,7 +69,7 @@
     </div>
     {% endif %}
     {% if count > 100 %}
-    UWAGA! Suma wagi kryteriów jestwiększa od 100%!
+    UWAGA! Suma wagi kryteriów jest większa od 100%!
     {% endif %}
     <div class="d-flex flex-row justify-content-center align-items-center" style="padding-left: 0.5%;">
         <a href="{% url 'edit-tender-criteria' project.id tender.id %}" class="btn btn-outline-primary m-1">Edytuj główne kryteria</a>
