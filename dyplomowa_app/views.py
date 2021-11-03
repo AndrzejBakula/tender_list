@@ -1607,6 +1607,23 @@ class PersonDetailsView(View):
         return render(request, "person_details.html", ctx)
 
 
+class UserDetailsView(View):
+    def get(self, request):
+        user = User.objects.get(pk=int(request.session["user_id"]))
+        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
+        division = None
+        if request.session.get("division_id"):
+            division = Division.objects.get(id=request.session.get("division_id"))
+        user_divisions = []
+        for i in Division.objects.filter(division_person=user):
+            user_divisions.append((i, len([j for j in i.project_set.filter(person=user)])))
+        ctx = {
+            "divisions": divisions,
+            "user_divisions": user_divisions
+        }
+        return render(request, "user_details.html", ctx)
+
+
 class AddTenderView(View):
     def get(self, request, id):
         user = User.objects.get(pk=int(request.session["user_id"]))
