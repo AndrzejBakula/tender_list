@@ -1595,7 +1595,9 @@ class PersonDetailsView(View):
         person = User.objects.get(id=id)
         user = User.objects.get(pk=int(request.session["user_id"]))
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
-        division = Division.objects.get(id=request.session.get("division_id"))
+        division = None
+        if request.session.get("division_id"):
+            division = Division.objects.get(id=request.session.get("division_id"))
         person_projects = Project.objects.filter(person=person, division=division)
         ctx = {
             "person": person,
