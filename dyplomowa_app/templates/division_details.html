@@ -37,7 +37,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <th scope="col">Członkowie zespołu</th>
+                    <th scope="col">Członkowie zespołu ({{ division.division_person.all.count }})</th>
                     <td scope="col">
                         {% for i in division.division_person.all|dictsort:"username" %}
                             <a href="{% url 'person-details' i.id %}">{{ i.username }}</a>
@@ -52,7 +52,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <th scope="col">Admini zespołu</th>
+                    <th scope="col">Admini zespołu ({{ division.division_admin.all.count }})</th>
                     <td scope="col">
                         {% for i in division.division_admin.all|dictsort:"username" %}
                             <a href="{% url 'person-details' i.id %}">{{ i.username }}</a>
@@ -62,7 +62,7 @@
                         {% endfor %}</td>
                 </tr>
                 <tr>
-                    <th scope="col">Chcą dołączyć</th>
+                    <th scope="col">Chcą dołączyć ({{ division.division_wannabe.all.count }})</th>
                     <td scope="col">
                         {% for i in division.division_wannabe.all|dictsort:"username" %}
                             <a href="{% url 'person-details' i.id %}">{{ i.username }}</a>

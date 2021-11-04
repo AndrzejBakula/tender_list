@@ -24,11 +24,11 @@
                 </tr>
                 <tr>
                     <th scope="col">Liczba projektów</th>
-                    {% for i in user_divisions %}
                     <td scope="col">
-                        {{ i.0.division_name }}: {{ i.1 }}
+                        {% for i in user_divisions %}
+                            {{ i.0.division_name }}: {{ i.1 }} </br>
+                        {% endfor %}
                     </td>
-                    {% endfor %}
                 </tr>
             </tbody>
         </table>

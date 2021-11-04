@@ -29,7 +29,7 @@
         {% if user.is_authenticated %}
         <div class="d-flex flex-column justify-content-end align-items-end" style="padding: 3px; color:darkslategray;">
           <div>Zalogowany jako: <a href="{% url 'user-details' %}"><i>{{ user }}</i></a></div>
-          <i>{% if request.session.division_name %} Aktywny zespół: {{ request.session.division_name }} {% else %} Wybierz zespół w "Moje Zespoły" {% endif %}</i>
+          <i>{% if request.session.division_name %} Aktywny zespół: <a href="{% url 'division-details' request.session.division_id %}">{{ request.session.division_name }}</a> {% else %} Wybierz zespół w "Moje Zespoły" {% endif %}</i>
         </div>
         <a href="{% url 'logout' %}" class="btn btn-outline-danger m-1">Logout</a>
         {% else %}
