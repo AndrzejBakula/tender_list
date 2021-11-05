@@ -418,10 +418,10 @@ class AddTendererForm(forms.Form):
         if len(tender.tenderer.all()) > 0:
             excluded_tenderers = [i.tenderer.id for i in tender.tenderer.all()]
             self.fields[f"tenderer"] = forms.ModelChoiceField(label="Oferent",
-                queryset=Company.objects.exclude(id__in=excluded_tenderers).order_by("company_name"))
+                queryset=Company.objects.filter(division=tender.project.division).exclude(id__in=excluded_tenderers).order_by("company_name"))
         else:
             self.fields[f"tenderer"] = forms.ModelChoiceField(label="Oferent",
-                queryset=Company.objects.all().order_by("company_name"))
+                queryset=Company.objects.filter(division=tender.project.division).order_by("company_name"))
         self.fields[f"offer_value"] = forms.FloatField(label="Wartość oferty brutto",
         widget=forms.NumberInput(attrs={'step': "0.01"}))
         if tender.is_guarantee:
