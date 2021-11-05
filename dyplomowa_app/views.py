@@ -1202,8 +1202,14 @@ class ProjectDetails(View):
 
 
 class EditProject(View):
+    
     def get(self, request, id):
-        user = User.objects.get(pk=int(request.session["user_id"]))
+        user = None
+        division = None
+        if request.session.get("user_id") not in ("", None):
+            user = User.objects.get(pk=int(request.session["user_id"]))
+        if request.session.get("division_id") not in ("", None):
+            division = Division.objects.get(id=request.session.get("division_id"))
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         project = Project.objects.get(id=id)
         initial_data = {
@@ -1237,7 +1243,7 @@ class EditProject(View):
             "designer": project.designer,
             "status": project.status
         }
-        form = EditProjectForm(initial=initial_data)
+        form = EditProjectForm(initial=initial_data, user=user, division=division)
         ctx = {
             "project": project,
             "form": form,
@@ -1246,7 +1252,13 @@ class EditProject(View):
         return render(request, "edit_project.html", ctx)
     
     def post(self, request, id):
-        form = EditProjectForm(request.POST)
+        user = None
+        division = None
+        if request.session.get("user_id") not in ("", None):
+            user = User.objects.get(pk=int(request.session["user_id"]))
+        if request.session.get("division_id") not in ("", None):
+            division = Division.objects.get(id=request.session.get("division_id"))
+        form = EditProjectForm(request.POST, user=user, division=division)
         if form.is_valid():
             project = Project.objects.get(id=id)
             data = form.cleaned_data
@@ -1274,7 +1286,7 @@ class EditProject(View):
             if data["project_url"] not in (None, ""):
                 project.project_url = data["project_url"]            
             project.person.set(data["person"])
-            project.division = data["division"]
+            project.division = division
             if data["rc_date"] not in (None, ""):
                 project.rc_date = data["rc_date"]
             project.rc_agree = data["rc_agree"]

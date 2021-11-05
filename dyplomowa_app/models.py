@@ -384,7 +384,7 @@ class Tender(models.Model):
 
 class Project(models.Model):
 
-    project_number = models.TextField(max_length=32, unique=True, null=True, default=None)
+    project_number = models.TextField(max_length=32, null=True, default=None)
     tender_time = models.TimeField(blank=True, null=True)
     open_time = models.TimeField(blank=True, null=True)
     deposit = models.FloatField(null=True, default=None)
@@ -393,7 +393,7 @@ class Project(models.Model):
     voivodeship = models.ForeignKey(Voivodeship, on_delete=models.CASCADE)
     poviat = models.ForeignKey(Poviat, on_delete=models.CASCADE, null=True, default=None)
     tender_date = models.DateField(blank=True, null=True)
-    project_name = models.TextField(max_length=512, unique=True)
+    project_name = models.TextField(max_length=512)
     estimated_value = models.FloatField(null=True, default=None)
     investor = models.ForeignKey(Investor, on_delete=models.CASCADE)
     project_deadline_date = models.DateField(blank=True, null=True)

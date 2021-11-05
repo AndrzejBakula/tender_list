@@ -61,7 +61,7 @@
             <td scope="col" style="text-align: center;">{% if i.mma_quantity %} {{ i.mma_quantity }} {% else %} brak {% endif %}</td>
             <td scope="col" style="text-align: center;">{% if i.payment_method %} {{ i.payment_method }} {% else %} brak {% endif %}</td>
             <td scope="col" style="text-align: center;">{% if i.project_url %} <a href="{{ i.project_url }}" target=_blank>Klik</a> {% else %} brak {% endif %}</td>
-            <td scope="col" style="text-align: center;">{% if i.person.all.0 != None %} {% for j in i.person.all %} <a href="{% url 'user-details' j.id %}">{{ j.username }}</a> <br> {% endfor %} {% else %} brak {% endif %}</td>
+            <td scope="col" style="text-align: center;">{% if i.person.all.0 != None %} {% for j in i.person.all %} <a href="{% url 'person-details' j.id %}">{{ j.username }}</a> <br> {% endfor %} {% else %} brak {% endif %}</td>
             <td scope="col" style="text-align: center;">{% if i.evaluation_criteria %} {{ i.evaluation_criteria }} {% else %} nieokreślono {% endif %}</td>
 
           </tr>
