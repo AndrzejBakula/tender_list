@@ -1232,7 +1232,6 @@ class EditProject(View):
             "payment_method": project.payment_method,
             "project_url": project.project_url,            
             "person": [i for i in project.person.all()],
-            "division": project.division,
             "rc_date": project.rc_date,
             "rc_agree": project.rc_agree,
             "evaluation_criteria": project.evaluation_criteria,
@@ -1503,9 +1502,19 @@ class DivisionDetails(View):
         user = User.objects.get(pk=int(request.session["user_id"]))
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         division = Division.objects.get(id=id)
+        actual_projects = Project.objects.filter(division=division, status=2)
+        bade_projects = Project.objects.filter(division=division).exclude(status=1).exclude(status=2)
+        won_projects = Project.objects.filter(division=division, status=5)
+        abandoned_projects = Project.objects.filter(division=division, status=3)
+        annulled_projects = Project.objects.filter(division=division, status=4)
         ctx = {
             "division": division,
-            "divisions": divisions
+            "divisions": divisions,
+            "bade_projects": bade_projects,
+            "won_projects": won_projects,
+            "abandoned_projects": abandoned_projects,
+            "annulled_projects": annulled_projects,
+            "actual_projects": actual_projects
         }
         return render(request, "division_details.html", ctx)
 
@@ -1936,22 +1945,33 @@ class TenderDetailsView(View):
 class MakeWinnerView(View):
     
     def get(self, request, tender_id, tenderer_id):
+        tender = Tender.objects.get(id=tender_id)
+        project = Project.objects.get(tender_id=tender_id)
         tenderer = Tenderer.objects.get(id=tenderer_id)
         tenderer.is_winner = True
         tenderer.save()
-        tender = Tender.objects.get(id=tender_id)
-        project = Project.objects.get(tender_id=tender_id)
+        division = Division.objects.get(pk=int(request.session.get("division_id")))
+        if tenderer.tenderer.id == division.division_company.all()[0].id:
+            status = Status.objects.get(id=5)
+            project.status = status
+            project.save()
+        
         return redirect(f"/tender_details/{project.id}/{tender.id}")
 
 
 class RemoveWinnerView(View):
     
     def get(self, request, tender_id, tenderer_id):
+        tender = Tender.objects.get(id=tender_id)
+        project = Project.objects.get(tender_id=tender_id)
         tenderer = Tenderer.objects.get(id=tenderer_id)
         tenderer.is_winner = False
         tenderer.save()
-        tender = Tender.objects.get(id=tender_id)
-        project = Project.objects.get(tender_id=tender_id)
+        division = Division.objects.get(pk=int(request.session.get("division_id")))
+        if tenderer.tenderer.id == division.division_company.all()[0].id:
+            status = Status.objects.get(id=6)
+            project.status = status
+            project.save()
         return redirect(f"/tender_details/{project.id}/{tender.id}")
 
 

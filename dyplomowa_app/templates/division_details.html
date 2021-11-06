@@ -6,7 +6,6 @@
 {% block content %}
 
 <div class="d-flex flex-column align-items-center" style="height: 100%; width: 100%;">
-    <hr>
     <div class="d-flex flex-row justify-content-center align-items-center">
         <h2 class="display-5 align-self-center header2"><i>Szczegóły Zespołu</i></h2>
     </div>
@@ -72,6 +71,31 @@
                         {% endfor %}
                         <hr>
                     </td>
+                </tr>
+                <tr><th></th><td></td></tr>
+                <tr>
+                    <th scope="col">Liczba projektów</th>
+                    <td scope="col">{{ division.project_set.all.count }}</td>
+                </tr>
+                <tr>
+                    <th scope="col">W przygotowaniu</th>
+                    <td scope="col">{{ actual_projects.count }}</td>
+                </tr>
+                <tr>
+                    <th scope="col">Projekty złożone</th>
+                    <td scope="col">{{ bade_projects.count }}</td>
+                </tr>
+                <tr>
+                    <th scope="col">Wygrane przetargi</th>
+                    <td scope="col">{{ won_projects.count }}</td>
+                </tr>
+                <tr>
+                    <th scope="col">Rezygnacja ze startu</th>
+                    <td scope="col">{{ abandoned_projects.count }}</td>
+                </tr>
+                <tr>
+                    <th scope="col">Unieważnione przetargi</th>
+                    <td scope="col">{{ annulled_projects.count }}</td>
                 </tr>
             </tbody>
         </table>

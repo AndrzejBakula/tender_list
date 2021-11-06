@@ -171,8 +171,6 @@ class AddProjectForm(forms.Form):
             queryset=Investor.objects.filter(division=division).order_by("investor_name"))
         self.fields["designer"] = forms.ModelChoiceField(label="Projektant", required=False,
             queryset=Designer.objects.filter(division=division).order_by("designer_name"))
-        self.fields["division"] = forms.ModelMultipleChoiceField(label="Zespoły",
-            queryset=Division.objects.filter(division_admin=user))
         self.fields["jv_partners"] = forms.ModelMultipleChoiceField(label="Partnerzy konsorcjum",
             queryset=Company.objects.filter(division=division).order_by("company_name"), required=False)
         self.fields["person"] = forms.ModelMultipleChoiceField(label="Osoba odpowiedzialna",
@@ -238,8 +236,6 @@ class EditProjectForm(forms.Form):
             queryset=Investor.objects.filter(division=division).order_by("investor_name"))
         self.fields["designer"] = forms.ModelChoiceField(label="Projektant", required=False,
             queryset=Designer.objects.filter(division=division).order_by("designer_name"))
-        self.fields["division"] = forms.ModelMultipleChoiceField(label="Zespoły",
-            queryset=Division.objects.filter(division_admin=user))
         self.fields["jv_partners"] = forms.ModelMultipleChoiceField(label="Partnerzy konsorcjum",
             queryset=Company.objects.filter(division=division).order_by("company_name"), required=False)
         self.fields["person"] = forms.ModelMultipleChoiceField(label="Osoba odpowiedzialna",
