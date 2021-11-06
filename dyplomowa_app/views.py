@@ -1417,10 +1417,14 @@ class AddDivisionView(View):
     def get(self, request):
         user = User.objects.get(pk=int(request.session["user_id"]))
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
+        created_divisions = Division.objects.filter(division_creator=user)
+        can_create = 3 - len([i for i in created_divisions])
         form = AddDivisionForm()
         ctx = {
             "form": form,
-            "divisions": divisions
+            "divisions": divisions,
+            "created_divisions": created_divisions,
+            "can_create": can_create
         }
         return render(request, "add_division.html", ctx)
     

@@ -11,17 +11,22 @@
         <h2 class="display-5 align-self-center header2"><i>Dodaj Zespół</i></h2>
     </div>
     <hr>
-
-    {% if error_message %}
-
-    <div class="d-flex flex-row justify-content-center align-items-center">
-        <h3 class="display-5 align-self-center header">
-            {{ error_message }}
-        </h3>
-    </div>
-    <hr>
-    {% endif %}
     
+    <div class="d-flex flex-row justify-content-center align-items-center">
+        <h4 class="display-5 align-self-center header2">
+            {% if created_divisions.count >= 3 %}
+            Osiągnięto limit trzech utworzonych zespołów
+            {% else %}
+            Utworzyłeś już
+                {% if created_divisions.count == 1 %}
+                    {{ created_divisions.count }} zespół. Możesz utworzyć jeszcze {{ can_create }}
+                {% else %}
+                    {{ created_divisions.count }} zespoły. Możesz utworzyć jeszcze {{ can_create }}
+                {% endif %}
+            {% endif %}
+        </h4>
+    </div>
+    {% if 3 > created_divisions.count %}
     <form class="d-flex flex-column align-items-center" style="height: 100%; width: 100%;" action="{% url 'add-division' %}" method="POST">
         {% csrf_token %}
 
@@ -29,6 +34,7 @@
 
         <button type="submit" id="submit">Dodaj Zespół</button>
     </form>
+    {% endif %}
 
 </div>
 
