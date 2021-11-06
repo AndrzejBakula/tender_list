@@ -18,6 +18,11 @@ class LoginForm(forms.Form):
     password = forms.CharField(label="Password", widget=forms.PasswordInput)
 
 
+class EditUserForm(forms.Form):
+    username = forms.CharField(label="", max_length=128,
+        widget=forms.TextInput(attrs={"size": 38, "placeholder": "Nazwa Użytkownika"}))
+
+
 class AddInvestorForm(forms.Form):
     investor_name = forms.CharField(
         label="", max_length=128, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Nazwa Inwestora"}))

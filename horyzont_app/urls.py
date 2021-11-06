@@ -29,7 +29,7 @@ from dyplomowa_app.views import AddInvestorPoviat, EditInvestorPoviat, AddDesign
 from dyplomowa_app.views import TenderDetailsView, EditTenderView, DeleteTenderView, DeleteTenderConfirm, EditTenderCriteria
 from dyplomowa_app.views import DeleteOtherCriteriaView, DeleteTendererView, AddMissingCriteria, MakeWinnerView
 from dyplomowa_app.views import RemoveWinnerView, AddMyCompanyView, RemoveMyCompanyView, AddMissingDeadline
-from dyplomowa_app.views import AddMissingGuarantee, UserDetailsView
+from dyplomowa_app.views import AddMissingGuarantee, UserDetailsView, EditUserView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -87,6 +87,7 @@ urlpatterns = [
     path('remove_member/<int:division_id>/<int:person_id>', RemoveMemberView.as_view(), name='remove-member'),
     path('person_details/<int:id>', PersonDetailsView.as_view(), name='person-details'),
     path('user_details/', UserDetailsView.as_view(), name='user-details'),
+    path('edit_user/<int:user_id>', EditUserView.as_view(), name='edit-user'),
     path('add_tender/<int:id>', AddTenderView.as_view(), name='add-tender'),
     path('add_tender_criteria/<int:project_id>/<int:tender_id>', AddTenderCriteria.as_view(), name='add-tender-criteria'),
     path('add_other_criteria/<int:project_id>/<int:tender_id>', AddOtherCriteria.as_view(), name='add-other-criteria'),

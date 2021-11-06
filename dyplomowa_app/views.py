@@ -14,7 +14,7 @@ from .forms import SearchDesignerForm, AddTenderForm, AddCriteriaForm, AddOtherC
 from .forms import AddCompanyPoviatForm, EditCompanyPoviatForm, AddInvestorPoviatForm, EditInvestorPoviatForm
 from .forms import AddDesignerPoviatForm, EditDesignerPoviatForm, AddProjectPoviatForm, EditProjectPoviatForm
 from .forms import EditTenderForm, EditCriteriaForm, EditOtherCriteriaForm, AddMissingCriteriaForm
-from .forms import AddMissingDeadlineForm, AddMissingGuaranteeForm
+from .forms import AddMissingDeadlineForm, AddMissingGuaranteeForm, EditUserForm
 
 
 #INITIAL FUNCTIONS
@@ -1655,6 +1655,30 @@ class UserDetailsView(View):
             "user_divisions_won": user_divisions_won
         }
         return render(request, "user_details.html", ctx)
+
+
+class EditUserView(View):
+    def get(self, request, user_id):
+        user = User.objects.get(pk=int(request.session["user_id"]))
+        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
+        initial_data = {
+            "username": user.username
+        }
+        form = EditUserForm(initial=initial_data)
+        ctx = {
+            "form": form,
+            "divisions": divisions
+        }
+        return render(request, "edit_user.html", ctx)
+
+    def post(self, request, user_id):
+        user = User.objects.get(pk=int(request.session["user_id"]))
+        form = EditUserForm(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            user.username = data["username"]
+            user.save()
+            return redirect(f"/user_details")
 
 
 class AddTenderView(View):
