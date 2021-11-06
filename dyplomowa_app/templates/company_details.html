@@ -6,7 +6,6 @@
 {% block content %}
 
 <div class="d-flex flex-column align-items-center" style="height: 100%; width: 100%;">
-    <hr>
     <div class="d-flex flex-row justify-content-center align-items-center">
         <h2 class="display-5 align-self-center header2"><i>Szczegóły Firmy</i></h2>
     </div>
@@ -30,9 +29,20 @@
                 <th scope="col">Powiat</th>
                 <td scope="col">{% if company.company_poviat %} {{ company.company_poviat }} {% else %} nieokreślono {% endif %}</td>
             </tr>
+            {% if company.division_company %}
             <tr>
                 <th scope="col">Zespoły</th>
                 <td scope="col">{{ company.division_company.division_name }}</th>
+            </tr>
+            {% endif %}
+            <tr><th></th><td></td></tr>
+            <tr>
+                <th scope="col">W ilu przetargach</th>
+                <td scope="col">{{ company.tenderer_set.all.count }}</td>
+            </tr>
+            <tr>
+                <th scope="col">Liczba wygranych</th>
+                <td scope="col">{{ won_tenders.count }}</td>
             </tr>
         </tbody>
       </table>

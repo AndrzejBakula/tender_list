@@ -23,6 +23,7 @@
             <th scope="col" style="text-align: center;">Adres</th>
             <th scope="col" style="text-align: center;">Województwo</th>
             <th scope="col" style="text-align: center;">Powiat</th>
+            <th scope="col" style="text-align: center;">W ilu przetargach</th>
           </tr>
         </thead>
         <tbody>
@@ -41,7 +42,10 @@
             </td>
             <td scope="col" style="text-align: center;">{{ i.company_address }}</td>
             <td scope="col" style="text-align: center;">{{ i.company_voivodeship }}</td>
-            <td scope="col" style="text-align: center;">{% if i.company_poviat %} {{ i.company_poviat }} {% else %} nieokreślono {% endif %}</td>           
+            <td scope="col" style="text-align: center;">
+              {% if i.company_poviat %} {{ i.company_poviat }} {% else %} nieokreślono {% endif %}
+            </td>
+            <td scope="col" style="text-align: center;">{{ i.tenderer_set.all.count }}</td> 
           </tr>
           {% else %}
           <tr>
@@ -57,7 +61,10 @@
             </td>
             <td scope="col" style="text-align: center;">{{ i.company_address }}</td>
             <td scope="col" style="text-align: center;">{{ i.company_voivodeship }}</td>
-            <td scope="col" style="text-align: center;">{% if i.company_poviat %} {{ i.company_poviat }} {% else %} nieokreślono {% endif %}</td>           
+            <td scope="col" style="text-align: center;">
+              {% if i.company_poviat %} {{ i.company_poviat }} {% else %} nieokreślono {% endif %}
+            </td>
+            <td scope="col" style="text-align: center;">{{ i.tenderer_set.all.count }}</td>         
           </tr>
           {% endif %}
           {% endfor %}

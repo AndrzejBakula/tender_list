@@ -412,14 +412,22 @@ class InvestorDetails(View):
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         division = Division.objects.get(id=request.session.get("division_id"))
         investor = Investor.objects.get(id=id)
-        division_investor = Project.objects.filter(investor=investor, division=division)
+        investor_projects = Project.objects.filter(investor=investor, division=division)
+        active_projects = Project.objects.filter(investor=investor, division=division, status=2)
+        won_projects = Project.objects.filter(investor=investor, division=division, status=5)
+        annulled_projects = Project.objects.filter(investor=investor, division=division, status=4)
+        abandoned_projects = Project.objects.filter(investor=investor, division=division, status=3)
         noters = [i.investor_note_user for i in InvestorNote.objects.filter(investor_note_investor=investor)]
         form = InvestorNoteForm()
         ctx = {
             "investor": investor,
             "divisions": divisions,
             "division": division,
-            "division_investor": division_investor,
+            "investor_projects": investor_projects,
+            "active_projects": active_projects,
+            "won_projects": won_projects,
+            "annulled_projects": annulled_projects,
+            "abandoned_projects": abandoned_projects,
             "noters": noters,
             "form": form
         }
@@ -691,10 +699,12 @@ class CompanyDetails(View):
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         division = Division.objects.get(id=request.session.get("division_id"))
         company = Company.objects.get(id=id)
+        won_tenders = Tenderer.objects.filter(tenderer=company, tender__project__division=division, is_winner=True)
         ctx = {
             "company": company,
             "divisions": divisions,
-            "division": division
+            "division": division,
+            "won_tenders": won_tenders
         }
         return render(request, "company_details.html", ctx)
 

@@ -6,7 +6,6 @@
 {% block content %}
 
 <div class="d-flex flex-column align-items-center" style="height: 100%; width: 100%;">
-    <hr>
     <div class="d-flex flex-row justify-content-center align-items-center">
         <h2 class="display-5 align-self-center header2"><i>Szczegóły Inwestora</i></h2>
     </div>
@@ -43,7 +42,23 @@
             </tr>
             <tr>
                 <th scope="col">Ile przetargów zespołu</th>
-                <td scope="col">{{ division_investor.count }}</td>
+                <td scope="col">{{ investor_projects.count }}</td>
+            </tr>
+            <tr>
+                <th scope="col">W przygotowaniu</th>
+                <td scope="col">{{ active_projects.count }}</td>
+            </tr>
+            <tr>
+                <th scope="col">Wygrane przetargi</th>
+                <td scope="col">{{ won_projects.count }}</td>
+            </tr>
+            <tr>
+                <th scope="col">Unieważnione przetargi</th>
+                <td scope="col">{{ annulled_projects.count }}</td>
+            </tr>
+            <tr>
+                <th scope="col">Rezygnacja ze złożenia</th>
+                <td scope="col">{{ abandoned_projects.count }}</td>
             </tr>
         </tbody>
       </table>
