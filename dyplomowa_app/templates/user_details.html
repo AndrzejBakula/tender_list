@@ -6,7 +6,6 @@
 {% block content %}
 
 <div class="d-flex flex-column align-items-center" style="height: 100%; width: 100%;">
-    <hr>
     <div class="d-flex flex-row justify-content-center align-items-center">
         <h2 class="display-5 align-self-center header2"><i>Mój Kącik</i></h2>
     </div>
@@ -16,7 +15,9 @@
             <tbody>
                 <tr>
                     <th scope="col">Nazwa użytkownika</th>
-                    <td scope="col">{{ user.username }}</td>
+                    <td scope="col">{{ user.username }} 
+                        <a href="{% url 'edit-user' user.id %}">(Zmień nazwę)</a>
+                    </td>
                 </tr>
                 <tr>
                     <th scope="col">Email</th>
@@ -49,9 +50,6 @@
                 </tr>
             </tbody>
         </table>
-        <button type="button" class="btn btn-dark">
-            <a style="color:blanchedalmond" href="{% url 'edit-user' user.id %}">Edytuj nazwę</a>
-        </button>
     </div>
 
 </div>
