@@ -46,7 +46,9 @@
                             {% if user == division.division_creator and not i == division.division_creator %}
                                 <a href="{% url 'remove-member' division.id i.id %}">(Usuń z zespołu)</a>
                             {% endif %}
+                            {% if division.division_person.all.count > 1 %}
                             <hr>
+                            {% endif %}
                         {% endfor %}
                     </td>
                 </tr>
@@ -57,8 +59,12 @@
                             <a href="{% url 'person-details' i.id %}">{{ i.username }}</a>
                             {% if user == division.division_creator and not i == division.division_creator %}
                                 <a href="{% url 'cancel-admin' division.id i.id %}">(Odbierz admina)</a>
-                            {% endif %}<hr>
-                        {% endfor %}</td>
+                            {% endif %}
+                            {% if division.division_admin.all.count > 1 %}
+                            <hr>
+                            {% endif %}
+                        {% endfor %}
+                    </td>
                 </tr>
                 <tr>
                     <th scope="col">Chcą dołączyć ({{ division.division_wannabe.all.count }})</th>
@@ -69,7 +75,9 @@
                             <a href="{% url 'add-person' division.id i.id %}">(Dodaj)</a>
                             {% endif %}
                         {% endfor %}
-                        <hr>
+                        {% if division.division_wannabe.all.count > 1 %}
+                            <hr>
+                            {% endif %}
                     </td>
                 </tr>
                 <tr><th></th><td></td></tr>

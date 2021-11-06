@@ -25,8 +25,24 @@
                 <tr>
                     <th scope="col">Liczba projektów</th>
                     <td scope="col">
-                        {% for i in user_divisions %}
-                            {{ i.0.division_name }}: {{ i.1 }} </br>
+                        {% for i in user_divisions_projects %}
+                            {{ i.0.division_name }}: {{ i.1 }} <hr>
+                        {% endfor %}
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="col">W przygotowaniu</th>
+                    <td scope="col">
+                        {% for i in user_divisions_active %}
+                            {{ i.0.division_name }}: {{ i.1 }} <hr>
+                        {% endfor %}
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="col">Wygrane przetargi</th>
+                    <td scope="col">
+                        {% for i in user_divisions_won %}
+                            {{ i.0.division_name }}: {{ i.1 }} <hr>
                         {% endfor %}
                     </td>
                 </tr>

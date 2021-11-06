@@ -1635,12 +1635,20 @@ class UserDetailsView(View):
         division = None
         if request.session.get("division_id"):
             division = Division.objects.get(id=request.session.get("division_id"))
-        user_divisions = []
+        user_divisions_projects = []
         for i in Division.objects.filter(division_person=user):
-            user_divisions.append((i, len([j for j in i.project_set.filter(person=user)])))
+            user_divisions_projects.append((i, len([j for j in i.project_set.filter(person=user)])))
+        user_divisions_active = []
+        for i in Division.objects.filter(division_person=user):
+            user_divisions_active.append((i, len([j for j in i.project_set.filter(person=user, status=2)])))
+        user_divisions_won = []
+        for i in Division.objects.filter(division_person=user):
+            user_divisions_won.append((i, len([j for j in i.project_set.filter(person=user, status=5)])))
         ctx = {
             "divisions": divisions,
-            "user_divisions": user_divisions
+            "user_divisions_projects": user_divisions_projects,
+            "user_divisions_active": user_divisions_active,
+            "user_divisions_won": user_divisions_won
         }
         return render(request, "user_details.html", ctx)
 
