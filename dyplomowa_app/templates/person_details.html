@@ -19,8 +19,21 @@
                     <td scope="col">{{ person.username }}</td>
                 </tr>
                 <tr>
+                    <th scope="col">Zespół</th>
+                    <td scope="col">{{ request.session.division_name }}</td>
+                </tr>
+                <tr><th></th><td></td></tr>
+                <tr>
                     <th scope="col">Liczba projektów</th>
                     <td scope="col">{{ person_projects.count }}</th>
+                </tr>
+                <tr>
+                    <th scope="col">W przygotowaniu</th>
+                    <td scope="col">{{ person_divisions_active.count }}</td>
+                </tr>
+                <tr>
+                    <th scope="col">Wygrane przetargi</th>
+                    <td scope="col">{{ person_divisions_won.count }}</td>
                 </tr>
             </tbody>
         </table>

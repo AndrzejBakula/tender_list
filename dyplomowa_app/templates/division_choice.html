@@ -14,7 +14,6 @@
     <table class="table-responsive-xl table-striped table-bordered" style="width: 100%;">
         <thead>
           <tr>
-            <th scope="col" style="text-align: center;">ID</th>
             <th scope="col" style="text-align: center;">Nazwa Zespołu</th>
             <th scope="col" style="text-align: center;">Wybór zespołu</th>
           </tr>
@@ -22,7 +21,6 @@
         <tbody>
             {% for i in division_choice %}
           <tr>
-            <th scope="col" style="text-align: center;">{{ i.id }}</th>
             <td scope="col" style="text-align: center;">
               <a href="{% url 'division-details' i.id %}">{{ i.division_name }} (kliknij by zobaczyć szczegóły)</a>
             </td>
