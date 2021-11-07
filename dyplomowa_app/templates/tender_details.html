@@ -79,7 +79,9 @@
                 <td scope="col" style="text-align: center;">{{ i.offer_deadline }}</td>
                 {% endif %}
                 {% for j in i.other_criteria.all %}
-                <td scope="col" style="text-align: center;">{{ j.criteria_value }}</td>
+                <td scope="col" style="text-align: center;">
+                    {% if j.criteria_value %} {{ j.criteria_value }} {% else %} nieokreślono {% endif %}
+                </td>
                 {% endfor %}
             </tr>
 

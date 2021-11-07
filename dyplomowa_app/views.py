@@ -529,6 +529,8 @@ class DeleteInvestor(View):
 class DeleteInvestorConfirm(View):
     def get(self, request, id):
         investor = Investor.objects.get(id=id)
+        for i in InvestorNote.objects.filter(investor_note_investor=investor):
+            i.delete()
         investor.delete()
         return redirect("/investors")
 
@@ -1026,6 +1028,8 @@ class DeleteDesigner(View):
 class DeleteDesignerConfirm(View):
     def get(self, request, id):
         designer = Designer.objects.get(id=id)
+        for i in DesignerNote.objects.filter(designer_note_designer=designer):
+            i.delte()
         designer.delete()
         return redirect("/designers")
 
@@ -1363,7 +1367,17 @@ class DeleteProjectConfirm(View):
     def get(self, request, id):
         project = Project.objects.get(id=id)
         if project.tender:
-            project.tender.delete()
+            tender = project.tender
+            tenderers = Tenderer.objects.filter(tender=tender)
+            for i in tenderers:
+                criteria = Criteria.objects.filter(tenderer=i)
+                for j in criteria:
+                    j.delete()
+                i.delete()
+            criteria = Criteria.objects.filter(tender=tender)
+            for i in criteria:
+                i.delete()
+            tender.delete()
         project.delete()
         return redirect("/projects")
 
@@ -2165,6 +2179,9 @@ class DeleteTendererView(View):
         project = Project.objects.get(id=project_id)
         tender = Tender.objects.get(id=tender_id)
         tenderer = Tenderer.objects.get(id=tenderer_id)
+        criteria = Criteria.objects.filter(tenderer=tenderer)
+        for i in criteria:
+            i.delete()
         tenderer.delete()
         return redirect(f"/add_tender_details/{project_id}/{tender_id}")
 
@@ -2197,5 +2214,14 @@ class DeleteTenderView(View):
 class DeleteTenderConfirm(View):
     def get(self, request, project_id, tender_id):
         tender = Tender.objects.get(id=tender_id)
+        criteria = Criteria.objects.filter(tender=ternder)
+        for i in criteria:
+            i.delete()
+        tenderers = Tenderer.objects.filter(tender=tender)
+        for i in tenderers:
+            criteria = Criteria.objects.filter(tenderer=i)
+            for j in criteria:
+                j.delete()
+            i.delete()
         tender.delete()
         return redirect("/projects")

@@ -208,11 +208,11 @@ class Investor(models.Model):
 
     investor_name = models.CharField(max_length=128)
     investor_address = models.CharField(max_length=256)
-    investor_voivodeship = models.ForeignKey(Voivodeship, on_delete=models.CASCADE, default=Voivodeship.VOIVODESHIP[0][0])
-    investor_poviat = models.ForeignKey(Poviat, on_delete=models.CASCADE, null=True, default=None)
-    investor_administration_level = models.ForeignKey(AdministrationLevel, on_delete=models.CASCADE)
+    investor_voivodeship = models.ForeignKey(Voivodeship, on_delete=models.DO_NOTHING, default=Voivodeship.VOIVODESHIP[0][0])
+    investor_poviat = models.ForeignKey(Poviat, on_delete=models.DO_NOTHING, null=True, default=None)
+    investor_administration_level = models.ForeignKey(AdministrationLevel, on_delete=models.DO_NOTHING)
     investor_note = models.FloatField(max_length=4, null=True, default=None)
-    investor_added_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    investor_added_by = models.ForeignKey(User, on_delete=models.DO_NOTHING)
     division = models.ManyToManyField(Division)
 
     def __str__(self):
@@ -221,18 +221,18 @@ class Investor(models.Model):
 
 class InvestorNote(models.Model):
 
-    investor_note_note = models.ForeignKey(Note, on_delete=models.CASCADE)
-    investor_note_user = models.ForeignKey(User, on_delete=models.CASCADE)
-    investor_note_investor = models.ForeignKey(Investor, on_delete=models.CASCADE)
+    investor_note_note = models.ForeignKey(Note, on_delete=models.DO_NOTHING)
+    investor_note_user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
+    investor_note_investor = models.ForeignKey(Investor, on_delete=models.DO_NOTHING)
 
 
 class Designer(models.Model):
     designer_name = models.CharField(max_length=128)
     designer_address = models.CharField(max_length=128)
-    designer_voivodeship = models.ForeignKey(Voivodeship, on_delete=models.CASCADE, default=Voivodeship.VOIVODESHIP[0][0])
-    designer_poviat = models.ForeignKey(Poviat, on_delete=models.CASCADE, null=True, default=None)
+    designer_voivodeship = models.ForeignKey(Voivodeship, on_delete=models.DO_NOTHING, default=Voivodeship.VOIVODESHIP[0][0])
+    designer_poviat = models.ForeignKey(Poviat, on_delete=models.DO_NOTHING, null=True, default=None)
     designer_note = models.FloatField(max_length=4, null=True, default=None)
-    designer_added_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    designer_added_by = models.ForeignKey(User, on_delete=models.DO_NOTHING)
     division = models.ManyToManyField(Division)
 
     def __str__(self):
@@ -241,9 +241,9 @@ class Designer(models.Model):
 
 class DesignerNote(models.Model):
 
-    designer_note_note = models.ForeignKey(Note, on_delete=models.CASCADE)
-    designer_note_user = models.ForeignKey(User, on_delete=models.CASCADE)
-    designer_note_designer = models.ForeignKey(Designer, on_delete=models.CASCADE)
+    designer_note_note = models.ForeignKey(Note, on_delete=models.DO_NOTHING)
+    designer_note_user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
+    designer_note_designer = models.ForeignKey(Designer, on_delete=models.DO_NOTHING)
 
 
 class Priority(models.Model):
@@ -298,11 +298,11 @@ class Company(models.Model):
 
     company_name  = models.CharField(max_length=64)
     company_address = models.CharField(max_length=128)
-    company_voivodeship = models.ForeignKey(Voivodeship, on_delete=models.CASCADE, default=Voivodeship.VOIVODESHIP[0][0])
-    company_poviat = models.ForeignKey(Poviat, on_delete=models.CASCADE, null=True, default=None)
-    company_added_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    company_voivodeship = models.ForeignKey(Voivodeship, on_delete=models.DO_NOTHING, default=Voivodeship.VOIVODESHIP[0][0])
+    company_poviat = models.ForeignKey(Poviat, on_delete=models.DO_NOTHING, null=True, default=None)
+    company_added_by = models.ForeignKey(User, on_delete=models.DO_NOTHING)
     division = models.ManyToManyField(Division, related_name="division")
-    division_company = models.ForeignKey(Division, on_delete=models.CASCADE, null=True, default=None, related_name="division_company")
+    division_company = models.ForeignKey(Division, on_delete=models.DO_NOTHING, null=True, default=None, related_name="division_company")
 
 
     def __str__(self):
@@ -352,7 +352,7 @@ class Criteria(models.Model):
 
     criteria_name = models.CharField(max_length=128)
     criteria_value = models.TextField(null=True, default=None)
-    weight = models.ForeignKey(Weight, on_delete=models.CASCADE)
+    weight = models.ForeignKey(Weight, on_delete=models.DO_NOTHING)
     division = models.ManyToManyField(Division)
 
     def __str__(self):
@@ -361,10 +361,12 @@ class Criteria(models.Model):
 
 class Tenderer(models.Model):
 
-    tenderer = models.ForeignKey(Company, on_delete=models.CASCADE, default=None)
+    tenderer = models.ForeignKey(Company, on_delete=models.DO_NOTHING, default=None)
     offer_value = models.FloatField(null=True, default=None)
-    offer_guarantee = models.ForeignKey(Month, on_delete=models.CASCADE, null=True, default=None, related_name="offer_guarantee")
-    offer_deadline = models.ForeignKey(Month, on_delete=models.CASCADE, null=True, default=None, related_name="offer_deadline")
+    offer_guarantee = models.ForeignKey(Month, on_delete=models.DO_NOTHING, null=True, default=None,
+        related_name="offer_guarantee")
+    offer_deadline = models.ForeignKey(Month, on_delete=models.DO_NOTHING, null=True, default=None,
+        related_name="offer_deadline")
     other_criteria = models.ManyToManyField(Criteria, default=None)
     is_winner = models.BooleanField(default=False)
 
@@ -390,30 +392,30 @@ class Project(models.Model):
     deposit = models.FloatField(null=True, default=None)
     announcement_number = models.TextField(default=None, null=True)
     announcement_date = models.DateField(blank=True, null=True)
-    voivodeship = models.ForeignKey(Voivodeship, on_delete=models.CASCADE)
-    poviat = models.ForeignKey(Poviat, on_delete=models.CASCADE, null=True, default=None)
+    voivodeship = models.ForeignKey(Voivodeship, on_delete=models.DO_NOTHING)
+    poviat = models.ForeignKey(Poviat, on_delete=models.DO_NOTHING, null=True, default=None)
     tender_date = models.DateField(blank=True, null=True)
     project_name = models.TextField(max_length=512)
     estimated_value = models.FloatField(null=True, default=None)
-    investor = models.ForeignKey(Investor, on_delete=models.CASCADE)
+    investor = models.ForeignKey(Investor, on_delete=models.DO_NOTHING)
     project_deadline_date = models.DateField(blank=True, null=True)
     project_deadline_months = models.IntegerField(null=True, default=None)
     project_deadline_days = models.IntegerField(null=True, default=None)
     mma_quantity = models.IntegerField(null=True, default=None)
-    payment_method = models.ForeignKey(PaymentMethod, on_delete=models.CASCADE, null=True, default=None)
+    payment_method = models.ForeignKey(PaymentMethod, on_delete=models.DO_NOTHING, null=True, default=None)
     project_url = models.URLField(unique=True, null=True, default=None)
     person = models.ManyToManyField(User, default=None)
-    division = models.ForeignKey(Division, on_delete=models.CASCADE)
+    division = models.ForeignKey(Division, on_delete=models.DO_NOTHING)
     rc_date = models.DateField(blank=True, null=True)
     rc_agree = models.BooleanField(null=True, default=None)
     evaluation_criteria = models.TextField(null=True, default=None)
     payment_criteria = models.TextField(null=True, default=None)
     jv_partners = models.ManyToManyField(Company, default=None)
     remarks = models.TextField(null=True, default=None)
-    tender = models.OneToOneField(Tender, on_delete=models.DO_NOTHING, null=True, default=None)
-    priority = models.ForeignKey(Priority, on_delete=models.CASCADE, null=True, default=None)
-    designer = models.ForeignKey(Designer, null=True, default=None, on_delete=models.CASCADE)
-    status = models.ForeignKey(Status, on_delete=models.CASCADE, default=Status.STATUS[0][0])
+    tender = models.OneToOneField(Tender, on_delete=models.CASCADE, null=True, default=None)
+    priority = models.ForeignKey(Priority, on_delete=models.DO_NOTHING, null=True, default=None)
+    designer = models.ForeignKey(Designer, null=True, default=None, on_delete=models.DO_NOTHING)
+    status = models.ForeignKey(Status, on_delete=models.DO_NOTHING, default=Status.STATUS[0][0])
 
     def __str__(self):
         return self.project_name
