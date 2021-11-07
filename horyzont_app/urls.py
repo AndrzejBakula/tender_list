@@ -14,7 +14,11 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
+from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth import views as auth_views
 from django.urls import path
+from django.conf import settings
+
 from dyplomowa_app.views import AddInvestor, AddDesigner, AddProject, Projects, ProjectDetails, EditProject
 from dyplomowa_app.views import DeleteProject, EditInvestor, InvestorDetails, DesignerDetails, EditDesigner
 from dyplomowa_app.views import LoginView, LogoutView, DeleteProjectConfirm, DeleteInvestor, DeleteInvestorConfirm
@@ -22,7 +26,7 @@ from dyplomowa_app.views import InvestorsView, DesignersView, DeleteDesigner, De
 from dyplomowa_app.views import AddCompany, AddCompanyPoviat, CompaniesView, CompanyDetails, EditCompany, DeleteCompany
 from dyplomowa_app.views import ArchivesView, DivisionChoiceView, DivisionChoiceConfirm, RegisterView, DeleteCompanyConfirm
 from dyplomowa_app.views import AddDivisionView, DivisionDetails, AddAdminView, CancelAdminView, JoinDivisionView
-from dyplomowa_app.views import AddPersonView, DateChoiceView, EditDivisionView, DeleteDivisionView, EditProjectPoviat
+from dyplomowa_app.views import AddPersonView, EditDivisionView, DeleteDivisionView, EditProjectPoviat
 from dyplomowa_app.views import DeleteDivisionConfirm, RemoveMemberView, PersonDetailsView, AddTenderView
 from dyplomowa_app.views import AddTenderCriteria, AddOtherCriteria, AddTenderDetails, EditCompanyPoviat
 from dyplomowa_app.views import AddInvestorPoviat, EditInvestorPoviat, AddDesignerPoviat, EditDesignerPoviat
@@ -36,6 +40,7 @@ urlpatterns = [
     path('', Projects.as_view(), name='projects'),
     path('register/', RegisterView.as_view(), name='register'),
     path('login/', LoginView.as_view(), name='login'),
+    path('accounts/login/', LoginView.as_view(), name='login'),
     path('logout/', LogoutView.as_view(), name='logout'),
     path('add_investor/', AddInvestor.as_view(), name='add-investor'),
     path('add_investor_poviat/<int:id>', AddInvestorPoviat.as_view(), name='add-investor-poviat'),
@@ -59,7 +64,6 @@ urlpatterns = [
     path('designer_details/<int:id>', DesignerDetails.as_view(), name='designer-details'),
     path('edit_designer/<int:id>', EditDesigner.as_view(), name='edit-designer'),
     path('edit_designer_poviat/<int:id>', EditDesignerPoviat.as_view(), name='edit-designer-poviat'),
-    path('date_choice/', DateChoiceView.as_view(), name='date-choice'),
     path('add_project/', AddProject.as_view(), name='add-project'),
     path('add_project_poviat/<int:id>', AddProjectPoviat.as_view(), name='add-project-poviat'),
     path('projects/', Projects.as_view(), name='projects'),

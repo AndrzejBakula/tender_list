@@ -131,3 +131,6 @@ STATIC_URL = '/static/'
 #reCAPTCHA
 RECAPTCHA_PUBLIC_KEY = config("RECAPTCHA_PUBLIC_KEY", default="")
 RECAPTCHA_PRIVATE_KEY = config("RECAPTCHA_PRIVATE_KEY", default="")
+
+
+PROTOCOLE = config("PROTOCOLE", default="")

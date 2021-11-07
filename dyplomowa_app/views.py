@@ -2,9 +2,18 @@ from django.views import View
 from django import forms
 from django.shortcuts import render, redirect
 from django.contrib.auth import get_user_model, authenticate, login, logout
+from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.core.mail import EmailMessage
+from .utils import token_generator
+from django.utils.decorators import method_decorator
+from django.utils.encoding import force_bytes, force_text, DjangoUnicodeDecodeError
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth.models import User
 from datetime import timezone, date, timedelta
 from django.core.paginator import Paginator
+from horyzont_app.settings import PROTOCOLE
 from .models import *
 from .forms import AddInvestorForm, AddDesignerForm, AddProjectForm, EditProjectForm, EditInvestorForm
 from .forms import EditDesignerForm, LoginForm, AddCompanyForm, EditCompanyForm, RegisterForm
@@ -162,7 +171,32 @@ def validate_email(email):
         if i.email == email:
             return True
     return False
-    
+
+
+#USER CHECK CLASSES:
+class VerificationView(View):
+    def get(self, request, uidb64, token):
+        uid = force_text(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=uid)
+        user.is_active = True
+        user.save()
+        return redirect("login")
+
+
+class SuperUserCheck(UserPassesTestMixin, View):
+    def test_func(self):
+        return self.request.user.is_superuser
+
+
+class StaffMemberCheck(UserPassesTestMixin, View):
+    def test_func(self):
+        return self.request.user.is_staff
+
+
+class ActivateUserCheck(UserPassesTestMixin, View):
+    def test_func(self):
+        return self.request.user.is_authenticated
+
 
 #VIEW CLASSES
 class RegisterView(View):
@@ -294,7 +328,7 @@ class LogoutView(View):
         return redirect("/projects")
 
 
-class AddInvestor(View):
+class AddInvestor(StaffMemberCheck, View):
     def get(self, request):
         user = User.objects.get(pk=int(request.session["user_id"]))
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
@@ -338,7 +372,7 @@ class AddInvestor(View):
                 return redirect("/investors")
 
 
-class AddInvestorPoviat(View):
+class AddInvestorPoviat(StaffMemberCheck, View):
     def get(self, request, id):
         user = User.objects.get(pk=int(request.session["user_id"]))
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
@@ -363,7 +397,7 @@ class AddInvestorPoviat(View):
             return redirect("/investors")
 
 
-class InvestorsView(View):
+class InvestorsView(ActivateUserCheck, View):
     def get(self, request):
         user = User.objects.get(pk=int(request.session["user_id"]))
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
@@ -406,7 +440,7 @@ class InvestorsView(View):
             return render(request, "investors.html", ctx)
 
 
-class InvestorDetails(View):
+class InvestorDetails(ActivateUserCheck, View):
     def get(self, request, id):
         user = User.objects.get(pk=int(request.session["user_id"]))
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
@@ -449,7 +483,7 @@ class InvestorDetails(View):
             return redirect(f"/investor_details/{investor.id}")
 
 
-class EditInvestor(View):
+class EditInvestor(StaffMemberCheck, View):
     def get(self, request, id):
         user = User.objects.get(pk=int(request.session["user_id"]))
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
@@ -488,7 +522,7 @@ class EditInvestor(View):
                 return redirect("/investors")
 
 
-class EditInvestorPoviat(View):
+class EditInvestorPoviat(StaffMemberCheck, View):
     def get(self, request, id):
         user = User.objects.get(pk=int(request.session["user_id"]))
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
@@ -526,7 +560,7 @@ class DeleteInvestor(View):
         return render(request, "delete_investor.html", ctx)
 
 
-class DeleteInvestorConfirm(View):
+class DeleteInvestorConfirm(SuperUserCheck, View):
     def get(self, request, id):
         investor = Investor.objects.get(id=id)
         for i in InvestorNote.objects.filter(investor_note_investor=investor):
@@ -535,7 +569,7 @@ class DeleteInvestorConfirm(View):
         return redirect("/investors")
 
 
-class AddCompany(View):
+class AddCompany(StaffMemberCheck, View):
     def get(self, request):
         user = User.objects.get(pk=int(request.session["user_id"]))
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
@@ -570,7 +604,7 @@ class AddCompany(View):
                 return redirect("/companies")
 
 
-class AddCompanyPoviat(View):
+class AddCompanyPoviat(StaffMemberCheck, View):
     def get(self, request, id):
         user = User.objects.get(pk=int(request.session["user_id"]))
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
@@ -595,7 +629,7 @@ class AddCompanyPoviat(View):
             return redirect("/companies")
 
 
-class CompaniesView(View):
+class CompaniesView(ActivateUserCheck, View):
     def get(self, request):
         user = User.objects.get(pk=int(request.session["user_id"]))
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
@@ -669,7 +703,7 @@ class CompaniesView(View):
             return render(request, "companies.html", ctx)
 
 
-class AddMyCompanyView(View):
+class AddMyCompanyView(StaffMemberCheck, View):
 
     def get(self, request, company_id):
         user = User.objects.get(pk=int(request.session["user_id"]))
@@ -682,7 +716,7 @@ class AddMyCompanyView(View):
         return redirect("/companies")
 
 
-class RemoveMyCompanyView(View):
+class RemoveMyCompanyView(StaffMemberCheck, View):
 
     def get(self, request, company_id):
         user = User.objects.get(pk=int(request.session["user_id"]))
@@ -695,7 +729,7 @@ class RemoveMyCompanyView(View):
         return redirect("/companies")
 
 
-class CompanyDetails(View):
+class CompanyDetails(ActivateUserCheck, View):
     def get(self, request, id):
         user = User.objects.get(pk=int(request.session["user_id"]))
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
@@ -711,7 +745,7 @@ class CompanyDetails(View):
         return render(request, "company_details.html", ctx)
 
 
-class EditCompany(View):
+class EditCompany(StaffMemberCheck, View):
     def get(self, request, id):
         user = User.objects.get(pk=int(request.session["user_id"]))
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
@@ -752,7 +786,7 @@ class EditCompany(View):
                 return redirect("/companies")
 
 
-class EditCompanyPoviat(View):
+class EditCompanyPoviat(StaffMemberCheck, View):
     def get(self, request, id):
         user = User.objects.get(pk=int(request.session["user_id"]))
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
@@ -781,7 +815,7 @@ class EditCompanyPoviat(View):
             return redirect(f"/company_details/{id}")
 
 
-class DeleteCompany(View):
+class DeleteCompany(SuperUserCheck, View):
     def get(self, request, id):
         user = User.objects.get(pk=int(request.session["user_id"]))
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
@@ -793,14 +827,14 @@ class DeleteCompany(View):
         return render(request, "delete_company.html", ctx)
 
 
-class DeleteCompanyConfirm(View):
+class DeleteCompanyConfirm(SuperUserCheck, View):
     def get(self, request, id):
         company = Company.objects.get(id=id)
         company.delete()
         return redirect("/companies")
 
 
-class AddDesigner(View):
+class AddDesigner(StaffMemberCheck, View):
     def get(self, request):
         user = User.objects.get(pk=int(request.session["user_id"]))
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
@@ -843,7 +877,7 @@ class AddDesigner(View):
                 return redirect("/designers")
 
 
-class AddDesignerPoviat(View):
+class AddDesignerPoviat(StaffMemberCheck, View):
     def get(self, request, id):
         user = User.objects.get(pk=int(request.session["user_id"]))
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
@@ -867,7 +901,7 @@ class AddDesignerPoviat(View):
             return redirect("/designers")
 
 
-class DesignersView(View):
+class DesignersView(ActivateUserCheck, View):
     def get(self, request):
         user = User.objects.get(pk=int(request.session["user_id"]))
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
@@ -912,7 +946,7 @@ class DesignersView(View):
             return render(request, "designers.html", ctx)
 
 
-class DesignerDetails(View):
+class DesignerDetails(ActivateUserCheck, View):
     def get(self, request, id):
         user = User.objects.get(pk=int(request.session["user_id"]))
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
@@ -947,7 +981,7 @@ class DesignerDetails(View):
             return redirect(f"/designer_details/{designer.id}")
 
 
-class EditDesigner(View):
+class EditDesigner(StaffMemberCheck, View):
     def get(self, request, id):
         user = User.objects.get(pk=int(request.session["user_id"]))
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
@@ -987,7 +1021,7 @@ class EditDesigner(View):
                 return redirect("/designers")
 
 
-class EditDesignerPoviat(View):
+class EditDesignerPoviat(StaffMemberCheck, View):
     def get(self, request, id):
         user = User.objects.get(pk=int(request.session["user_id"]))
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
@@ -1013,7 +1047,7 @@ class EditDesignerPoviat(View):
             return redirect(f"/designer_details/{id}")
 
 
-class DeleteDesigner(View):
+class DeleteDesigner(SuperUserCheck, View):
     def get(self, request, id):
         user = User.objects.get(pk=int(request.session["user_id"]))
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
@@ -1025,7 +1059,7 @@ class DeleteDesigner(View):
         return render(request, "delete_designer.html", ctx)
 
 
-class DeleteDesignerConfirm(View):
+class DeleteDesignerConfirm(SuperUserCheck, View):
     def get(self, request, id):
         designer = Designer.objects.get(id=id)
         for i in DesignerNote.objects.filter(designer_note_designer=designer):
@@ -1034,15 +1068,7 @@ class DeleteDesignerConfirm(View):
         return redirect("/designers")
 
 
-class DateChoiceView(View):
-    def get(self, request):
-        form = DateChoiceForm()
-        return render(request, "date_choice.html")
-    
-    def post(self, request):
-        pass
-
-class AddProject(View):
+class AddProject(StaffMemberCheck, View):
     def get(self, request):
         user = None
         division = None
@@ -1130,7 +1156,7 @@ class AddProject(View):
                 return redirect("/projects")
 
 
-class AddProjectPoviat(View):
+class AddProjectPoviat(StaffMemberCheck, View):
     def get(self, request, id):
         user = None
         division = None
@@ -1203,7 +1229,7 @@ class Projects(View):
             return render(request, "projects.html", ctx)
 
 
-class ProjectDetails(View):
+class ProjectDetails(ActivateUserCheck, View):
     def get(self, request, id):
         user = User.objects.get(pk=int(request.session["user_id"]))
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
@@ -1215,7 +1241,7 @@ class ProjectDetails(View):
         return render(request, "project_details.html", ctx)
 
 
-class EditProject(View):
+class EditProject(StaffMemberCheck, View):
     
     def get(self, request, id):
         user = None
@@ -1325,7 +1351,7 @@ class EditProject(View):
                 return redirect("/projects")
 
 
-class EditProjectPoviat(View):
+class EditProjectPoviat(StaffMemberCheck, View):
     def get(self, request, id):
         user = User.objects.get(pk=int(request.session["user_id"]))
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
@@ -1351,7 +1377,7 @@ class EditProjectPoviat(View):
             return redirect(f"/project_details/{id}")
 
 
-class DeleteProject(View):
+class DeleteProject(StaffMemberCheck, View):
     def get(self, request, id):
         user = User.objects.get(pk=int(request.session["user_id"]))
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
@@ -1363,7 +1389,7 @@ class DeleteProject(View):
         return render(request, "delete_project.html", ctx)
     
 
-class DeleteProjectConfirm(View):
+class DeleteProjectConfirm(StaffMemberCheck, View):
     def get(self, request, id):
         project = Project.objects.get(id=id)
         if project.tender:
@@ -1382,7 +1408,7 @@ class DeleteProjectConfirm(View):
         return redirect("/projects")
 
 
-class ArchivesView(View):
+class ArchivesView(ActivateUserCheck, View):
     def get(self, request):
         user = None
         if request.session.get("user_id") not in ("", None):
@@ -1427,7 +1453,7 @@ class ArchivesView(View):
             return render(request, "archives.html", ctx)
 
 
-class AddDivisionView(View):
+class AddDivisionView(ActivateUserCheck, View):
     def get(self, request):
         user = User.objects.get(pk=int(request.session["user_id"]))
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
@@ -1479,7 +1505,7 @@ class AddDivisionView(View):
             return redirect("/division_choice")
 
 
-class JoinDivisionView(View):
+class JoinDivisionView(ActivateUserCheck, View):
     def get(self, request):
         user = User.objects.get(pk=int(request.session["user_id"]))
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
@@ -1502,7 +1528,7 @@ class JoinDivisionView(View):
             return redirect("/division_choice")
 
 
-class DivisionChoiceView(View):
+class DivisionChoiceView(ActivateUserCheck, View):
     def get(self, request):
         user = None
         if request.session["user_id"] not in ("", None):
@@ -1516,7 +1542,7 @@ class DivisionChoiceView(View):
         return render(request, "division_choice.html", ctx)
 
 
-class DivisionChoiceConfirm(View):
+class DivisionChoiceConfirm(ActivateUserCheck, View):
     def get(self, request, id):
         division = Division.objects.get(pk=id)
         request.session["division_id"] = division.id
@@ -1525,7 +1551,7 @@ class DivisionChoiceConfirm(View):
         return redirect("/projects")
     
 
-class DivisionDetails(View):
+class DivisionDetails(ActivateUserCheck, View):
     def get(self, request, id):
         user = User.objects.get(pk=int(request.session["user_id"]))
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
@@ -1547,7 +1573,7 @@ class DivisionDetails(View):
         return render(request, "division_details.html", ctx)
 
 
-class EditDivisionView(View):
+class EditDivisionView(StaffMemberCheck, View):
     def get(self, request, id):
         user = User.objects.get(pk=int(request.session["user_id"]))
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
@@ -1576,7 +1602,7 @@ class EditDivisionView(View):
             return redirect(f"/division_details/{division.id}")
 
 
-class DeleteDivisionView(View):
+class DeleteDivisionView(SuperUserCheck, View):
     def get(self, request, id):
         user = User.objects.get(pk=int(request.session["user_id"]))
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
@@ -1588,14 +1614,14 @@ class DeleteDivisionView(View):
         return render(request, "delete_division.html", ctx)
 
 
-class DeleteDivisionConfirm(View):
+class DeleteDivisionConfirm(SuperUserCheck, View):
     def get(self, request, id):
         division = Division.objects.get(id=id)
         division.delete()
         return redirect("/divisions")
 
 
-class AddAdminView(View):
+class AddAdminView(StaffMemberCheck, View):
     def get(self, request, division_id, person_id):
         division = Division.objects.get(id=division_id)
         person = User.objects.get(id=person_id)
@@ -1606,7 +1632,7 @@ class AddAdminView(View):
         return redirect(f"/division_details/{division.id}")
 
 
-class CancelAdminView(View):
+class CancelAdminView(StaffMemberCheck, View):
     def get(self, request, division_id, person_id):
         user = User.objects.get(pk=int(request.session["user_id"]))
         division = Division.objects.get(id=division_id)
@@ -1620,7 +1646,7 @@ class CancelAdminView(View):
         return redirect(f"/division_details/{division.id}")
 
 
-class AddPersonView(View):
+class AddPersonView(StaffMemberCheck, View):
     def get(self, request, division_id, person_id):
         division = Division.objects.get(id=division_id)
         person = User.objects.get(id=person_id)
@@ -1630,7 +1656,7 @@ class AddPersonView(View):
         return redirect(f"/division_details/{division.id}")
 
 
-class RemoveMemberView(View):
+class RemoveMemberView(StaffMemberCheck, View):
     def get(self, request, division_id, person_id):
         division = Division.objects.get(id=division_id)
         person = User.objects.get(id=person_id)
@@ -1639,7 +1665,7 @@ class RemoveMemberView(View):
         return redirect(f"/division_details/{division.id}")
 
 
-class PersonDetailsView(View):
+class PersonDetailsView(ActivateUserCheck, View):
     def get(self, request, id):
         person = User.objects.get(id=id)
         user = User.objects.get(pk=int(request.session["user_id"]))
@@ -1660,7 +1686,7 @@ class PersonDetailsView(View):
         return render(request, "person_details.html", ctx)
 
 
-class UserDetailsView(View):
+class UserDetailsView(ActivateUserCheck, View):
     def get(self, request):
         user = User.objects.get(pk=int(request.session["user_id"]))
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
@@ -1685,7 +1711,7 @@ class UserDetailsView(View):
         return render(request, "user_details.html", ctx)
 
 
-class EditUserView(View):
+class EditUserView(ActivateUserCheck, View):
     def get(self, request, user_id):
         user = User.objects.get(pk=int(request.session["user_id"]))
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
@@ -1709,7 +1735,7 @@ class EditUserView(View):
             return redirect(f"/user_details")
 
 
-class AddTenderView(View):
+class AddTenderView(StaffMemberCheck, View):
     def get(self, request, id):
         user = User.objects.get(pk=int(request.session["user_id"]))
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
@@ -1741,7 +1767,7 @@ class AddTenderView(View):
             return redirect(f"/add_tender_criteria/{project.id}/{tender.id}")
 
 
-class AddTenderCriteria(View):
+class AddTenderCriteria(StaffMemberCheck, View):
     def get(self, request, project_id, tender_id):
         user = User.objects.get(pk=int(request.session["user_id"]))
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
@@ -1797,7 +1823,7 @@ class AddTenderCriteria(View):
             return redirect(f"/add_other_criteria/{project.id}/{tender.id}")
 
 
-class AddOtherCriteria(View):
+class AddOtherCriteria(StaffMemberCheck, View):
     def get(self, request, project_id, tender_id):
         user = User.objects.get(pk=int(request.session["user_id"]))
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
@@ -1873,7 +1899,7 @@ class AddOtherCriteria(View):
             return redirect(f"/add_other_criteria/{project_id}/{tender_id}")
 
 
-class AddMissingCriteria(View):
+class AddMissingCriteria(StaffMemberCheck, View):
     def post(self, request, project_id, tender_id, criteria_id):
         user = User.objects.get(pk=int(request.session["user_id"]))
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
@@ -1889,7 +1915,7 @@ class AddMissingCriteria(View):
             return redirect(f"/add_tender_details/{project.id}/{tender.id}")
 
 
-class AddMissingDeadline(View):
+class AddMissingDeadline(StaffMemberCheck, View):
     def post(self, request, project_id, tender_id, tenderer_id):
         user = User.objects.get(pk=int(request.session["user_id"]))
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
@@ -1905,7 +1931,7 @@ class AddMissingDeadline(View):
             return redirect(f"/add_tender_details/{project.id}/{tender.id}")
 
 
-class AddMissingGuarantee(View):
+class AddMissingGuarantee(StaffMemberCheck, View):
     def post(self, request, project_id, tender_id, tenderer_id):
         user = User.objects.get(pk=int(request.session["user_id"]))
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
@@ -1921,7 +1947,7 @@ class AddMissingGuarantee(View):
             return redirect(f"/add_tender_details/{project.id}/{tender.id}")
 
 
-class AddTenderDetails(View):
+class AddTenderDetails(StaffMemberCheck, View):
 
     def get(self, request, project_id, tender_id):
         user = User.objects.get(pk=int(request.session["user_id"]))
@@ -1976,7 +2002,7 @@ class AddTenderDetails(View):
             return redirect(f"/add_tender_details/{project.id}/{tender.id}")
     
 
-class TenderDetailsView(View):
+class TenderDetailsView(ActivateUserCheck, View):
 
     def get(self, request, project_id, tender_id):
         user = User.objects.get(pk=int(request.session["user_id"]))
@@ -2023,7 +2049,7 @@ class MakeWinnerView(View):
         return redirect(f"/tender_details/{project.id}/{tender.id}")
 
 
-class RemoveWinnerView(View):
+class RemoveWinnerView(StaffMemberCheck, View):
     
     def get(self, request, tender_id, tenderer_id):
         tender = Tender.objects.get(id=tender_id)
@@ -2039,7 +2065,7 @@ class RemoveWinnerView(View):
         return redirect(f"/tender_details/{project.id}/{tender.id}")
 
 
-class EditTenderView(View):
+class EditTenderView(StaffMemberCheck, View):
     def get(self, request, project_id, tender_id):
         user = User.objects.get(pk=int(request.session["user_id"]))
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
@@ -2096,7 +2122,7 @@ class EditTenderView(View):
             return redirect(f"/edit_tender_criteria/{project.id}/{tender.id}")
 
 
-class EditTenderCriteria(View):
+class EditTenderCriteria(StaffMemberCheck, View):
     def get(self, request, project_id, tender_id):
         user = User.objects.get(pk=int(request.session["user_id"]))
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
@@ -2172,7 +2198,7 @@ class EditTenderCriteria(View):
             return redirect(f"/add_other_criteria/{project.id}/{tender.id}")
 
 
-class DeleteTendererView(View):
+class DeleteTendererView(StaffMemberCheck, View):
     def get(self, request, project_id, tender_id, tenderer_id):
         user = User.objects.get(pk=int(request.session["user_id"]))
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
@@ -2186,7 +2212,7 @@ class DeleteTendererView(View):
         return redirect(f"/add_tender_details/{project_id}/{tender_id}")
 
 
-class DeleteOtherCriteriaView(View):
+class DeleteOtherCriteriaView(StaffMemberCheck, View):
     def get(self, request, project_id, tender_id, criteria_id):
         user = User.objects.get(pk=int(request.session["user_id"]))
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
@@ -2197,7 +2223,7 @@ class DeleteOtherCriteriaView(View):
         return redirect(f"/add_other_criteria/{project_id}/{tender_id}")
 
 
-class DeleteTenderView(View):
+class DeleteTenderView(StaffMemberCheck, View):
     def get(self, request, project_id, tender_id):
         user = User.objects.get(pk=int(request.session["user_id"]))
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
@@ -2211,7 +2237,7 @@ class DeleteTenderView(View):
         return render(request, "delete_tender.html", ctx)
 
 
-class DeleteTenderConfirm(View):
+class DeleteTenderConfirm(StaffMemberCheck, View):
     def get(self, request, project_id, tender_id):
         tender = Tender.objects.get(id=tender_id)
         criteria = Criteria.objects.filter(tender=ternder)
