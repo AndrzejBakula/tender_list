@@ -14,6 +14,7 @@ from django.contrib.auth.models import User
 from datetime import timezone, date, timedelta
 from django.core.paginator import Paginator
 from horyzont_app.settings import PROTOCOLE
+from django.urls import reverse
 from .models import *
 from .forms import AddInvestorForm, AddDesignerForm, AddProjectForm, EditProjectForm, EditInvestorForm
 from .forms import EditDesignerForm, LoginForm, AddCompanyForm, EditCompanyForm, RegisterForm
@@ -226,8 +227,8 @@ class RegisterView(View):
                 "form": form
             }
             return render(request, "register.html", ctx)
-        elif len(password) < 6:
-            message = "Hasło powinno mieć przynajmniej 6 znaków."
+        elif len(password) < 8:
+            message = "Hasło powinno mieć przynajmniej 8 znaków."
             ctx = {
                 "username": username,
                 "email": email,
@@ -253,7 +254,7 @@ class RegisterView(View):
             }
             return render(request, "register.html", ctx)
         elif validate_email(email):
-            message = "Ta skrzynka na listy jest już zajęta."
+            message = "Ten email jest już zajęty."
             ctx = {
                 "username": username,
                 "message": message,
@@ -263,27 +264,25 @@ class RegisterView(View):
         else:
             user = User.objects.create(username=username, email=email)
             user.set_password(password)
-            user.is_active = True
+            user.is_active = False
             user.save()
 
-            # uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
-            # domain = get_current_site(request).domain
-            # link = reverse("activate", kwargs={'uidb64': uidb64, 'token': token_generator.make_token(user)})
+            uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
+            domain = get_current_site(request).domain
+            link = reverse("activate", kwargs={'uidb64': uidb64, 'token': token_generator.make_token(user)})
 
-            # activate_url = PROTOCOLE+domain+link
+            activate_url = PROTOCOLE+domain+link
 
-            # email_subject = "Aktywuj konto kawalerzysty."
-            # email_body = "Baczność, rekrucie " + user.username + "! Użyj poniższego linku werbunkowego i udaj się do kwatermistrza.\n" + activate_url
-            # email = EmailMessage(
-            #     email_subject,
-            #     email_body,
-            #     "noreply@semycolon.com",
-            #     [user.email],
-            #     )            
-            # email.send(fail_silently=False)
+            email_subject = "Aktywacja konta na Liście Przetargowej."
+            email_body = "Cześć " + user.username + "! Użyj, proszę, poniższego linku, żeby potwierdzić email.\n" + activate_url
+            email = EmailMessage(
+                email_subject,
+                email_body,
+                "noreply@semycolon.com",
+                [user.email],
+                )            
+            email.send(fail_silently=False)
 
-            # rank = Rank.objects.get(name="kawalerzysta")
-            # UserRank.objects.create(user=user, rank=rank)
             message = f"Dodano nowego użytkownika {user.username}."
             form = LoginForm()
             ctx = {
