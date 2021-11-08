@@ -24,7 +24,7 @@ from .forms import SearchDesignerForm, AddTenderForm, AddCriteriaForm, AddOtherC
 from .forms import AddCompanyPoviatForm, EditCompanyPoviatForm, AddInvestorPoviatForm, EditInvestorPoviatForm
 from .forms import AddDesignerPoviatForm, EditDesignerPoviatForm, AddProjectPoviatForm, EditProjectPoviatForm
 from .forms import EditTenderForm, EditCriteriaForm, EditOtherCriteriaForm, AddMissingCriteriaForm
-from .forms import AddMissingDeadlineForm, AddMissingGuaranteeForm, EditUserForm
+from .forms import AddMissingDeadlineForm, AddMissingGuaranteeForm, EditUserForm, ResetForm
 
 
 #INITIAL FUNCTIONS
@@ -325,6 +325,108 @@ class LogoutView(View):
             user = request.user
             user.is_active = False
         return redirect("/projects")
+
+
+class RequestPasswordResetEmail(View):
+    def get(self, request):        
+        return render(request, 'reset_password.html')
+    
+    def post(self, request):
+        email = request.POST['email']
+        
+        if not validate_email(email):
+            message = "Podaj właściwy email."
+            ctx = {
+            "values": request.POST,
+            "message": message
+        }
+            return render(request, 'reset_password.html', ctx)
+        
+        current_site = get_current_site(request)
+        user = User.objects.filter(email=email)
+        if user.exists():
+            email_contents = {
+                'user': user[0],
+                'domain': current_site.domain,
+                'uid': urlsafe_base64_encode(force_bytes(user[0].pk)),
+                'token': PasswordResetTokenGenerator().make_token(user[0]),
+            }
+        link = reverse('set-new-password', kwargs={
+            'uidb64': email_contents['uid'], 'token': email_contents['token']})
+        email_subject = "Resetowanie hasła"
+        reset_url = PROTOCOLE+current_site.domain+link
+        email = EmailMessage(
+            email_subject,
+            "Cześć! By ustawić nowe hasło, kliknij proszę w poniższy link \n" + reset_url,
+            "noreply@semycolon.com",
+            [user[0].email],
+        )
+        email.send(fail_silently=False)  
+        message = "Wysłano link aktywacyjny na maila."
+        ctx = {
+            "message": message
+        }
+        return render(request, 'reset_password.html', ctx)
+
+
+class CompletePasswordReset(View):
+    def get(self, request, uidb64, token):
+        form = ResetForm()
+
+        try:
+            user_id = urlsafe_base64_decode(uidb64)
+            user = User.objects.get(pk=user_id)
+            if not PasswordResetTokenGenerator().check_token(user, token):
+                message = "Użyto niewłaściwego linku. Spróbuj z nowym."
+                return render(request, "set_new_password.html", {"message": message})
+        except Exception as identifier:
+            pass
+
+        ctx = {
+            "uidb64": uidb64,
+            "token": token,
+            "form": form,
+        }
+        return render(request, "set_new_password.html", ctx)
+    
+    def post(self, request, uidb64, token):
+        form = ResetForm(request.POST)
+        password = request.POST.get("password")
+        password2 = request.POST.get("password2")
+        if password != password2:
+            error_message = "Proszę podać dwa takie same hasła."
+            ctx = {
+                "uidb64": uidb64,
+                "token": token,
+                "error_message": error_message,
+                "form": form
+            }
+            return render(request, "set_new_password.html", ctx)
+        elif len(password) < 8:
+            error_message = "Hasło powinno mieć przynajmniej 8 znaków."
+            ctx = {
+                "uidb64": uidb64,
+                "token": token,
+                "error_message": error_message,
+                "form": form
+            }
+            return render(request, "set_new_password.html", ctx)
+        try:
+            user_id = urlsafe_base64_decode(uidb64)
+            user = User.objects.get(id=user_id)
+            user.set_password(password)
+            user.save()
+            message = "Hasło zostało ustawione."
+            ctx = {
+                "message": message
+            }
+            return render(request, "set_new_password.html", ctx)
+        except Exception as identifier:
+            message = "Coś poszło nie tak, spróbuj ponownie."
+            ctx = {
+                "message": message
+            }
+            return render(request, "set_new_password.html", ctx)
 
 
 class AddInvestor(StaffMemberCheck, View):

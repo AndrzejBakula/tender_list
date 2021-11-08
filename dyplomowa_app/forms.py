@@ -21,6 +21,12 @@ class LoginForm(forms.Form):
     captcha = ReCaptchaField(label="", widget=ReCaptchaV3(attrs={'required_score':0.85}))
 
 
+class ResetForm(forms.Form):
+    password = forms.CharField(label="", widget=forms.PasswordInput({"size": 34, "placeholder": "Nowe hasło"},))
+    password2 = forms.CharField(label="", widget=forms.PasswordInput({"size": 34, "placeholder": "Powtórz hasło"},))
+    captcha = ReCaptchaField(label="", widget=ReCaptchaV3(attrs={'required_score':0.85}))
+
+
 class EditUserForm(forms.Form):
     username = forms.CharField(label="", max_length=128,
         widget=forms.TextInput(attrs={"size": 38, "placeholder": "Nazwa Użytkownika"}))

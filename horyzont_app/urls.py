@@ -34,6 +34,7 @@ from dyplomowa_app.views import TenderDetailsView, EditTenderView, DeleteTenderV
 from dyplomowa_app.views import DeleteOtherCriteriaView, DeleteTendererView, AddMissingCriteria, MakeWinnerView
 from dyplomowa_app.views import RemoveWinnerView, AddMyCompanyView, RemoveMyCompanyView, AddMissingDeadline
 from dyplomowa_app.views import AddMissingGuarantee, UserDetailsView, EditUserView, VerificationView
+from dyplomowa_app.views import RequestPasswordResetEmail, CompletePasswordReset
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -110,7 +111,7 @@ urlpatterns = [
     path('delete_tender_confirm/<int:project_id>/<int:tender_id>', DeleteTenderConfirm.as_view(), name='delete-tender-confirm'),
 
     path('activate/<uidb64>/<token>', VerificationView.as_view(), name="activate"),
-    # path('reset_password/', RequestPasswordResetEmail.as_view(), name='reset-password'),
-    # path('set_new_password/<uidb64>/<token>', CompletePasswordReset.as_view(), name="set-new-password"),
+    path('reset_password/', RequestPasswordResetEmail.as_view(), name='reset-password'),
+    path('set_new_password/<uidb64>/<token>', CompletePasswordReset.as_view(), name="set-new-password"),
 
 ]
