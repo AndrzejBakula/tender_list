@@ -431,14 +431,16 @@ class CompletePasswordReset(View):
 
 class AddInvestor(StaffMemberCheck, View):
     def get(self, request):
-        user = User.objects.get(pk=int(request.session["user_id"]))
-        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
-        form = AddInvestorForm()
-        ctx = {
-            "form": form,
-            "divisions": divisions
-        }
-        return render(request, "add_investor.html", ctx)
+        if request.session.get("division_id"):
+            user = User.objects.get(pk=int(request.session["user_id"]))
+            divisions = [i.id for i in Division.objects.filter(division_admin=user)]
+            form = AddInvestorForm()
+            ctx = {
+                "form": form,
+                "divisions": divisions
+            }
+            return render(request, "add_investor.html", ctx)
+        return redirect("/projects")
     
     def post(self, request):
         user = User.objects.get(pk=int(request.session["user_id"]))
@@ -475,16 +477,18 @@ class AddInvestor(StaffMemberCheck, View):
 
 class AddInvestorPoviat(StaffMemberCheck, View):
     def get(self, request, id):
-        user = User.objects.get(pk=int(request.session["user_id"]))
-        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         investor = Investor.objects.get(id=id)
-        form = AddInvestorPoviatForm(investor=investor)
-        ctx = {
-            "form": form,
-            "divisions": divisions,
-            "investor": investor
-        }
-        return render(request, "add_investor_poviat.html", ctx)
+        if request.session.get("division_id") in [i.id for i in investor.division.all()]:
+            user = User.objects.get(pk=int(request.session["user_id"]))
+            divisions = [i.id for i in Division.objects.filter(division_admin=user)]
+            form = AddInvestorPoviatForm(investor=investor)
+            ctx = {
+                "form": form,
+                "divisions": divisions,
+                "investor": investor
+            }
+            return render(request, "add_investor_poviat.html", ctx)
+        return redirect("/projects")
     
     def post(self, request, id):
         user = User.objects.get(pk=int(request.session["user_id"]))
