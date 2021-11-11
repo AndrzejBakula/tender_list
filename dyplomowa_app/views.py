@@ -526,11 +526,12 @@ class InvestorsView(ActivateUserCheck, View):
         if request.session.get("user_id") not in ("", None):
             user = User.objects.get(pk=int(request.session["user_id"]))
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
+        division = Division.objects.get(id=request.session.get("division_id"))
         form = SearchInvestorForm(request.POST)
         if form.is_valid():
             data = form.cleaned_data
             text = data["text"]
-            investors = Investor.objects.filter(investor_name__icontains=text).order_by("investor_name")
+            investors = Investor.objects.filter(division=division, investor_name__icontains=text).order_by("investor_name")
 
             paginator = Paginator(investors, 15)
             page = request.GET.get("page")
@@ -1012,7 +1013,7 @@ class DesignersView(ActivateUserCheck, View):
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         division = None
         if request.session.get("division_id"):
-            division = request.session["division_id"]
+            division = Division.objects.get(pk=request.session["division_id"])
         form = SearchDesignerForm()
         designers = Designer.objects.filter(division=division).order_by("designer_name")
 
@@ -1032,11 +1033,12 @@ class DesignersView(ActivateUserCheck, View):
         if request.session.get("user_id") not in ("", None):
             user = User.objects.get(pk=int(request.session["user_id"]))
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
+        division = Division.objects.get(pk=request.session["division_id"])
         form = SearchDesignerForm(request.POST)
         if form.is_valid():
             data = form.cleaned_data
             text = data["text"]
-            designers = Designer.objects.filter(designer_name__icontains=text).order_by("designer_name")
+            designers = Designer.objects.filter(division=division, designer_name__icontains=text).order_by("designer_name")
 
             paginator = Paginator(designers, 15)
             page = request.GET.get("page")
@@ -1316,14 +1318,15 @@ class Projects(View):
         if request.session.get("user_id") not in ("", None):
             user = User.objects.get(pk=int(request.session["user_id"]))
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
+        division = Division.objects.get(id=request.session.get("division_id"))
         today = date.today()
         finish = today + timedelta(days=100)
         form = SearchProjectForm(request.POST)
         if form.is_valid():
             data = form.cleaned_data
             text = data["text"]
-            projects1 = Project.objects.filter(project_name__icontains=text, tender_date__range=[today, finish], status=2).order_by("tender_date", "tender_time", "project_number")
-            projects2 = Project.objects.filter(project_name__icontains=text, tender_date__isnull=True, status=2).order_by("tender_date", "tender_time", "project_number")
+            projects1 = Project.objects.filter(division=division, project_name__icontains=text, tender_date__range=[today, finish], status=2).order_by("tender_date", "tender_time", "project_number")
+            projects2 = Project.objects.filter(division=division, project_name__icontains=text, tender_date__isnull=True, status=2).order_by("tender_date", "tender_time", "project_number")
             projects = projects1 | projects2                            
             ctx = {
                 "form": form,
