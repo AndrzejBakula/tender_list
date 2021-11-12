@@ -1073,22 +1073,24 @@ class DesignersView(ActivateUserCheck, View):
 
 class DesignerDetails(ActivateUserCheck, View):
     def get(self, request, id):
-        user = User.objects.get(pk=int(request.session["user_id"]))
-        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
-        division = Division.objects.get(id=request.session.get("division_id"))
         designer = Designer.objects.get(id=id)
-        division_designer = Project.objects.filter(designer=designer, division=division)
-        noters = [i.designer_note_user for i in DesignerNote.objects.filter(designer_note_designer=designer)]
-        form = DesignerNoteForm()
-        ctx = {
-            "designer": designer,
-            "divisions": divisions,
-            "division": division,
-            "division_designer": division_designer,
-            "form": form,
-            "noters": noters
-        }
-        return render(request, "designer_details.html", ctx)
+        division = Division.objects.get(id=request.session.get("division_id"))
+        if division.id in [i.id for i in designer.division.all()]:
+            user = User.objects.get(pk=int(request.session["user_id"]))
+            divisions = [i.id for i in Division.objects.filter(division_admin=user)]
+            division_designer = Project.objects.filter(designer=designer, division=division)
+            noters = [i.designer_note_user for i in DesignerNote.objects.filter(designer_note_designer=designer)]
+            form = DesignerNoteForm()
+            ctx = {
+                "designer": designer,
+                "divisions": divisions,
+                "division": division,
+                "division_designer": division_designer,
+                "form": form,
+                "noters": noters
+            }
+            return render(request, "designer_details.html", ctx)
+        return redirect("/projects")
 
     def post(self, request, id):
         user = User.objects.get(pk=int(request.session["user_id"]))
@@ -1108,21 +1110,24 @@ class DesignerDetails(ActivateUserCheck, View):
 
 class EditDesigner(StaffMemberCheck, View):
     def get(self, request, id):
-        user = User.objects.get(pk=int(request.session["user_id"]))
-        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         designer = Designer.objects.get(id=id)
-        initial_data = {
-            "designer_name": designer.designer_name,
-            "designer_address": designer.designer_address,
-            "designer_voivodeship": designer.designer_voivodeship,
-        }
-        form = EditDesignerForm(initial=initial_data)
-        ctx = {
-            "designer": designer,
-            "form": form,
-            "divisions": divisions
-        }
-        return render(request, "edit_designer.html", ctx)
+        division = Division.objects.get(id=request.session.get("division_id"))
+        if division.id in [i.id for i in designer.division.all()]:
+            user = User.objects.get(pk=int(request.session["user_id"]))
+            divisions = [i.id for i in Division.objects.filter(division_admin=user)]
+            initial_data = {
+                "designer_name": designer.designer_name,
+                "designer_address": designer.designer_address,
+                "designer_voivodeship": designer.designer_voivodeship,
+            }
+            form = EditDesignerForm(initial=initial_data)
+            ctx = {
+                "designer": designer,
+                "form": form,
+                "divisions": divisions
+            }
+            return render(request, "edit_designer.html", ctx)
+        return redirect("/projects")
 
     def post(self, request, id):
         designer = Designer.objects.get(id=id)
@@ -1148,19 +1153,22 @@ class EditDesigner(StaffMemberCheck, View):
 
 class EditDesignerPoviat(StaffMemberCheck, View):
     def get(self, request, id):
-        user = User.objects.get(pk=int(request.session["user_id"]))
-        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         designer = Designer.objects.get(id=id)
-        initial_data = {
-            "designer_poviat": designer.designer_poviat
-        }
-        form = EditDesignerPoviatForm(initial=initial_data, designer=designer)
-        ctx = {
-            "designer": designer,
-            "form": form,
-            "divisions": divisions
-        }
-        return render(request, "edit_designer_poviat.html", ctx)
+        division = Division.objects.get(id=request.session.get("division_id"))
+        if division.id in [i.id for i in designer.division.all()]:
+            user = User.objects.get(pk=int(request.session["user_id"]))
+            divisions = [i.id for i in Division.objects.filter(division_admin=user)]
+            initial_data = {
+                "designer_poviat": designer.designer_poviat
+            }
+            form = EditDesignerPoviatForm(initial=initial_data, designer=designer)
+            ctx = {
+                "designer": designer,
+                "form": form,
+                "divisions": divisions
+            }
+            return render(request, "edit_designer_poviat.html", ctx)
+        return redirect("/projects")
 
     def post(self, request, id):
         designer = Designer.objects.get(id=id)
