@@ -1291,20 +1291,22 @@ class AddProject(StaffMemberCheck, View):
 
 class AddProjectPoviat(StaffMemberCheck, View):
     def get(self, request, id):
-        user = None
-        division = None
-        if request.session.get("user_id") not in ("", None):
-            user = User.objects.get(pk=int(request.session["user_id"]))
-        if request.session.get("division_id") not in ("", None):
-            division = Division.objects.get(id=request.session.get("division_id"))
-        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         project = Project.objects.get(id=id)
-        form = AddProjectPoviatForm(project=project)
-        ctx = {
-            "form": form,
-            "project": project
-        }
-        return render(request, "add_project_poviat.html", ctx)
+        division = None
+        if request.session.get("division_id"):
+            division = Division.objects.get(id=request.session.get("division_id"))
+        if division.id == project.division.id:
+            user = None
+            if request.session.get("user_id") not in ("", None):
+                user = User.objects.get(pk=int(request.session["user_id"]))
+            divisions = [i.id for i in Division.objects.filter(division_admin=user)]
+            form = AddProjectPoviatForm(project=project)
+            ctx = {
+                "form": form,
+                "project": project
+            }
+            return render(request, "add_project_poviat.html", ctx)
+        return redirect("/projects")
     
     def post(self, request, id):
         project = Project.objects.get(id=id)
@@ -1321,9 +1323,9 @@ class Projects(View):
     def get(self, request):
         user = None
         division = None
-        if request.session.get("user_id") not in ("", None):
+        if request.session.get("user_id"):
             user = User.objects.get(pk=int(request.session["user_id"]))
-        if request.session.get("division_id") not in ("", None):
+        if request.session.get("division_id"):
             division = Division.objects.get(id=request.session.get("division_id"))
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         form = SearchProjectForm()
@@ -1365,64 +1367,68 @@ class Projects(View):
 
 class ProjectDetails(ActivateUserCheck, View):
     def get(self, request, id):
-        user = User.objects.get(pk=int(request.session["user_id"]))
-        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         project = Project.objects.get(id=id)
-        ctx = {
-            "project": project,
-            "divisions": divisions
-        }
-        return render(request, "project_details.html", ctx)
-
-
-class EditProject(StaffMemberCheck, View):
-    
-    def get(self, request, id):
-        user = None
-        division = None
-        if request.session.get("user_id") not in ("", None):
+        division = Division.objects.get(pk=request.session.get("division_id"))
+        if division.id == project.division.id:
             user = User.objects.get(pk=int(request.session["user_id"]))
-        if request.session.get("division_id") not in ("", None):
-            division = Division.objects.get(id=request.session.get("division_id"))
-        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
+            divisions = [i.id for i in Division.objects.filter(division_admin=user)]
+            ctx = {
+                "project": project,
+                "divisions": divisions
+            }
+            return render(request, "project_details.html", ctx)
+        return redirect("/projects")
+
+
+class EditProject(StaffMemberCheck, View):    
+    def get(self, request, id):
         project = Project.objects.get(id=id)
-        initial_data = {
-            "project_number": project.project_number,
-            "tender_time": project.tender_time,
-            "open_time": project.open_time,
-            "deposit": project.deposit,
-            "announcement_number": project.announcement_number,
-            "announcement_date": project.announcement_date,
-            "voivodeship": project.voivodeship,
-            "poviat": project.poviat,
-            "tender_date": project.tender_date,            
-            "project_name": project.project_name,
-            "estimated_value": project.estimated_value,            
-            "investor": project.investor,
-            "project_deadline_date": project.project_deadline_date,
-            "project_deadline_months": project.project_deadline_months,
-            "project_deadline_days": project.project_deadline_days,
-            "mma_quantity": project.mma_quantity,
-            "payment_method": project.payment_method,
-            "project_url": project.project_url,            
-            "person": [i for i in project.person.all()],
-            "rc_date": project.rc_date,
-            "rc_agree": project.rc_agree,
-            "evaluation_criteria": project.evaluation_criteria,
-            "payment_criteria": project.payment_criteria,
-            "jv_partners": [i for i in project.jv_partners.all()],
-            "remarks": project.remarks,      
-            "priority": project.priority,
-            "designer": project.designer,
-            "status": project.status
-        }
-        form = EditProjectForm(initial=initial_data, user=user, division=division)
-        ctx = {
-            "project": project,
-            "form": form,
-            "divisions": divisions
-        }
-        return render(request, "edit_project.html", ctx)
+        division = None
+        if request.session.get("division_id"):
+            division = Division.objects.get(id=request.session.get("division_id"))
+        if division.id == project.division.id:
+            user = None
+            if request.session.get("user_id"):
+                user = User.objects.get(pk=int(request.session["user_id"]))
+            divisions = [i.id for i in Division.objects.filter(division_admin=user)]            
+            initial_data = {
+                "project_number": project.project_number,
+                "tender_time": project.tender_time,
+                "open_time": project.open_time,
+                "deposit": project.deposit,
+                "announcement_number": project.announcement_number,
+                "announcement_date": project.announcement_date,
+                "voivodeship": project.voivodeship,
+                "poviat": project.poviat,
+                "tender_date": project.tender_date,            
+                "project_name": project.project_name,
+                "estimated_value": project.estimated_value,            
+                "investor": project.investor,
+                "project_deadline_date": project.project_deadline_date,
+                "project_deadline_months": project.project_deadline_months,
+                "project_deadline_days": project.project_deadline_days,
+                "mma_quantity": project.mma_quantity,
+                "payment_method": project.payment_method,
+                "project_url": project.project_url,            
+                "person": [i for i in project.person.all()],
+                "rc_date": project.rc_date,
+                "rc_agree": project.rc_agree,
+                "evaluation_criteria": project.evaluation_criteria,
+                "payment_criteria": project.payment_criteria,
+                "jv_partners": [i for i in project.jv_partners.all()],
+                "remarks": project.remarks,      
+                "priority": project.priority,
+                "designer": project.designer,
+                "status": project.status
+            }
+            form = EditProjectForm(initial=initial_data, user=user, division=division)
+            ctx = {
+                "project": project,
+                "form": form,
+                "divisions": divisions
+            }
+            return render(request, "edit_project.html", ctx)
+        return redirect("/projects")
     
     def post(self, request, id):
         user = None
@@ -1487,19 +1493,22 @@ class EditProject(StaffMemberCheck, View):
 
 class EditProjectPoviat(StaffMemberCheck, View):
     def get(self, request, id):
-        user = User.objects.get(pk=int(request.session["user_id"]))
-        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         project = Project.objects.get(id=id)
-        initial_data = {
-            "poviat": project.poviat
-        }
-        form = EditProjectPoviatForm(initial=initial_data, project=project)
-        ctx = {
-            "project": project,
-            "form": form,
-            "divisions": divisions
-        }
-        return render(request, "edit_project_poviat.html", ctx)
+        division = Division.objects.get(pk=request.session.get("division_id"))
+        if division.id == project.division.id:
+            user = User.objects.get(pk=int(request.session["user_id"]))
+            divisions = [i.id for i in Division.objects.filter(division_admin=user)]
+            initial_data = {
+                "poviat": project.poviat
+            }
+            form = EditProjectPoviatForm(initial=initial_data, project=project)
+            ctx = {
+                "project": project,
+                "form": form,
+                "divisions": divisions
+            }
+            return render(request, "edit_project_poviat.html", ctx)
+        return redirect("/projects")
     
     def post(self, request, id):
         project = Project.objects.get(id=id)
@@ -1513,32 +1522,37 @@ class EditProjectPoviat(StaffMemberCheck, View):
 
 class DeleteProject(StaffMemberCheck, View):
     def get(self, request, id):
-        user = User.objects.get(pk=int(request.session["user_id"]))
-        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         project = Project.objects.get(id=id)
-        ctx = {
-            "project": project,
-            "divisions": divisions
-        }
-        return render(request, "delete_project.html", ctx)
+        division = Division.objects.get(pk=request.session.get("division_id"))
+        if division.id == project.division.id:
+            user = User.objects.get(pk=int(request.session["user_id"]))
+            divisions = [i.id for i in Division.objects.filter(division_admin=user)]
+            ctx = {
+                "project": project,
+                "divisions": divisions
+            }
+            return render(request, "delete_project.html", ctx)
+        return redirect("/projects")
     
 
 class DeleteProjectConfirm(StaffMemberCheck, View):
     def get(self, request, id):
         project = Project.objects.get(id=id)
-        if project.tender:
-            tender = project.tender
-            tenderers = Tenderer.objects.filter(tender=tender)
-            for i in tenderers:
-                criteria = Criteria.objects.filter(tenderer=i)
-                for j in criteria:
-                    j.delete()
-                i.delete()
-            criteria = Criteria.objects.filter(tender=tender)
-            for i in criteria:
-                i.delete()
-            tender.delete()
-        project.delete()
+        division = Division.objects.get(pk=request.session.get("division_id"))
+        if division.id == project.division.id:
+            if project.tender:
+                tender = project.tender
+                tenderers = Tenderer.objects.filter(tender=tender)
+                for i in tenderers:
+                    criteria = Criteria.objects.filter(tenderer=i)
+                    for j in criteria:
+                        j.delete()
+                    i.delete()
+                criteria = Criteria.objects.filter(tender=tender)
+                for i in criteria:
+                    i.delete()
+                tender.delete()
+            project.delete()
         return redirect("/projects")
 
 
@@ -1679,49 +1693,55 @@ class DivisionChoiceView(ActivateUserCheck, View):
 class DivisionChoiceConfirm(ActivateUserCheck, View):
     def get(self, request, id):
         division = Division.objects.get(pk=id)
-        request.session["division_id"] = division.id
-        request.session["division_name"] = division.division_name
-        request.session.save()
+        user = User.objects.get(pk=request.session.get("user_id"))
+        if division.id in [i.id for i in user.division_person.all()]:
+            request.session["division_id"] = division.id
+            request.session["division_name"] = division.division_name
+            request.session.save()
         return redirect("/projects")
     
 
 class DivisionDetails(ActivateUserCheck, View):
     def get(self, request, id):
-        user = User.objects.get(pk=int(request.session["user_id"]))
-        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         division = Division.objects.get(id=id)
-        actual_projects = Project.objects.filter(division=division, status=2)
-        bade_projects = Project.objects.filter(division=division).exclude(status=1).exclude(status=2)
-        won_projects = Project.objects.filter(division=division, status=5)
-        abandoned_projects = Project.objects.filter(division=division, status=3)
-        annulled_projects = Project.objects.filter(division=division, status=4)
-        ctx = {
-            "division": division,
-            "divisions": divisions,
-            "bade_projects": bade_projects,
-            "won_projects": won_projects,
-            "abandoned_projects": abandoned_projects,
-            "annulled_projects": annulled_projects,
-            "actual_projects": actual_projects
-        }
-        return render(request, "division_details.html", ctx)
+        user = User.objects.get(pk=int(request.session["user_id"]))
+        if division.id in [i.id for i in user.division_person.all()]: #url firewall
+            divisions = [i.id for i in Division.objects.filter(division_admin=user)]
+            actual_projects = Project.objects.filter(division=division, status=2)
+            bade_projects = Project.objects.filter(division=division).exclude(status=1).exclude(status=2)
+            won_projects = Project.objects.filter(division=division, status=5)
+            abandoned_projects = Project.objects.filter(division=division, status=3)
+            annulled_projects = Project.objects.filter(division=division, status=4)
+            ctx = {
+                "division": division,
+                "divisions": divisions,
+                "bade_projects": bade_projects,
+                "won_projects": won_projects,
+                "abandoned_projects": abandoned_projects,
+                "annulled_projects": annulled_projects,
+                "actual_projects": actual_projects
+            }
+            return render(request, "division_details.html", ctx)
+        return redirect("/projects")
 
 
 class EditDivisionView(StaffMemberCheck, View):
     def get(self, request, id):
-        user = User.objects.get(pk=int(request.session["user_id"]))
-        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         division = Division.objects.get(id=id)
-        initial_data = {
-            "division_name": division.division_name
-        }
-        form = EditDivisionForm(initial=initial_data)
-        ctx = {
-            "division": division,
-            "form": form,
-            "divisions": divisions
-        }
-        return render(request, "edit_division.html", ctx)
+        user = User.objects.get(pk=int(request.session["user_id"]))
+        if division.id in [i.id for i in user.division_admin.all()]:
+            divisions = [i.id for i in Division.objects.filter(division_admin=user)]
+            initial_data = {
+                "division_name": division.division_name
+            }
+            form = EditDivisionForm(initial=initial_data)
+            ctx = {
+                "division": division,
+                "form": form,
+                "divisions": divisions
+            }
+            return render(request, "edit_division.html", ctx)
+        return redirect("/projects")
 
     def post(self, request, id):
         form = EditDivisionForm(request.POST)
