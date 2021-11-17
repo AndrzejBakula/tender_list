@@ -1705,7 +1705,7 @@ class DivisionDetails(ActivateUserCheck, View):
     def get(self, request, id):
         division = Division.objects.get(id=id)
         user = User.objects.get(pk=int(request.session["user_id"]))
-        if division.id in [i.id for i in user.division_person.all()]: #url firewall
+        if division.id in [i.id for i in user.division_person.all()]: #url lock
             divisions = [i.id for i in Division.objects.filter(division_admin=user)]
             actual_projects = Project.objects.filter(division=division, status=2)
             bade_projects = Project.objects.filter(division=division).exclude(status=1).exclude(status=2)
@@ -1729,7 +1729,7 @@ class EditDivisionView(StaffMemberCheck, View):
     def get(self, request, id):
         division = Division.objects.get(id=id)
         user = User.objects.get(pk=int(request.session["user_id"]))
-        if division.id in [i.id for i in user.division_admin.all()]:
+        if division.id in [i.id for i in user.division_admin.all()]: #url lock
             divisions = [i.id for i in Division.objects.filter(division_admin=user)]
             initial_data = {
                 "division_name": division.division_name
@@ -1777,13 +1777,17 @@ class DeleteDivisionConfirm(SuperUserCheck, View):
 
 class AddAdminView(StaffMemberCheck, View):
     def get(self, request, division_id, person_id):
-        division = Division.objects.get(id=division_id)
+        active_division = Division.objects.get(pk=request.session.get("division_id"))
         person = User.objects.get(id=person_id)
-        division.division_admin.add(person)
-        division.save()
-        person.is_staff = True
-        person.save()
-        return redirect(f"/division_details/{division.id}")
+        user = User.objects.get(pk=int(request.session["user_id"]))
+        if active_division.id in [i.id for i in person.division_person.all()] and active_division.id in [i.id for i in user.division_admin.all()]: #url lock
+            division = Division.objects.get(id=division_id)
+            division.division_admin.add(person)
+            division.save()
+            person.is_staff = True
+            person.save()
+            return redirect(f"/division_details/{division.id}")
+        return redirect("/projects")
 
 
 class CancelAdminView(StaffMemberCheck, View):
