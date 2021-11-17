@@ -1758,24 +1758,29 @@ class EditDivisionView(StaffMemberCheck, View):
 
 class DeleteDivisionView(StaffMemberCheck, View):
     def get(self, request, id):
-        user = User.objects.get(pk=int(request.session["user_id"]))
-        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         division = Division.objects.get(id=id)
-        ctx = {
-            "division": division,
-            "divisions": divisions
-        }
-        return render(request, "delete_division.html", ctx)
+        user = User.objects.get(pk=int(request.session["user_id"]))
+        if division.id in [i.id for i in user.division_creator.all()]:
+            divisions = [i.id for i in Division.objects.filter(division_admin=user)]
+            ctx = {
+                "division": division,
+                "divisions": divisions
+            }
+            return render(request, "delete_division.html", ctx)
+        return redirect("/projects")
 
 
 class DeleteDivisionConfirm(StaffMemberCheck, View):
     def get(self, request, id):
         division = Division.objects.get(id=id)
-        division.division_company.set([])
-        division.delete()
-        request.session["division_id"] = None
-        request.session["division_name"] = None
-        return redirect("/division_choice")
+        user = User.objects.get(pk=int(request.session["user_id"]))
+        if division.id in [i.id for i in user.division_creator.all()]:
+            division.division_company.set([])
+            division.delete()
+            request.session["division_id"] = None
+            request.session["division_name"] = None
+            return redirect("/division_choice")
+        return redirect("/projects")
 
 
 class AddAdminView(StaffMemberCheck, View):
