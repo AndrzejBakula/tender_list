@@ -1756,7 +1756,7 @@ class EditDivisionView(StaffMemberCheck, View):
             return redirect(f"/division_details/{division.id}")
 
 
-class DeleteDivisionView(SuperUserCheck, View):
+class DeleteDivisionView(StaffMemberCheck, View):
     def get(self, request, id):
         user = User.objects.get(pk=int(request.session["user_id"]))
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
@@ -1768,20 +1768,22 @@ class DeleteDivisionView(SuperUserCheck, View):
         return render(request, "delete_division.html", ctx)
 
 
-class DeleteDivisionConfirm(SuperUserCheck, View):
+class DeleteDivisionConfirm(StaffMemberCheck, View):
     def get(self, request, id):
         division = Division.objects.get(id=id)
+        division.division_company.set([])
         division.delete()
-        return redirect("/divisions")
+        request.session["division_id"] = None
+        request.session["division_name"] = None
+        return redirect("/division_choice")
 
 
 class AddAdminView(StaffMemberCheck, View):
     def get(self, request, division_id, person_id):
-        active_division = Division.objects.get(pk=request.session.get("division_id"))
+        division = Division.objects.get(id=division_id)
         person = User.objects.get(id=person_id)
         user = User.objects.get(pk=int(request.session["user_id"]))
-        if active_division.id in [i.id for i in person.division_person.all()] and active_division.id in [i.id for i in user.division_admin.all()]: #url lock
-            division = Division.objects.get(id=division_id)
+        if division.id in [i.id for i in person.division_person.all()] and not division.id in [i.id for i in person.division_admin.all()] and division.id in [i.id for i in user.division_creator.all()]: #url lock
             division.division_admin.add(person)
             division.save()
             person.is_staff = True
@@ -1792,35 +1794,48 @@ class AddAdminView(StaffMemberCheck, View):
 
 class CancelAdminView(StaffMemberCheck, View):
     def get(self, request, division_id, person_id):
-        user = User.objects.get(pk=int(request.session["user_id"]))
         division = Division.objects.get(id=division_id)
         person = User.objects.get(id=person_id)
-        division.division_admin.remove(person)
-        division.save()
-        divisions = Division.objects.filter(division_admin=user)
-        if len(divisions) == 0:
-            user.is_staff = False
-            user.save()
-        return redirect(f"/division_details/{division.id}")
+        user = User.objects.get(pk=int(request.session["user_id"]))
+        if division.id in [i.id for i in person.division_admin.all()] and division.id in [i.id for i in user.division_creator.all()]: #url lock
+            division.division_admin.remove(person)
+            division.save()
+            divisions = Division.objects.filter(division_admin=user)
+            if len(divisions) == 0:
+                user.is_staff = False
+                user.save()
+            return redirect(f"/division_details/{division.id}")
+        return redirect("/projects")
 
 
 class AddPersonView(StaffMemberCheck, View):
     def get(self, request, division_id, person_id):
         division = Division.objects.get(id=division_id)
         person = User.objects.get(id=person_id)
-        division.division_person.add(person)
-        division.division_wannabe.remove(person)
-        division.save()
-        return redirect(f"/division_details/{division.id}")
+        user = User.objects.get(pk=int(request.session["user_id"]))
+        if not division.id in [i.id for i in person.division_person.all()] and division.id in [i.id for i in user.division_creator.all()]: #url lock
+            division.division_person.add(person)
+            division.division_wannabe.remove(person)
+            division.save()
+            return redirect(f"/division_details/{division.id}")
+        return redirect("/projects")
 
 
 class RemoveMemberView(StaffMemberCheck, View):
     def get(self, request, division_id, person_id):
         division = Division.objects.get(id=division_id)
         person = User.objects.get(id=person_id)
-        division.division_person.remove(person)
-        division.save()
-        return redirect(f"/division_details/{division.id}")
+        user = User.objects.get(pk=int(request.session["user_id"]))
+        if division.id in [i.id for i in person.division_person.all()] and division.id in [i.id for i in user.division_creator.all()]: #url lock
+            division.division_person.remove(person)
+            if person in [i for i in division.division_admin.all()]:
+                division.division_admin.remove(person)
+            if len(person.division_admin.all()) == 0:
+                person.is_staff = False
+                person.save()
+            division.save()
+            return redirect(f"/division_details/{division.id}")
+        return redirect("/projects")
 
 
 class PersonDetailsView(ActivateUserCheck, View):

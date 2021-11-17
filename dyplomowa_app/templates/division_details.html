@@ -110,7 +110,7 @@
 
         {% if user == division.division_creator %}
         <button type="button" class="btn btn-dark"><a style="color:blanchedalmond" href="{% url 'edit-division' division.id %}">Edytuj zespół</a></button>
-        {% if user.is_superuser %}
+        {% if user == division.division_creator %}
         <hr>
         <button type="button" class="btn btn-dark"><a style="color:blanchedalmond" href="{% url 'delete-division' division.id %}">Usuń zespół</a></button>
         {% endif %}
