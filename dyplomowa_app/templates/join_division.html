@@ -12,23 +12,31 @@
     </div>
     <hr>
 
-    {% if error_message %}
-
     <div class="d-flex flex-row justify-content-center align-items-center">
-        <h3 class="display-5 align-self-center header">
-            {{ error_message }}
-        </h3>
+        <h4 class="display-5 align-self-center header2">
+            {% if wannabe_divisions.count >= 3 %}
+            Osiągnięto limit trzech próśb o dołączenie do zespołu
+            {% else %}
+            Wysłałeś
+                {% if wannabe_divisions.count == 0 %}
+                {{ wannabe_divisions.count }} próśb. Możesz wysłać jeszcze {{ can_join }}
+                {% elif wannabe_divisions.count == 1 %}
+                    już {{ wannabe_divisions.count }} prośbę. Możesz wysłać jeszcze {{ can_join }}
+                {% else %}
+                    już {{ wannabe_divisions.count }} prośby. Możesz wysłać jeszcze {{ can_join }}
+                {% endif %}
+            {% endif %}
+        </h4>
     </div>
-    <hr>
-    {% endif %}
-    
+
+    {% if 3 > wannabe_divisions.count %}
     <form class="d-flex flex-column align-items-center" style="height: 100%; width: 100%;" action="{% url 'join-division' %}" method="POST">
         {% csrf_token %}
-
         {{ form.as_p }}
 
         <button type="submit" id="submit">Poproś o dodanie do zespołu</button>
     </form>
+    {% endif %}
 
 </div>
 

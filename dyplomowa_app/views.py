@@ -1657,11 +1657,15 @@ class JoinDivisionView(ActivateUserCheck, View):
     def get(self, request):
         user = User.objects.get(pk=int(request.session["user_id"]))
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
+        wannabe_divisions = Division.objects.filter(division_wannabe=user)
+        can_join = 3 - len([i for i in wannabe_divisions])
         form = JoinDivisionForm()
-        form.fields["division"].queryset = Division.objects.filter().exclude(division_person=user)
+        form.fields["division"].queryset = Division.objects.filter().exclude(division_person=user).exclude(division_wannabe=user)
         ctx = {
             "form": form,
-            "divisions": divisions
+            "divisions": divisions,
+            "wannabe_divisions": wannabe_divisions,
+            "can_join": can_join
         }
         return render(request, "join_division.html", ctx)
     

@@ -17,19 +17,20 @@
             {% if created_divisions.count >= 3 %}
             Osiągnięto limit trzech utworzonych zespołów
             {% else %}
-            Utworzyłeś już
-                {% if created_divisions.count == 1 %}
-                    {{ created_divisions.count }} zespół. Możesz utworzyć jeszcze {{ can_create }}
+                {% if created_divisions.count == 0 %}
+                {{ created_divisions.count }} utworzonych zespołów. Możesz utworzyć jeszcze {{ can_create }}
+                {% elif created_divisions.count == 1 %}
+                    {{ created_divisions.count }} utworzony zespół. Możesz utworzyć jeszcze {{ can_create }}
                 {% else %}
-                    {{ created_divisions.count }} zespoły. Możesz utworzyć jeszcze {{ can_create }}
+                    {{ created_divisions.count }} utworzone zespoły. Możesz utworzyć jeszcze {{ can_create }}
                 {% endif %}
             {% endif %}
         </h4>
     </div>
+
     {% if 3 > created_divisions.count %}
     <form class="d-flex flex-column align-items-center" style="height: 100%; width: 100%;" action="{% url 'add-division' %}" method="POST">
         {% csrf_token %}
-
         {{ form.as_p }}
 
         <button type="submit" id="submit">Dodaj Zespół</button>
