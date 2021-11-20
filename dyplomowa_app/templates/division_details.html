@@ -24,6 +24,12 @@
                     <td scope="col">{{ division.division_name }}</td>
                 </tr>
                 <tr>
+                    <th scope="col">Twórca zespołu</th>
+                    <td scope="col">
+                        <a href="{% url 'person-details' division.division_creator.id %}">{{ division.division_creator }}</a>
+                    </td>
+                </tr>
+                <tr>
                     <th scope="col">Przypisana firma</th>
                     <td scope="col">
                         {% if division.division_company.all.0 %}

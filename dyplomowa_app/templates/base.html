@@ -34,6 +34,8 @@
           {% elif user.division_person.all.count > 0 %} Wybierz zespół w "Moje Zespoły"
           {% else %} Utwórz zespół lub dołącz do istniejącego
           {% endif %}</i>
+          <div class="d-flex flex-row justify-content-center align-items-center">
+          </div>
         </div>
         <a href="{% url 'logout' %}" class="btn btn-outline-danger m-1">Logout</a>
         {% else %}
@@ -116,9 +118,12 @@
 
     <hr>
     <div class="d-flex flex-column justify-content-center align-items-center">
-        <span><i>powered by:</span>
+        {% if counter %}
+          <i>Ruch w aplikacji: {{ counter }}</i>
+        {% endif %}
+        <span><i>powered by:</i></span>
         <a class="btn btn-link align-self-center" href="https://github.com/AndrzejBakula"
-            target="_blank" style="color: black;">Andrzej Bakuła</a></i>
+            target="_blank" style="color: black;"><i>Andrzej Bakuła</i></a>
     </div>
 
     <!-- Optional JavaScript; choose one of the two! -->

@@ -8,12 +8,8 @@
 {% if user.is_authenticated %}
 {% if request.session.division_id %}
 <div class="d-flex flex-column align-items-center" style="height: 100%; width: 100%; padding: 0.5%;">
+  
   {% if projects.count == 0 %}
-
-  <div class="d-flex flex-row justify-content-center align-items-center">
-    <h5 class="display-5 align-self-center"><i>Ruch w aplikacji: {{ counter }}</i></h5>
-  </div>
-
   <div class="d-flex flex-row justify-content-center align-items-center">
     <h2 class="display-5 align-self-center">Brak Aktualnych Projektów</h2>
   </div>

@@ -484,8 +484,8 @@ class AddInvestor(StaffMemberCheck, View):
 
 
 class AddInvestorPoviat(StaffMemberCheck, View):
-    def get(self, request, id):
-        investor = Investor.objects.get(id=id)
+    def get(self, request, investor_id):
+        investor = Investor.objects.get(id=investor_id)
         if request.session.get("division_id") in [i.id for i in investor.division.all()]:
             user = User.objects.get(pk=int(request.session["user_id"]))
             divisions = [i.id for i in Division.objects.filter(division_admin=user)]
@@ -498,9 +498,9 @@ class AddInvestorPoviat(StaffMemberCheck, View):
             return render(request, "add_investor_poviat.html", ctx)
         return redirect("/projects")
     
-    def post(self, request, id):
+    def post(self, request, investor_id):
         user = User.objects.get(pk=int(request.session["user_id"]))
-        investor = Investor.objects.get(id=id)
+        investor = Investor.objects.get(id=investor_id)
         form = AddInvestorPoviatForm(request.POST, investor=investor)
         if form.is_valid():
             data = form.cleaned_data
@@ -556,8 +556,8 @@ class InvestorsView(ActivateUserCheck, View):
 
 
 class InvestorDetails(ActivateUserCheck, View):
-    def get(self, request, id):
-        investor = Investor.objects.get(id=id)
+    def get(self, request, investor_id):
+        investor = Investor.objects.get(id=investor_id)
         division = Division.objects.get(id=request.session.get("division_id"))
         if division.id in [i.id for i in investor.division.all()]:
             user = User.objects.get(pk=int(request.session["user_id"]))
@@ -584,12 +584,12 @@ class InvestorDetails(ActivateUserCheck, View):
             return render(request, "investor_details.html", ctx)
         return redirect("/projects")
     
-    def post(self, request, id):
+    def post(self, request, investor_id):
         user = User.objects.get(pk=int(request.session["user_id"]))
         form = InvestorNoteForm(request.POST)
         if form.is_valid():
             data = form.cleaned_data
-            investor = Investor.objects.get(id=id)
+            investor = Investor.objects.get(id=investor_id)
             investor_note = data["investor_note"]
             new_investor_note = InvestorNote.objects.create(investor_note_investor=investor,
             investor_note_note=investor_note, investor_note_user=user)
@@ -601,8 +601,8 @@ class InvestorDetails(ActivateUserCheck, View):
 
 
 class EditInvestor(StaffMemberCheck, View):
-    def get(self, request, id):
-        investor = Investor.objects.get(id=id)
+    def get(self, request, investor_id):
+        investor = Investor.objects.get(id=investor_id)
         division = Division.objects.get(pk=request.session.get("division_id"))
         if division.id in [i.id for i in investor.division.all()]:
             user = User.objects.get(pk=int(request.session["user_id"]))
@@ -622,18 +622,18 @@ class EditInvestor(StaffMemberCheck, View):
             return render(request, "edit_investor.html", ctx)
         return redirect("/projects")
 
-    def post(self, request, id):
+    def post(self, request, investor_id):
         form = EditInvestorForm(request.POST)
         if form.is_valid():
             data = form.cleaned_data
-            investor = Investor.objects.get(id=id)
+            investor = Investor.objects.get(id=investor_id)
             investor.investor_name = data["investor_name"]
             investor.investor_address = data["investor_address"]
             investor.investor_voivodeship = data["investor_voivodeship"]
             investor.investor_administration_level = data["investor_administration_level"]
             investor.save()
             if investor.investor_voivodeship != None and investor.investor_voivodeship.voivodeship_name != "nieokreślono":
-                return redirect(f"/edit_investor_poviat/{id}")
+                return redirect(f"/edit_investor_poviat/{investor_id}")
             elif (investor.investor_poviat != None and investor.investor_poviat.poviat_name != "nieokreślono") and (investor.investor_voivodeship == None or investor.investor_voivodeship.voivodeship_name == "nieokreślono"):
                 investor.investor_poviat = None
                 investor.save()
@@ -643,8 +643,8 @@ class EditInvestor(StaffMemberCheck, View):
 
 
 class EditInvestorPoviat(StaffMemberCheck, View):
-    def get(self, request, id):
-        investor = Investor.objects.get(id=id)
+    def get(self, request, investor_id):
+        investor = Investor.objects.get(id=investor_id)
         division = Division.objects.get(pk=request.session.get("division_id"))
         if division.id in [i.id for i in investor.division.all()]:
             user = User.objects.get(pk=int(request.session["user_id"]))
@@ -661,21 +661,21 @@ class EditInvestorPoviat(StaffMemberCheck, View):
             return render(request, "edit_investor_poviat.html", ctx)
         return redirect("/projects")
 
-    def post(self, request, id):
-        investor = Investor.objects.get(id=id)
+    def post(self, request, investor_id):
+        investor = Investor.objects.get(id=investor_id)
         form = EditInvestorPoviatForm(request.POST, investor=investor)
         if form.is_valid():
             data = form.cleaned_data
             investor.investor_poviat = data["investor_poviat"]
             investor.save()
-            return redirect(f"/investor_details/{id}")
+            return redirect(f"/investor_details/{investor_id}")
 
 
 class DeleteInvestor(SuperUserCheck, View):
-    def get(self, request, id):
+    def get(self, request, investor_id):
         user = User.objects.get(pk=int(request.session["user_id"]))
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
-        investor = Investor.objects.get(id=id)
+        investor = Investor.objects.get(id=investor_id)
         ctx = {
             "investor": investor,
             "divisions": divisions
@@ -684,8 +684,8 @@ class DeleteInvestor(SuperUserCheck, View):
 
 
 class DeleteInvestorConfirm(SuperUserCheck, View):
-    def get(self, request, id):
-        investor = Investor.objects.get(id=id)
+    def get(self, request, investor_id):
+        investor = Investor.objects.get(id=investor_id)
         for i in InvestorNote.objects.filter(investor_note_investor=investor):
             i.delete()
         investor.delete()
@@ -729,10 +729,10 @@ class AddCompany(StaffMemberCheck, View):
 
 
 class AddCompanyPoviat(StaffMemberCheck, View):
-    def get(self, request, id):
+    def get(self, request, company_id):
         user = User.objects.get(pk=int(request.session["user_id"]))
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
-        company = Company.objects.get(id=id)
+        company = Company.objects.get(id=company_id)
         form = AddCompanyPoviatForm(company=company)
         ctx = {
             "form": form,
@@ -741,9 +741,9 @@ class AddCompanyPoviat(StaffMemberCheck, View):
         }
         return render(request, "add_company_poviat.html", ctx)
     
-    def post(self, request, id):
+    def post(self, request, company_id):
         user = User.objects.get(pk=int(request.session["user_id"]))
-        company = Company.objects.get(id=id)
+        company = Company.objects.get(id=company_id)
         form = AddCompanyPoviatForm(request.POST, company=company)
         if form.is_valid():
             data = form.cleaned_data
@@ -857,8 +857,8 @@ class RemoveMyCompanyView(StaffMemberCheck, View):
 
 
 class CompanyDetails(ActivateUserCheck, View):
-    def get(self, request, id):
-        company = Company.objects.get(id=id)
+    def get(self, request, company_id):
+        company = Company.objects.get(id=company_id)
         division = Division.objects.get(id=request.session.get("division_id"))
         if division.id in [i.id for i in company.division.all()]:
             user = User.objects.get(pk=int(request.session["user_id"]))
@@ -875,8 +875,8 @@ class CompanyDetails(ActivateUserCheck, View):
 
 
 class EditCompany(StaffMemberCheck, View):
-    def get(self, request, id):
-        company = Company.objects.get(id=id)
+    def get(self, request, company_id):
+        company = Company.objects.get(id=company_id)
         division = Division.objects.get(id=request.session.get("division_id"))
         if division.id in [i.id for i in company.division.all()]:
             user = User.objects.get(pk=int(request.session["user_id"]))
@@ -896,8 +896,8 @@ class EditCompany(StaffMemberCheck, View):
             return render(request, "edit_company.html", ctx)
         return redirect("/projects")
 
-    def post(self, request, id):
-        company = Company.objects.get(id=id)
+    def post(self, request, company_id):
+        company = Company.objects.get(id=company_id)
         form = EditCompanyForm(request.POST, company=company)
         if form.is_valid():
             data = form.cleaned_data
@@ -909,7 +909,7 @@ class EditCompany(StaffMemberCheck, View):
                 "company": company
             }
             if company.company_voivodeship != None and company.company_voivodeship.voivodeship_name != "nieokreślono":
-                return redirect(f"/edit_company_poviat/{id}")
+                return redirect(f"/edit_company_poviat/{company_id}")
             elif (company.company_poviat != None and company.company_poviat.poviat_name != "nieokreślono") and (company.company_voivodeship == None or company.company_voivodeship.voivodeship_name == "nieokreślono"):
                 company.company_poviat = None
                 company.save()
@@ -919,8 +919,8 @@ class EditCompany(StaffMemberCheck, View):
 
 
 class EditCompanyPoviat(StaffMemberCheck, View):
-    def get(self, request, id):
-        company = Company.objects.get(id=id)
+    def get(self, request, company_id):
+        company = Company.objects.get(id=company_id)
         division = Division.objects.get(id=request.session.get("division_id"))
         if division.id in [i.id for i in company.division.all()]:
             user = User.objects.get(pk=int(request.session["user_id"]))
@@ -937,8 +937,8 @@ class EditCompanyPoviat(StaffMemberCheck, View):
             return render(request, "edit_company_poviat.html", ctx)
         return redirect("/projects")
 
-    def post(self, request, id):
-        company = Company.objects.get(id=id)
+    def post(self, request, company_id):
+        company = Company.objects.get(id=company_id)
         form = EditCompanyPoviatForm(request.POST, company=company)
         if form.is_valid():
             data = form.cleaned_data
@@ -947,14 +947,14 @@ class EditCompanyPoviat(StaffMemberCheck, View):
             ctx = {
                 "company": company
             }
-            return redirect(f"/company_details/{id}")
+            return redirect(f"/company_details/{company_id}")
 
 
 class DeleteCompany(SuperUserCheck, View):
-    def get(self, request, id):
+    def get(self, request, company_id):
         user = User.objects.get(pk=int(request.session["user_id"]))
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
-        company = Company.objects.get(id=id)
+        company = Company.objects.get(id=company_id)
         ctx = {
             "company": company,
             "divisions": divisions
@@ -963,8 +963,8 @@ class DeleteCompany(SuperUserCheck, View):
 
 
 class DeleteCompanyConfirm(SuperUserCheck, View):
-    def get(self, request, id):
-        company = Company.objects.get(id=id)
+    def get(self, request, company_id):
+        company = Company.objects.get(id=company_id)
         company.delete()
         return redirect("/companies")
 
@@ -1014,10 +1014,10 @@ class AddDesigner(StaffMemberCheck, View):
 
 
 class AddDesignerPoviat(StaffMemberCheck, View):
-    def get(self, request, id):
+    def get(self, request, designer_id):
         user = User.objects.get(pk=int(request.session["user_id"]))
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
-        designer = Designer.objects.get(id=id)
+        designer = Designer.objects.get(id=designer_id)
         form = AddDesignerPoviatForm(designer=designer)
         ctx = {
             "form": form,
@@ -1026,8 +1026,8 @@ class AddDesignerPoviat(StaffMemberCheck, View):
         }
         return render(request, "add_designer_poviat.html", ctx)
     
-    def post(self, request, id):
-        designer = Designer.objects.get(id=id)
+    def post(self, request, designer_id):
+        designer = Designer.objects.get(id=designer_id)
         form = AddDesignerPoviatForm(request.POST, designer=designer)
         if form.is_valid():
             data = form.cleaned_data
@@ -1085,8 +1085,8 @@ class DesignersView(ActivateUserCheck, View):
 
 
 class DesignerDetails(ActivateUserCheck, View):
-    def get(self, request, id):
-        designer = Designer.objects.get(id=id)
+    def get(self, request, designer_id):
+        designer = Designer.objects.get(id=designer_id)
         division = Division.objects.get(id=request.session.get("division_id"))
         if division.id in [i.id for i in designer.division.all()]:
             user = User.objects.get(pk=int(request.session["user_id"]))
@@ -1105,12 +1105,12 @@ class DesignerDetails(ActivateUserCheck, View):
             return render(request, "designer_details.html", ctx)
         return redirect("/projects")
 
-    def post(self, request, id):
+    def post(self, request, designer_id):
         user = User.objects.get(pk=int(request.session["user_id"]))
         form = DesignerNoteForm(request.POST)
         if form.is_valid():
             data = form.cleaned_data
-            designer = Designer.objects.get(id=id)
+            designer = Designer.objects.get(id=designer_id)
             designer_note = data["designer_note"]
             new_designer_note = DesignerNote.objects.create(designer_note_designer=designer,
             designer_note_note=designer_note, designer_note_user=user)
@@ -1122,8 +1122,8 @@ class DesignerDetails(ActivateUserCheck, View):
 
 
 class EditDesigner(StaffMemberCheck, View):
-    def get(self, request, id):
-        designer = Designer.objects.get(id=id)
+    def get(self, request, designer_id):
+        designer = Designer.objects.get(id=designer_id)
         division = Division.objects.get(id=request.session.get("division_id"))
         if division.id in [i.id for i in designer.division.all()]:
             user = User.objects.get(pk=int(request.session["user_id"]))
@@ -1142,8 +1142,8 @@ class EditDesigner(StaffMemberCheck, View):
             return render(request, "edit_designer.html", ctx)
         return redirect("/projects")
 
-    def post(self, request, id):
-        designer = Designer.objects.get(id=id)
+    def post(self, request, designer_id):
+        designer = Designer.objects.get(id=designer_id)
         form = EditDesignerForm(request.POST)
         if form.is_valid():
             data = form.cleaned_data
@@ -1155,7 +1155,7 @@ class EditDesigner(StaffMemberCheck, View):
                 "designer": designer,
             }
             if designer.designer_voivodeship != None and designer.designer_voivodeship.voivodeship_name != "nieokreślono":
-                return redirect(f"/edit_designer_poviat/{id}")
+                return redirect(f"/edit_designer_poviat/{designer_id}")
             elif (designer.designer_poviat != None and designer.designer_poviat.poviat_name != "nieokreślono") and (designer.designer_voivodeship == None or designer.designer_voivodeship.voivodeship_name == "nieokreślono"):
                 designer.designer_poviat = None
                 designer.save()
@@ -1165,8 +1165,8 @@ class EditDesigner(StaffMemberCheck, View):
 
 
 class EditDesignerPoviat(StaffMemberCheck, View):
-    def get(self, request, id):
-        designer = Designer.objects.get(id=id)
+    def get(self, request, designer_id):
+        designer = Designer.objects.get(id=designer_id)
         division = Division.objects.get(id=request.session.get("division_id"))
         if division.id in [i.id for i in designer.division.all()]:
             user = User.objects.get(pk=int(request.session["user_id"]))
@@ -1183,21 +1183,21 @@ class EditDesignerPoviat(StaffMemberCheck, View):
             return render(request, "edit_designer_poviat.html", ctx)
         return redirect("/projects")
 
-    def post(self, request, id):
-        designer = Designer.objects.get(id=id)
+    def post(self, request, designer_id):
+        designer = Designer.objects.get(id=designer_id)
         form = EditDesignerPoviatForm(request.POST, designer=designer)
         if form.is_valid():
             data = form.cleaned_data
             designer.designer_poviat = data["designer_poviat"]
             designer.save()
-            return redirect(f"/designer_details/{id}")
+            return redirect(f"/designer_details/{designer_id}")
 
 
 class DeleteDesigner(SuperUserCheck, View):
-    def get(self, request, id):
+    def get(self, request, designer_id):
         user = User.objects.get(pk=int(request.session["user_id"]))
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
-        designer = Designer.objects.get(id=id)
+        designer = Designer.objects.get(id=designer_id)
         ctx = {
             "designer": designer,
             "divisions": divisions
@@ -1206,8 +1206,8 @@ class DeleteDesigner(SuperUserCheck, View):
 
 
 class DeleteDesignerConfirm(SuperUserCheck, View):
-    def get(self, request, id):
-        designer = Designer.objects.get(id=id)
+    def get(self, request, designer_id):
+        designer = Designer.objects.get(id=designer_id)
         for i in DesignerNote.objects.filter(designer_note_designer=designer):
             i.delte()
         designer.delete()
@@ -1304,8 +1304,8 @@ class AddProject(StaffMemberCheck, View):
 
 
 class AddProjectPoviat(StaffMemberCheck, View):
-    def get(self, request, id):
-        project = Project.objects.get(id=id)
+    def get(self, request, project_id):
+        project = Project.objects.get(id=project_id)
         division = None
         if request.session.get("division_id"):
             division = Division.objects.get(id=request.session.get("division_id"))
@@ -1322,8 +1322,8 @@ class AddProjectPoviat(StaffMemberCheck, View):
             return render(request, "add_project_poviat.html", ctx)
         return redirect("/projects")
     
-    def post(self, request, id):
-        project = Project.objects.get(id=id)
+    def post(self, request, project_id):
+        project = Project.objects.get(id=project_id)
         form = AddProjectPoviatForm(request.POST, project=project)
         if form.is_valid():
             data = form.cleaned_data
@@ -1382,8 +1382,8 @@ class Projects(View):
 
 
 class ProjectDetails(ActivateUserCheck, View):
-    def get(self, request, id):
-        project = Project.objects.get(id=id)
+    def get(self, request, project_id):
+        project = Project.objects.get(id=project_id)
         division = Division.objects.get(pk=request.session.get("division_id"))
         if division.id == project.division.id:
             user = User.objects.get(pk=int(request.session["user_id"]))
@@ -1397,8 +1397,8 @@ class ProjectDetails(ActivateUserCheck, View):
 
 
 class EditProject(StaffMemberCheck, View):    
-    def get(self, request, id):
-        project = Project.objects.get(id=id)
+    def get(self, request, project_id):
+        project = Project.objects.get(id=project_id)
         division = None
         if request.session.get("division_id"):
             division = Division.objects.get(id=request.session.get("division_id"))
@@ -1446,7 +1446,7 @@ class EditProject(StaffMemberCheck, View):
             return render(request, "edit_project.html", ctx)
         return redirect("/projects")
     
-    def post(self, request, id):
+    def post(self, request, project_id):
         user = None
         division = None
         if request.session.get("user_id") not in ("", None):
@@ -1455,7 +1455,7 @@ class EditProject(StaffMemberCheck, View):
             division = Division.objects.get(id=request.session.get("division_id"))
         form = EditProjectForm(request.POST, user=user, division=division)
         if form.is_valid():
-            project = Project.objects.get(id=id)
+            project = Project.objects.get(id=project_id)
             data = form.cleaned_data
             project.project_number = data["project_number"]
             if data["tender_time"] not in (None, ""):
@@ -1498,7 +1498,7 @@ class EditProject(StaffMemberCheck, View):
                 "project": project,
             }
             if project.voivodeship != None and project.voivodeship.voivodeship_name != "nieokreślono":
-                return redirect(f"/edit_project_poviat/{id}")
+                return redirect(f"/edit_project_poviat/{project_id}")
             elif (project.poviat != None and project.poviat.poviat_name != "nieokreślono") and (project.voivodeship == None or project.voivodeship.voivodeship_name == "nieokreślono"):
                 project.poviat = None
                 project.save()
@@ -1508,8 +1508,8 @@ class EditProject(StaffMemberCheck, View):
 
 
 class EditProjectPoviat(StaffMemberCheck, View):
-    def get(self, request, id):
-        project = Project.objects.get(id=id)
+    def get(self, request, project_id):
+        project = Project.objects.get(id=project_id)
         division = Division.objects.get(pk=request.session.get("division_id"))
         if division.id == project.division.id:
             user = User.objects.get(pk=int(request.session["user_id"]))
@@ -1526,19 +1526,19 @@ class EditProjectPoviat(StaffMemberCheck, View):
             return render(request, "edit_project_poviat.html", ctx)
         return redirect("/projects")
     
-    def post(self, request, id):
-        project = Project.objects.get(id=id)
+    def post(self, request, project_id):
+        project = Project.objects.get(id=project_id)
         form = EditProjectPoviatForm(request.POST, project=project)
         if form.is_valid():
             data = form.cleaned_data
             project.poviat = data["poviat"]
             project.save()
-            return redirect(f"/project_details/{id}")
+            return redirect(f"/project_details/{project_id}")
 
 
 class DeleteProject(StaffMemberCheck, View):
-    def get(self, request, id):
-        project = Project.objects.get(id=id)
+    def get(self, request, project_id):
+        project = Project.objects.get(id=project_id)
         division = Division.objects.get(pk=request.session.get("division_id"))
         if division.id == project.division.id:
             user = User.objects.get(pk=int(request.session["user_id"]))
@@ -1552,8 +1552,8 @@ class DeleteProject(StaffMemberCheck, View):
     
 
 class DeleteProjectConfirm(StaffMemberCheck, View):
-    def get(self, request, id):
-        project = Project.objects.get(id=id)
+    def get(self, request, project_id):
+        project = Project.objects.get(id=project_id)
         division = Division.objects.get(pk=request.session.get("division_id"))
         if division.id == project.division.id:
             if project.tender:
@@ -1590,8 +1590,7 @@ class ArchivesView(ActivateUserCheck, View):
         ctx = {
             "archives": archives,
             "divisions": divisions,
-            "form": form,
-            "counter": counter
+            "form": form
         }
         return render(request, "archives.html", ctx)
     
@@ -1716,8 +1715,8 @@ class DivisionChoiceView(ActivateUserCheck, View):
 
 
 class DivisionChoiceConfirm(ActivateUserCheck, View):
-    def get(self, request, id):
-        division = Division.objects.get(pk=id)
+    def get(self, request, division_id):
+        division = Division.objects.get(pk=division_id)
         user = User.objects.get(pk=request.session.get("user_id"))
         if division.id in [i.id for i in user.division_person.all()]:
             request.session["division_id"] = division.id
@@ -1727,8 +1726,8 @@ class DivisionChoiceConfirm(ActivateUserCheck, View):
     
 
 class DivisionDetails(ActivateUserCheck, View):
-    def get(self, request, id):
-        division = Division.objects.get(id=id)
+    def get(self, request, division_id):
+        division = Division.objects.get(id=division_id)
         user = User.objects.get(pk=int(request.session["user_id"]))
         if division.id in [i.id for i in user.division_person.all()]: #url lock
             divisions = [i.id for i in Division.objects.filter(division_admin=user)]
@@ -1751,8 +1750,8 @@ class DivisionDetails(ActivateUserCheck, View):
 
 
 class EditDivisionView(StaffMemberCheck, View):
-    def get(self, request, id):
-        division = Division.objects.get(id=id)
+    def get(self, request, division_id):
+        division = Division.objects.get(id=division_id)
         user = User.objects.get(pk=int(request.session["user_id"]))
         if division.id in [i.id for i in user.division_admin.all()]: #url lock
             divisions = [i.id for i in Division.objects.filter(division_admin=user)]
@@ -1768,11 +1767,11 @@ class EditDivisionView(StaffMemberCheck, View):
             return render(request, "edit_division.html", ctx)
         return redirect("/projects")
 
-    def post(self, request, id):
+    def post(self, request, division_id):
         form = EditDivisionForm(request.POST)
         if form.is_valid():
             data = form.cleaned_data
-            division = Division.objects.get(id=id)
+            division = Division.objects.get(id=division_id)
             division.division_name = data["division_name"]
             division.save()
             ctx = {
@@ -1782,8 +1781,8 @@ class EditDivisionView(StaffMemberCheck, View):
 
 
 class DeleteDivisionView(StaffMemberCheck, View):
-    def get(self, request, id):
-        division = Division.objects.get(id=id)
+    def get(self, request, division_id):
+        division = Division.objects.get(id=division_id)
         user = User.objects.get(pk=int(request.session["user_id"]))
         if division.id in [i.id for i in user.division_creator.all()]:
             divisions = [i.id for i in Division.objects.filter(division_admin=user)]
@@ -1796,8 +1795,8 @@ class DeleteDivisionView(StaffMemberCheck, View):
 
 
 class DeleteDivisionConfirm(StaffMemberCheck, View):
-    def get(self, request, id):
-        division = Division.objects.get(id=id)
+    def get(self, request, division_id):
+        division = Division.objects.get(id=division_id)
         user = User.objects.get(pk=int(request.session["user_id"]))
         if division.id in [i.id for i in user.division_creator.all()]:
             division.division_company.set([])
@@ -1869,24 +1868,30 @@ class RemoveMemberView(StaffMemberCheck, View):
 
 
 class PersonDetailsView(ActivateUserCheck, View):
-    def get(self, request, id):
-        person = User.objects.get(id=id)
+    def get(self, request, person_id):
+        person = User.objects.get(id=person_id)
         user = User.objects.get(pk=int(request.session["user_id"]))
-        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
-        division = None
-        if request.session.get("division_id"):
-            division = Division.objects.get(id=request.session.get("division_id"))
-        person_projects = Project.objects.filter(person=person, division=division)
-        person_divisions_active = Project.objects.filter(person=person, division=division, status=2)
-        person_divisions_won = Project.objects.filter(person=person, division=division, status=5)
-        ctx = {
-            "person": person,
-            "divisions": divisions,
-            "person_projects": person_projects,
-            "person_divisions_active": person_divisions_active,
-            "person_divisions_won": person_divisions_won
-        }
-        return render(request, "person_details.html", ctx)
+        same_division = False
+        for i in person.division_person.all():
+            if i in user.division_person.all():
+                same_division = True
+        if same_division:
+            divisions = [i.id for i in Division.objects.filter(division_admin=user)]
+            division = None
+            if request.session.get("division_id"):
+                division = Division.objects.get(id=request.session.get("division_id"))
+            person_projects = Project.objects.filter(person=person, division=division)
+            person_divisions_active = Project.objects.filter(person=person, division=division, status=2)
+            person_divisions_won = Project.objects.filter(person=person, division=division, status=5)
+            ctx = {
+                "person": person,
+                "divisions": divisions,
+                "person_projects": person_projects,
+                "person_divisions_active": person_divisions_active,
+                "person_divisions_won": person_divisions_won
+            }
+            return render(request, "person_details.html", ctx)
+        return redirect("/projects")
 
 
 class UserDetailsView(ActivateUserCheck, View):
@@ -1915,7 +1920,7 @@ class UserDetailsView(ActivateUserCheck, View):
 
 
 class EditUserView(ActivateUserCheck, View):
-    def get(self, request, user_id):
+    def get(self, request):
         user = User.objects.get(pk=int(request.session["user_id"]))
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         initial_data = {
@@ -1928,7 +1933,7 @@ class EditUserView(ActivateUserCheck, View):
         }
         return render(request, "edit_user.html", ctx)
 
-    def post(self, request, user_id):
+    def post(self, request):
         user = User.objects.get(pk=int(request.session["user_id"]))
         form = EditUserForm(request.POST)
         if form.is_valid():
@@ -1939,10 +1944,10 @@ class EditUserView(ActivateUserCheck, View):
 
 
 class AddTenderView(StaffMemberCheck, View):
-    def get(self, request, id):
+    def get(self, request, project_id):
         user = User.objects.get(pk=int(request.session["user_id"]))
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
-        project = Project.objects.get(id=id)
+        project = Project.objects.get(id=project_id)
         form = AddTenderForm()
         ctx = {
             "project": project,
@@ -1951,10 +1956,10 @@ class AddTenderView(StaffMemberCheck, View):
         }
         return render(request, "add_tender.html", ctx)
     
-    def post(self, request, id):
+    def post(self, request, project_id):
         user = User.objects.get(pk=int(request.session["user_id"]))
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
-        project = Project.objects.get(id=id)
+        project = Project.objects.get(id=project_id)
         form = AddTenderForm(request.POST)
         if form.is_valid():
             data = form.cleaned_data
