@@ -167,6 +167,12 @@ weight_init()
 
 
 #AUXILIARY FUNCTIONS
+def get_counter():
+    counter = Counter.objects.all()[0]
+    counter.counter += 1
+    counter.save()
+    return counter.counter
+
 def validate_email(email):
     for i in User.objects.all():
         if i.email == email:
@@ -204,6 +210,7 @@ class RegisterView(View):
 
     def get(self, request):
         form = RegisterForm()
+        
         return render(request, "register.html", {"form": form})
     
     def post(self, request):
@@ -431,6 +438,7 @@ class CompletePasswordReset(View):
 
 class AddInvestor(StaffMemberCheck, View):
     def get(self, request):
+        counter = get_counter()
         if request.session.get("division_id"):
             user = User.objects.get(pk=int(request.session["user_id"]))
             divisions = [i.id for i in Division.objects.filter(division_admin=user)]
@@ -504,6 +512,7 @@ class AddInvestorPoviat(StaffMemberCheck, View):
 
 class InvestorsView(ActivateUserCheck, View):
     def get(self, request):
+        counter = get_counter()
         user = User.objects.get(pk=int(request.session["user_id"]))
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         division = Division.objects.get(id=request.session.get("division_id"))
@@ -685,6 +694,7 @@ class DeleteInvestorConfirm(SuperUserCheck, View):
 
 class AddCompany(StaffMemberCheck, View):
     def get(self, request):
+        counter = get_counter()
         user = User.objects.get(pk=int(request.session["user_id"]))
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         form = AddCompanyForm()
@@ -745,6 +755,7 @@ class AddCompanyPoviat(StaffMemberCheck, View):
 
 class CompaniesView(ActivateUserCheck, View):
     def get(self, request):
+        counter = get_counter()
         user = User.objects.get(pk=int(request.session["user_id"]))
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         division = None
@@ -960,6 +971,7 @@ class DeleteCompanyConfirm(SuperUserCheck, View):
 
 class AddDesigner(StaffMemberCheck, View):
     def get(self, request):
+        counter = get_counter()
         user = User.objects.get(pk=int(request.session["user_id"]))
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         form = AddDesignerForm()
@@ -1027,6 +1039,7 @@ class AddDesignerPoviat(StaffMemberCheck, View):
 
 class DesignersView(ActivateUserCheck, View):
     def get(self, request):
+        counter = get_counter()
         user = User.objects.get(pk=int(request.session["user_id"]))
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         division = None
@@ -1203,6 +1216,7 @@ class DeleteDesignerConfirm(SuperUserCheck, View):
 
 class AddProject(StaffMemberCheck, View):
     def get(self, request):
+        counter = get_counter()
         user = None
         division = None
         if request.session.get("user_id") not in ("", None):
@@ -1321,6 +1335,7 @@ class AddProjectPoviat(StaffMemberCheck, View):
 
 class Projects(View):
     def get(self, request):
+        counter = get_counter()
         user = None
         division = None
         if request.session.get("user_id"):
@@ -1337,7 +1352,8 @@ class Projects(View):
         ctx = {
             "projects": projects,
             "divisions": divisions,
-            "form": form
+            "form": form,
+            "counter": counter
         }
         return render(request, "projects.html", ctx)
     
@@ -1558,6 +1574,7 @@ class DeleteProjectConfirm(StaffMemberCheck, View):
 
 class ArchivesView(ActivateUserCheck, View):
     def get(self, request):
+        counter = get_counter()
         user = None
         if request.session.get("user_id") not in ("", None):
             user = User.objects.get(pk=int(request.session["user_id"]))
@@ -1573,7 +1590,8 @@ class ArchivesView(ActivateUserCheck, View):
         ctx = {
             "archives": archives,
             "divisions": divisions,
-            "form": form
+            "form": form,
+            "counter": counter
         }
         return render(request, "archives.html", ctx)
     
@@ -1603,6 +1621,7 @@ class ArchivesView(ActivateUserCheck, View):
 
 class AddDivisionView(ActivateUserCheck, View):
     def get(self, request):
+        counter = get_counter()
         user = User.objects.get(pk=int(request.session["user_id"]))
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         created_divisions = Division.objects.filter(division_creator=user)
@@ -1655,6 +1674,7 @@ class AddDivisionView(ActivateUserCheck, View):
 
 class JoinDivisionView(ActivateUserCheck, View):
     def get(self, request):
+        counter = get_counter()
         user = User.objects.get(pk=int(request.session["user_id"]))
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         wannabe_divisions = Division.objects.filter(division_wannabe=user)
@@ -1682,6 +1702,7 @@ class JoinDivisionView(ActivateUserCheck, View):
 
 class DivisionChoiceView(ActivateUserCheck, View):
     def get(self, request):
+        counter = get_counter()
         user = None
         if request.session["user_id"] not in ("", None):
             user = User.objects.get(pk=int(request.session["user_id"]))
