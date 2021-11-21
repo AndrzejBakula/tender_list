@@ -209,8 +209,7 @@ class ActivateUserCheck(UserPassesTestMixin, View):
 class RegisterView(View):
 
     def get(self, request):
-        form = RegisterForm()
-        
+        form = RegisterForm()        
         return render(request, "register.html", {"form": form})
     
     def post(self, request):
@@ -328,7 +327,6 @@ class LogoutView(View):
         if request.user.is_authenticated:
             logout(request)
             request.session["logged"] = False
-            # del request.session["user_id"]
             user = request.user
             user.is_active = False
         return redirect("/projects")
@@ -439,7 +437,7 @@ class CompletePasswordReset(View):
 class AddInvestor(StaffMemberCheck, View):
     def get(self, request):
         counter = get_counter()
-        if request.session.get("division_id"):
+        if request.session.get("division_id"): #url lock
             user = User.objects.get(pk=int(request.session["user_id"]))
             divisions = [i.id for i in Division.objects.filter(division_admin=user)]
             form = AddInvestorForm()
@@ -486,7 +484,7 @@ class AddInvestor(StaffMemberCheck, View):
 class AddInvestorPoviat(StaffMemberCheck, View):
     def get(self, request, investor_id):
         investor = Investor.objects.get(id=investor_id)
-        if request.session.get("division_id") in [i.id for i in investor.division.all()]:
+        if request.session.get("division_id") in [i.id for i in investor.division.all()]: #url lock
             user = User.objects.get(pk=int(request.session["user_id"]))
             divisions = [i.id for i in Division.objects.filter(division_admin=user)]
             form = AddInvestorPoviatForm(investor=investor)
@@ -559,7 +557,7 @@ class InvestorDetails(ActivateUserCheck, View):
     def get(self, request, investor_id):
         investor = Investor.objects.get(id=investor_id)
         division = Division.objects.get(id=request.session.get("division_id"))
-        if division.id in [i.id for i in investor.division.all()]:
+        if division in [i for i in investor.division.all()]: #url lock
             user = User.objects.get(pk=int(request.session["user_id"]))
             divisions = [i.id for i in Division.objects.filter(division_admin=user)]
             investor_projects = Project.objects.filter(investor=investor, division=division)
@@ -604,7 +602,7 @@ class EditInvestor(StaffMemberCheck, View):
     def get(self, request, investor_id):
         investor = Investor.objects.get(id=investor_id)
         division = Division.objects.get(pk=request.session.get("division_id"))
-        if division.id in [i.id for i in investor.division.all()]:
+        if division in [i for i in investor.division.all()]: #url lock
             user = User.objects.get(pk=int(request.session["user_id"]))
             divisions = [i.id for i in Division.objects.filter(division_admin=user)]
             initial_data = {
@@ -646,7 +644,7 @@ class EditInvestorPoviat(StaffMemberCheck, View):
     def get(self, request, investor_id):
         investor = Investor.objects.get(id=investor_id)
         division = Division.objects.get(pk=request.session.get("division_id"))
-        if division.id in [i.id for i in investor.division.all()]:
+        if division in [i for i in investor.division.all()]: #url lock
             user = User.objects.get(pk=int(request.session["user_id"]))
             divisions = [i.id for i in Division.objects.filter(division_admin=user)]
             initial_data = {
@@ -835,7 +833,7 @@ class AddMyCompanyView(StaffMemberCheck, View):
         division = None
         if request.session.get("division_id"):
             division = Division.objects.get(id=request.session["division_id"])
-        if division.id in [i.id for i in company.division.all()] and len(division.division_company.all()) == 0:
+        if division in [i for i in company.division.all()] and len(division.division_company.all()) == 0: #url lock
             company.division_company = division
             company.save()
             return redirect("/companies")
@@ -849,7 +847,7 @@ class RemoveMyCompanyView(StaffMemberCheck, View):
         division = None
         if request.session.get("division_id"):
             division = Division.objects.get(id=request.session["division_id"])
-        if division.id in [i.id for i in company.division.all()] and company.division_company:
+        if division in [i for i in company.division.all()] and company.division_company: #url lock
             company.division_company = None
             company.save()
             return redirect("/companies")
@@ -860,7 +858,7 @@ class CompanyDetails(ActivateUserCheck, View):
     def get(self, request, company_id):
         company = Company.objects.get(id=company_id)
         division = Division.objects.get(id=request.session.get("division_id"))
-        if division.id in [i.id for i in company.division.all()]:
+        if division in [i for i in company.division.all()]: #url lock
             user = User.objects.get(pk=int(request.session["user_id"]))
             divisions = [i.id for i in Division.objects.filter(division_admin=user)]
             won_tenders = Tenderer.objects.filter(tenderer=company, tender__project__division=division, is_winner=True)
@@ -878,7 +876,7 @@ class EditCompany(StaffMemberCheck, View):
     def get(self, request, company_id):
         company = Company.objects.get(id=company_id)
         division = Division.objects.get(id=request.session.get("division_id"))
-        if division.id in [i.id for i in company.division.all()]:
+        if division in [i for i in company.division.all()]: #url lock
             user = User.objects.get(pk=int(request.session["user_id"]))
             divisions = [i.id for i in Division.objects.filter(division_admin=user)]
             initial_data = {
@@ -922,7 +920,7 @@ class EditCompanyPoviat(StaffMemberCheck, View):
     def get(self, request, company_id):
         company = Company.objects.get(id=company_id)
         division = Division.objects.get(id=request.session.get("division_id"))
-        if division.id in [i.id for i in company.division.all()]:
+        if division in [i for i in company.division.all()]: #url lock
             user = User.objects.get(pk=int(request.session["user_id"]))
             divisions = [i.id for i in Division.objects.filter(division_admin=user)]
             initial_data = {
@@ -1015,16 +1013,18 @@ class AddDesigner(StaffMemberCheck, View):
 
 class AddDesignerPoviat(StaffMemberCheck, View):
     def get(self, request, designer_id):
-        user = User.objects.get(pk=int(request.session["user_id"]))
-        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         designer = Designer.objects.get(id=designer_id)
-        form = AddDesignerPoviatForm(designer=designer)
-        ctx = {
-            "form": form,
-            "divisions": divisions,
-            "designer": designer
-        }
-        return render(request, "add_designer_poviat.html", ctx)
+        if request.session.get("division_id") in [i.id for i in designer.division.all()]: #url lock
+            user = User.objects.get(pk=int(request.session["user_id"]))
+            divisions = [i.id for i in Division.objects.filter(division_admin=user)]
+            form = AddDesignerPoviatForm(designer=designer)
+            ctx = {
+                "form": form,
+                "divisions": divisions,
+                "designer": designer
+            }
+            return render(request, "add_designer_poviat.html", ctx)
+        return redirect("/projects")
     
     def post(self, request, designer_id):
         designer = Designer.objects.get(id=designer_id)
@@ -1088,7 +1088,7 @@ class DesignerDetails(ActivateUserCheck, View):
     def get(self, request, designer_id):
         designer = Designer.objects.get(id=designer_id)
         division = Division.objects.get(id=request.session.get("division_id"))
-        if division.id in [i.id for i in designer.division.all()]:
+        if division in [i for i in designer.division.all()]: #url lock
             user = User.objects.get(pk=int(request.session["user_id"]))
             divisions = [i.id for i in Division.objects.filter(division_admin=user)]
             division_designer = Project.objects.filter(designer=designer, division=division)
@@ -1125,7 +1125,7 @@ class EditDesigner(StaffMemberCheck, View):
     def get(self, request, designer_id):
         designer = Designer.objects.get(id=designer_id)
         division = Division.objects.get(id=request.session.get("division_id"))
-        if division.id in [i.id for i in designer.division.all()]:
+        if division in [i for i in designer.division.all()]: #url lock
             user = User.objects.get(pk=int(request.session["user_id"]))
             divisions = [i.id for i in Division.objects.filter(division_admin=user)]
             initial_data = {
@@ -1168,7 +1168,7 @@ class EditDesignerPoviat(StaffMemberCheck, View):
     def get(self, request, designer_id):
         designer = Designer.objects.get(id=designer_id)
         division = Division.objects.get(id=request.session.get("division_id"))
-        if division.id in [i.id for i in designer.division.all()]:
+        if division in [i for i in designer.division.all()]: #url lock
             user = User.objects.get(pk=int(request.session["user_id"]))
             divisions = [i.id for i in Division.objects.filter(division_admin=user)]
             initial_data = {
@@ -1309,7 +1309,7 @@ class AddProjectPoviat(StaffMemberCheck, View):
         division = None
         if request.session.get("division_id"):
             division = Division.objects.get(id=request.session.get("division_id"))
-        if division.id == project.division.id:
+        if division == project.division: #url lock
             user = None
             if request.session.get("user_id") not in ("", None):
                 user = User.objects.get(pk=int(request.session["user_id"]))
@@ -1385,7 +1385,7 @@ class ProjectDetails(ActivateUserCheck, View):
     def get(self, request, project_id):
         project = Project.objects.get(id=project_id)
         division = Division.objects.get(pk=request.session.get("division_id"))
-        if division.id == project.division.id:
+        if division == project.division: #url lock
             user = User.objects.get(pk=int(request.session["user_id"]))
             divisions = [i.id for i in Division.objects.filter(division_admin=user)]
             ctx = {
@@ -1402,7 +1402,7 @@ class EditProject(StaffMemberCheck, View):
         division = None
         if request.session.get("division_id"):
             division = Division.objects.get(id=request.session.get("division_id"))
-        if division.id == project.division.id:
+        if division == project.division: #url lock
             user = None
             if request.session.get("user_id"):
                 user = User.objects.get(pk=int(request.session["user_id"]))
@@ -1511,7 +1511,7 @@ class EditProjectPoviat(StaffMemberCheck, View):
     def get(self, request, project_id):
         project = Project.objects.get(id=project_id)
         division = Division.objects.get(pk=request.session.get("division_id"))
-        if division.id == project.division.id:
+        if division == project.division: #url lock
             user = User.objects.get(pk=int(request.session["user_id"]))
             divisions = [i.id for i in Division.objects.filter(division_admin=user)]
             initial_data = {
@@ -1540,7 +1540,7 @@ class DeleteProject(StaffMemberCheck, View):
     def get(self, request, project_id):
         project = Project.objects.get(id=project_id)
         division = Division.objects.get(pk=request.session.get("division_id"))
-        if division.id == project.division.id:
+        if division == project.division: #url lock
             user = User.objects.get(pk=int(request.session["user_id"]))
             divisions = [i.id for i in Division.objects.filter(division_admin=user)]
             ctx = {
@@ -1555,7 +1555,7 @@ class DeleteProjectConfirm(StaffMemberCheck, View):
     def get(self, request, project_id):
         project = Project.objects.get(id=project_id)
         division = Division.objects.get(pk=request.session.get("division_id"))
-        if division.id == project.division.id:
+        if division == project.division: #url lock
             if project.tender:
                 tender = project.tender
                 tenderers = Tenderer.objects.filter(tender=tender)
@@ -1718,7 +1718,7 @@ class DivisionChoiceConfirm(ActivateUserCheck, View):
     def get(self, request, division_id):
         division = Division.objects.get(pk=division_id)
         user = User.objects.get(pk=request.session.get("user_id"))
-        if division.id in [i.id for i in user.division_person.all()]:
+        if division in [i for i in user.division_person.all()]: #url lock
             request.session["division_id"] = division.id
             request.session["division_name"] = division.division_name
             request.session.save()
@@ -1729,7 +1729,7 @@ class DivisionDetails(ActivateUserCheck, View):
     def get(self, request, division_id):
         division = Division.objects.get(id=division_id)
         user = User.objects.get(pk=int(request.session["user_id"]))
-        if division.id in [i.id for i in user.division_person.all()]: #url lock
+        if division in [i for i in user.division_person.all()]: #url lock
             divisions = [i.id for i in Division.objects.filter(division_admin=user)]
             actual_projects = Project.objects.filter(division=division, status=2)
             bade_projects = Project.objects.filter(division=division).exclude(status=1).exclude(status=2)
@@ -1753,7 +1753,7 @@ class EditDivisionView(StaffMemberCheck, View):
     def get(self, request, division_id):
         division = Division.objects.get(id=division_id)
         user = User.objects.get(pk=int(request.session["user_id"]))
-        if division.id in [i.id for i in user.division_admin.all()]: #url lock
+        if division in [i for i in user.division_admin.all()]: #url lock
             divisions = [i.id for i in Division.objects.filter(division_admin=user)]
             initial_data = {
                 "division_name": division.division_name
@@ -1784,7 +1784,7 @@ class DeleteDivisionView(StaffMemberCheck, View):
     def get(self, request, division_id):
         division = Division.objects.get(id=division_id)
         user = User.objects.get(pk=int(request.session["user_id"]))
-        if division.id in [i.id for i in user.division_creator.all()]:
+        if division in [i for i in user.division_creator.all()]: #url lock
             divisions = [i.id for i in Division.objects.filter(division_admin=user)]
             ctx = {
                 "division": division,
@@ -1798,7 +1798,7 @@ class DeleteDivisionConfirm(StaffMemberCheck, View):
     def get(self, request, division_id):
         division = Division.objects.get(id=division_id)
         user = User.objects.get(pk=int(request.session["user_id"]))
-        if division.id in [i.id for i in user.division_creator.all()]:
+        if division in [i for i in user.division_creator.all()]: #url lock
             division.division_company.set([])
             division.delete()
             request.session["division_id"] = None
@@ -1812,7 +1812,7 @@ class AddAdminView(StaffMemberCheck, View):
         division = Division.objects.get(id=division_id)
         person = User.objects.get(id=person_id)
         user = User.objects.get(pk=int(request.session["user_id"]))
-        if division.id in [i.id for i in person.division_person.all()] and not division.id in [i.id for i in person.division_admin.all()] and division.id in [i.id for i in user.division_creator.all()]: #url lock
+        if division in [i for i in person.division_person.all()] and not division in [i for i in person.division_admin.all()] and division in [i for i in user.division_creator.all()]: #url lock
             division.division_admin.add(person)
             division.save()
             person.is_staff = True
@@ -1826,7 +1826,7 @@ class CancelAdminView(StaffMemberCheck, View):
         division = Division.objects.get(id=division_id)
         person = User.objects.get(id=person_id)
         user = User.objects.get(pk=int(request.session["user_id"]))
-        if division.id in [i.id for i in person.division_admin.all()] and division.id in [i.id for i in user.division_creator.all()]: #url lock
+        if division in [i for i in person.division_admin.all()] and division in [i for i in user.division_creator.all()]: #url lock
             division.division_admin.remove(person)
             division.save()
             divisions = Division.objects.filter(division_admin=user)
@@ -1842,7 +1842,7 @@ class AddPersonView(StaffMemberCheck, View):
         division = Division.objects.get(id=division_id)
         person = User.objects.get(id=person_id)
         user = User.objects.get(pk=int(request.session["user_id"]))
-        if not division.id in [i.id for i in person.division_person.all()] and division.id in [i.id for i in user.division_creator.all()]: #url lock
+        if not division in [i for i in person.division_person.all()] and division in [i for i in user.division_creator.all()]: #url lock
             division.division_person.add(person)
             division.division_wannabe.remove(person)
             division.save()
@@ -1855,7 +1855,7 @@ class RemoveMemberView(StaffMemberCheck, View):
         division = Division.objects.get(id=division_id)
         person = User.objects.get(id=person_id)
         user = User.objects.get(pk=int(request.session["user_id"]))
-        if division.id in [i.id for i in person.division_person.all()] and division.id in [i.id for i in user.division_creator.all()]: #url lock
+        if division in [i for i in person.division_person.all()] and division in [i for i in user.division_creator.all()]: #url lock
             division.division_person.remove(person)
             if person in [i for i in division.division_admin.all()]:
                 division.division_admin.remove(person)
@@ -1875,7 +1875,7 @@ class PersonDetailsView(ActivateUserCheck, View):
         for i in person.division_person.all():
             if i in user.division_person.all():
                 same_division = True
-        if same_division:
+        if same_division: #url lock
             divisions = [i.id for i in Division.objects.filter(division_admin=user)]
             division = None
             if request.session.get("division_id"):
@@ -1948,7 +1948,7 @@ class AddTenderView(StaffMemberCheck, View):
         project = Project.objects.get(id=project_id)
         user = User.objects.get(pk=int(request.session["user_id"]))
         division = Division.objects.get(pk=request.session.get("division_id"))
-        if division == project.division:
+        if division == project.division: #url lock
             divisions = [i.id for i in Division.objects.filter(division_admin=user)]
             form = AddTenderForm()
             ctx = {
@@ -1983,7 +1983,7 @@ class AddTenderCriteria(StaffMemberCheck, View):
         project = Project.objects.get(id=project_id)
         user = User.objects.get(pk=int(request.session["user_id"]))
         division = Division.objects.get(pk=request.session.get("division_id"))
-        if division == project.division and project.tender.id == tender_id:
+        if division == project.division and project.tender.id == tender_id: #url lock
             divisions = [i.id for i in Division.objects.filter(division_admin=user)]
             tender = Tender.objects.get(id=tender_id)
             form = AddCriteriaForm(tender=tender)
@@ -2042,7 +2042,7 @@ class AddOtherCriteria(StaffMemberCheck, View):
         project = Project.objects.get(id=project_id)
         user = User.objects.get(pk=int(request.session["user_id"]))
         division = Division.objects.get(pk=request.session.get("division_id"))
-        if division == project.division and project.tender.id == tender_id:
+        if division == project.division and project.tender.id == tender_id: #url lock
             divisions = [i.id for i in Division.objects.filter(division_admin=user)]
             tender = Tender.objects.get(id=tender_id)
             count_value = int(tender.value_weight.weight)
@@ -2131,7 +2131,7 @@ class AddMissingCriteria(StaffMemberCheck, View):
         project = Project.objects.get(id=project_id)
         user = User.objects.get(pk=int(request.session["user_id"]))
         division = Division.objects.get(pk=request.session.get("division_id"))
-        if division == project.division and project.tender.id == tender_id:
+        if division == project.division and project.tender.id == tender_id: #url lock
             divisions = [i.id for i in Division.objects.filter(division_admin=user)]
             tender = Tender.objects.get(id=tender_id)
             form_minor = AddMissingCriteriaForm(request.POST, tender=tender)
@@ -2150,7 +2150,7 @@ class AddMissingDeadline(StaffMemberCheck, View):
         project = Project.objects.get(id=project_id)
         user = User.objects.get(pk=int(request.session["user_id"]))
         division = Division.objects.get(pk=request.session.get("division_id"))
-        if division == project.division and project.tender.id == tender_id:
+        if division == project.division and project.tender.id == tender_id: #url lock
             divisions = [i.id for i in Division.objects.filter(division_admin=user)]
             tender = Tender.objects.get(id=tender_id)
             tenderer = Tenderer.objects.get(id=tenderer_id)
@@ -2169,7 +2169,7 @@ class AddMissingGuarantee(StaffMemberCheck, View):
         project = Project.objects.get(id=project_id)
         user = User.objects.get(pk=int(request.session["user_id"]))
         division = Division.objects.get(pk=request.session.get("division_id"))
-        if division == project.division and project.tender.id == tender_id:
+        if division == project.division and project.tender.id == tender_id: #url lock
             divisions = [i.id for i in Division.objects.filter(division_admin=user)]
             tender = Tender.objects.get(id=tender_id)
             tenderer = Tenderer.objects.get(id=tenderer_id)
@@ -2189,7 +2189,7 @@ class AddTenderDetails(StaffMemberCheck, View):
         project = Project.objects.get(id=project_id)
         user = User.objects.get(pk=int(request.session["user_id"]))
         division = Division.objects.get(pk=request.session.get("division_id"))
-        if division == project.division and project.tender.id == tender_id:
+        if division == project.division and project.tender.id == tender_id: #url lock
             divisions = [i.id for i in Division.objects.filter(division_admin=user)]
             tender = Tender.objects.get(id=tender_id)
             form_major = AddTendererForm(tender=tender)
@@ -2247,7 +2247,7 @@ class TenderDetailsView(ActivateUserCheck, View):
         project = Project.objects.get(id=project_id)
         user = User.objects.get(pk=int(request.session["user_id"]))
         division = Division.objects.get(pk=request.session.get("division_id"))
-        if division == project.division and project.tender.id == tender_id:
+        if division == project.division and project.tender.id == tender_id: #url lock
             divisions = [i.id for i in Division.objects.filter(division_admin=user)]
             tender = Tender.objects.get(id=tender_id)
             winner = None
@@ -2281,7 +2281,7 @@ class MakeWinnerView(View):
         project = Project.objects.get(tender_id=tender_id)
         tenderer = Tenderer.objects.get(id=tenderer_id)
         division = Division.objects.get(pk=int(request.session.get("division_id")))
-        if division == project.division and tenderer in [i for i in tender.tenderer.all()]:
+        if division == project.division and tenderer in [i for i in tender.tenderer.all()]: #url lock
             tenderer.is_winner = True
             tenderer.save()
             if tenderer.tenderer.id == division.division_company.all()[0].id:
@@ -2300,7 +2300,7 @@ class RemoveWinnerView(StaffMemberCheck, View):
         project = Project.objects.get(tender_id=tender_id)
         tenderer = Tenderer.objects.get(id=tenderer_id)
         division = Division.objects.get(pk=int(request.session.get("division_id")))
-        if division == project.division and tenderer in [i for i in tender.tenderer.all()]:
+        if division == project.division and tenderer in [i for i in tender.tenderer.all()]: #url lock
             tenderer.is_winner = False
             tenderer.save()
             if tenderer.tenderer.id == division.division_company.all()[0].id:
@@ -2314,11 +2314,11 @@ class RemoveWinnerView(StaffMemberCheck, View):
 class EditTenderView(StaffMemberCheck, View):
     def get(self, request, project_id, tender_id):
         project = Project.objects.get(id=project_id)
+        tender = Tender.objects.get(id=tender_id)
         user = User.objects.get(pk=int(request.session["user_id"]))
         division = Division.objects.get(pk=request.session.get("division_id"))
-        if division == project.division:
+        if division == project.division and tender == project.tender: #url lock
             divisions = [i.id for i in Division.objects.filter(division_admin=user)]
-            tender = Tender.objects.get(id=tender_id)
             initial_data = {
                 "investor_budget": tender.investor_budget,
                 "value_weight": tender.value_weight,
@@ -2377,7 +2377,7 @@ class EditTenderCriteria(StaffMemberCheck, View):
         tender = Tender.objects.get(id=tender_id)
         user = User.objects.get(pk=int(request.session["user_id"]))
         division = Division.objects.get(pk=request.session.get("division_id"))
-        if division == project.division and project.tender.id == tender_id:
+        if division == project.division and project.tender == tender: #url lock
             divisions = [i.id for i in Division.objects.filter(division_admin=user)]
             initial_data = {
             }
@@ -2457,7 +2457,7 @@ class DeleteTendererView(StaffMemberCheck, View):
         tenderer = Tenderer.objects.get(id=tenderer_id)
         user = User.objects.get(pk=int(request.session["user_id"]))
         division = Division.objects.get(pk=request.session.get("division_id"))
-        if division == project.division and tender == project.tender and tenderer in [i for i in tender.tenderer.all()]:
+        if division == project.division and tender == project.tender and tenderer in [i for i in tender.tenderer.all()]: #url lock
             divisions = [i.id for i in Division.objects.filter(division_admin=user)]
             tenderer = Tenderer.objects.get(id=tenderer_id)
             criteria = Criteria.objects.filter(tenderer=tenderer)
@@ -2470,44 +2470,53 @@ class DeleteTendererView(StaffMemberCheck, View):
 
 class DeleteOtherCriteriaView(StaffMemberCheck, View):
     def get(self, request, project_id, tender_id, criteria_id):
-        user = User.objects.get(pk=int(request.session["user_id"]))
-        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         project = Project.objects.get(id=project_id)
         tender = Tender.objects.get(id=tender_id)
         criterium = Criteria.objects.get(id=criteria_id)
-        for i in tender.tenderer.all():
-            for j in i.other_criteria.all():
-                if j.criteria_name == criterium.criteria_name:
-                    j.delete()
-        criterium.delete()
-        return redirect(f"/add_other_criteria/{project_id}/{tender_id}")
+        division = Division.objects.get(pk=request.session.get("division_id"))
+        if division == project.division and tender == project.tender and criterium in [i for i in tender.other_criteria.all()]: #url lock
+            user = User.objects.get(pk=int(request.session["user_id"]))
+            divisions = [i.id for i in Division.objects.filter(division_admin=user)]
+            for i in tender.tenderer.all():
+                for j in i.other_criteria.all():
+                    if j.criteria_name == criterium.criteria_name:
+                        j.delete()
+            criterium.delete()
+            return redirect(f"/add_other_criteria/{project_id}/{tender_id}")
+        return redirect("/projects")
 
 
 class DeleteTenderView(StaffMemberCheck, View):
     def get(self, request, project_id, tender_id):
-        user = User.objects.get(pk=int(request.session["user_id"]))
-        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         project = Project.objects.get(id=project_id)
         tender = Tender.objects.get(id=tender_id)
-        ctx = {
-            "tender": tender,
-            "project": project,
-            "divisions": divisions
-        }
-        return render(request, "delete_tender.html", ctx)
+        division = Division.objects.get(pk=request.session.get("division_id"))
+        if division == project.division and tender == project.tender: #url lock
+            user = User.objects.get(pk=int(request.session["user_id"]))
+            divisions = [i.id for i in Division.objects.filter(division_admin=user)]
+            ctx = {
+                "tender": tender,
+                "project": project,
+                "divisions": divisions
+            }
+            return render(request, "delete_tender.html", ctx)
 
 
 class DeleteTenderConfirm(StaffMemberCheck, View):
     def get(self, request, project_id, tender_id):
+        project = Project.objects.get(id=project_id)
         tender = Tender.objects.get(id=tender_id)
-        criteria = Criteria.objects.filter(tender=ternder)
-        for i in criteria:
-            i.delete()
-        tenderers = Tenderer.objects.filter(tender=tender)
-        for i in tenderers:
-            criteria = Criteria.objects.filter(tenderer=i)
-            for j in criteria:
-                j.delete()
-            i.delete()
-        tender.delete()
+        division = Division.objects.get(pk=request.session.get("division_id"))
+        if division == project.division and tender == project.tender: #url lock
+            criteria = Criteria.objects.filter(tender=ternder)
+            for i in criteria:
+                i.delete()
+            tenderers = Tenderer.objects.filter(tender=tender)
+            for i in tenderers:
+                criteria = Criteria.objects.filter(tenderer=i)
+                for j in criteria:
+                    j.delete()
+                i.delete()
+            tender.delete()
+            return redirect("/projects")
         return redirect("/projects")
