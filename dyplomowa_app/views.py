@@ -1349,7 +1349,7 @@ class Projects(View):
         projects1 = Project.objects.filter(division=division, tender_date__range=[today, finish], status=2).order_by("tender_date", "tender_time", "project_number")
         projects2 = Project.objects.filter(division=division, tender_date__isnull=True, status=2)
         projects = projects1 | projects2
-        users = User.objects.all()
+        users = User.objects.filter(is_active=True)
         ctx = {
             "projects": projects,
             "divisions": divisions,
