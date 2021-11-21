@@ -1945,16 +1945,19 @@ class EditUserView(ActivateUserCheck, View):
 
 class AddTenderView(StaffMemberCheck, View):
     def get(self, request, project_id):
-        user = User.objects.get(pk=int(request.session["user_id"]))
-        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         project = Project.objects.get(id=project_id)
-        form = AddTenderForm()
-        ctx = {
-            "project": project,
-            "divisions": divisions,
-            "form": form
-        }
-        return render(request, "add_tender.html", ctx)
+        user = User.objects.get(pk=int(request.session["user_id"]))
+        division = Division.objects.get(pk=request.session.get("division_id"))
+        if division == project.division:
+            divisions = [i.id for i in Division.objects.filter(division_admin=user)]
+            form = AddTenderForm()
+            ctx = {
+                "project": project,
+                "divisions": divisions,
+                "form": form
+            }
+            return render(request, "add_tender.html", ctx)
+        return redirect("/projects")
     
     def post(self, request, project_id):
         user = User.objects.get(pk=int(request.session["user_id"]))
@@ -1977,18 +1980,21 @@ class AddTenderView(StaffMemberCheck, View):
 
 class AddTenderCriteria(StaffMemberCheck, View):
     def get(self, request, project_id, tender_id):
-        user = User.objects.get(pk=int(request.session["user_id"]))
-        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         project = Project.objects.get(id=project_id)
-        tender = Tender.objects.get(id=tender_id)
-        form = AddCriteriaForm(tender=tender)
-        ctx = {
-            "divisions": divisions,
-            "project": project,
-            "tender": tender,
-            "form": form
-        }
-        return render(request, "add_tender_criteria.html", ctx)
+        user = User.objects.get(pk=int(request.session["user_id"]))
+        division = Division.objects.get(pk=request.session.get("division_id"))
+        if division == project.division and project.tender.id == tender_id:
+            divisions = [i.id for i in Division.objects.filter(division_admin=user)]
+            tender = Tender.objects.get(id=tender_id)
+            form = AddCriteriaForm(tender=tender)
+            ctx = {
+                "divisions": divisions,
+                "project": project,
+                "tender": tender,
+                "form": form
+            }
+            return render(request, "add_tender_criteria.html", ctx)
+        return redirect("/projects")
     
     def post(self, request, project_id, tender_id):
         user = User.objects.get(pk=int(request.session["user_id"]))
@@ -2033,32 +2039,35 @@ class AddTenderCriteria(StaffMemberCheck, View):
 
 class AddOtherCriteria(StaffMemberCheck, View):
     def get(self, request, project_id, tender_id):
-        user = User.objects.get(pk=int(request.session["user_id"]))
-        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         project = Project.objects.get(id=project_id)
-        tender = Tender.objects.get(id=tender_id)
-        count_value = int(tender.value_weight.weight)
-        count_guarantee = 0
-        if tender.guarantee:
-            count_guarantee = int(tender.guarantee.weight.weight)
-        count_deadline = 0
-        if tender.deadline:
-            count_deadline = int(tender.deadline.weight.weight)
-        count = count_value + count_guarantee + count_deadline
-        form = None
-        if len(tender.other_criteria.all()) > 0:
-            for i in tender.other_criteria.all():
-                count += int(i.weight.weight)
-        if tender.is_other_criteria:
-            form = AddOtherCriteriaForm(count=count)
-        ctx = {
-            "divisions": divisions,
-            "project": project,
-            "tender": tender,
-            "form": form,
-            "count": count
-        }
-        return render(request, "add_other_criteria.html", ctx)
+        user = User.objects.get(pk=int(request.session["user_id"]))
+        division = Division.objects.get(pk=request.session.get("division_id"))
+        if division == project.division and project.tender.id == tender_id:
+            divisions = [i.id for i in Division.objects.filter(division_admin=user)]
+            tender = Tender.objects.get(id=tender_id)
+            count_value = int(tender.value_weight.weight)
+            count_guarantee = 0
+            if tender.guarantee:
+                count_guarantee = int(tender.guarantee.weight.weight)
+            count_deadline = 0
+            if tender.deadline:
+                count_deadline = int(tender.deadline.weight.weight)
+            count = count_value + count_guarantee + count_deadline
+            form = None
+            if len(tender.other_criteria.all()) > 0:
+                for i in tender.other_criteria.all():
+                    count += int(i.weight.weight)
+            if tender.is_other_criteria:
+                form = AddOtherCriteriaForm(count=count)
+            ctx = {
+                "divisions": divisions,
+                "project": project,
+                "tender": tender,
+                "form": form,
+                "count": count
+            }
+            return render(request, "add_other_criteria.html", ctx)
+        return redirect("/projects")
     
     def post(self, request, project_id, tender_id):
         user = User.objects.get(pk=int(request.session["user_id"]))
@@ -2082,14 +2091,24 @@ class AddOtherCriteria(StaffMemberCheck, View):
             data = form.cleaned_data
             criteria_name = data["criteria_name"]
             criteria_weight = data["criteria_weight"]
-            for i in Criteria.objects.all():
-                if criteria_name in (i.criteria_name, "termin", "Termin", "termin wykonania", "Termin wykonania",
-                "gwarancja","Gwarancja", "Cena", "cena", "Wartość oferty",
-                "wartość oferty") and criteria_weight.weight == i.weight.weight:
-                    return redirect(f"/add_other_criteria/{project_id}/{tender_id}")
             for i in Criteria.objects.filter(tender=tender):
                 if criteria_name in (i.criteria_name, "termin", "Termin", "termin wykonania", "Termin wykonania",
                 "gwarancja","Gwarancja", "Cena", "cena", "Wartość oferty", "wartość oferty"):
+                    return redirect(f"/add_other_criteria/{project_id}/{tender_id}")
+            for i in Criteria.objects.all():
+                if criteria_name == i.criteria_name and criteria_weight.weight == i.weight.weight:
+                    tender.other_criteria.add(i)
+                    tender.save()
+                    for i in tender.tenderer.all():
+                        new_criteria = Criteria.objects.create(weight=criteria_weight, criteria_name=criteria_name)
+                        i.other_criteria.add(new_criteria)
+                        i.save()
+                    ctx = {
+                    "divisions": divisions,
+                    "project": project,
+                    "tender": tender,
+                    "form": form
+                    }
                     return redirect(f"/add_other_criteria/{project_id}/{tender_id}")
             new_criteria = Criteria.objects.create(weight=criteria_weight, criteria_name=criteria_name)
             tender.other_criteria.add(new_criteria)
@@ -2109,77 +2128,89 @@ class AddOtherCriteria(StaffMemberCheck, View):
 
 class AddMissingCriteria(StaffMemberCheck, View):
     def post(self, request, project_id, tender_id, criteria_id):
-        user = User.objects.get(pk=int(request.session["user_id"]))
-        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         project = Project.objects.get(id=project_id)
-        tender = Tender.objects.get(id=tender_id)
-        form_minor = AddMissingCriteriaForm(request.POST, tender=tender)
-        if form_minor.is_valid():
-            data = form_minor.cleaned_data
-            criteria_value = data["criteria_value"]
-            criteria = Criteria.objects.get(id=criteria_id)
-            criteria.criteria_value = criteria_value
-            criteria.save()
-            return redirect(f"/add_tender_details/{project.id}/{tender.id}")
+        user = User.objects.get(pk=int(request.session["user_id"]))
+        division = Division.objects.get(pk=request.session.get("division_id"))
+        if division == project.division and project.tender.id == tender_id:
+            divisions = [i.id for i in Division.objects.filter(division_admin=user)]
+            tender = Tender.objects.get(id=tender_id)
+            form_minor = AddMissingCriteriaForm(request.POST, tender=tender)
+            if form_minor.is_valid():
+                data = form_minor.cleaned_data
+                criteria_value = data["criteria_value"]
+                criteria = Criteria.objects.get(id=criteria_id)
+                criteria.criteria_value = criteria_value
+                criteria.save()
+                return redirect(f"/add_tender_details/{project.id}/{tender.id}")
+        return redirect("/projects")
 
 
 class AddMissingDeadline(StaffMemberCheck, View):
     def post(self, request, project_id, tender_id, tenderer_id):
-        user = User.objects.get(pk=int(request.session["user_id"]))
-        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         project = Project.objects.get(id=project_id)
-        tender = Tender.objects.get(id=tender_id)
-        tenderer = Tenderer.objects.get(id=tenderer_id)
-        form_deadline = AddMissingDeadlineForm(request.POST, tender=tender)
-        if form_deadline.is_valid():
-            data = form_deadline.cleaned_data
-            deadline = data["deadline"]
-            tenderer.offer_deadline = deadline
-            tenderer.save()
-            return redirect(f"/add_tender_details/{project.id}/{tender.id}")
+        user = User.objects.get(pk=int(request.session["user_id"]))
+        division = Division.objects.get(pk=request.session.get("division_id"))
+        if division == project.division and project.tender.id == tender_id:
+            divisions = [i.id for i in Division.objects.filter(division_admin=user)]
+            tender = Tender.objects.get(id=tender_id)
+            tenderer = Tenderer.objects.get(id=tenderer_id)
+            form_deadline = AddMissingDeadlineForm(request.POST, tender=tender)
+            if form_deadline.is_valid():
+                data = form_deadline.cleaned_data
+                deadline = data["deadline"]
+                tenderer.offer_deadline = deadline
+                tenderer.save()
+                return redirect(f"/add_tender_details/{project.id}/{tender.id}")
+        return redirect("/projects")
 
 
 class AddMissingGuarantee(StaffMemberCheck, View):
     def post(self, request, project_id, tender_id, tenderer_id):
-        user = User.objects.get(pk=int(request.session["user_id"]))
-        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         project = Project.objects.get(id=project_id)
-        tender = Tender.objects.get(id=tender_id)
-        tenderer = Tenderer.objects.get(id=tenderer_id)
-        form_guarantee = AddMissingGuaranteeForm(request.POST, tender=tender)
-        if form_guarantee.is_valid():
-            data = form_guarantee.cleaned_data
-            guarantee = data["guarantee"]
-            tenderer.offer_guarantee = guarantee
-            tenderer.save()
-            return redirect(f"/add_tender_details/{project.id}/{tender.id}")
+        user = User.objects.get(pk=int(request.session["user_id"]))
+        division = Division.objects.get(pk=request.session.get("division_id"))
+        if division == project.division and project.tender.id == tender_id:
+            divisions = [i.id for i in Division.objects.filter(division_admin=user)]
+            tender = Tender.objects.get(id=tender_id)
+            tenderer = Tenderer.objects.get(id=tenderer_id)
+            form_guarantee = AddMissingGuaranteeForm(request.POST, tender=tender)
+            if form_guarantee.is_valid():
+                data = form_guarantee.cleaned_data
+                guarantee = data["guarantee"]
+                tenderer.offer_guarantee = guarantee
+                tenderer.save()
+                return redirect(f"/add_tender_details/{project.id}/{tender.id}")
+        return redirect("/projects")
 
 
 class AddTenderDetails(StaffMemberCheck, View):
 
     def get(self, request, project_id, tender_id):
-        user = User.objects.get(pk=int(request.session["user_id"]))
-        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         project = Project.objects.get(id=project_id)
-        tender = Tender.objects.get(id=tender_id)
-        form_major = AddTendererForm(tender=tender)
-        form_minor = AddMissingCriteriaForm(tender=tender)
-        form_deadline = None
-        if tender.is_deadline:
-            form_deadline = AddMissingDeadlineForm(tender=tender)
-        form_guarantee = None
-        if tender.is_guarantee:
-            form_guarantee = AddMissingGuaranteeForm(tender=tender)
-        ctx = {
-            "divisions": divisions,
-            "project": project,
-            "tender": tender,
-            "form_major": form_major,
-            "form_minor": form_minor,
-            "form_deadline": form_deadline,
-            "form_guarantee": form_guarantee
-        }
-        return render(request, "add_tender_details.html", ctx)
+        user = User.objects.get(pk=int(request.session["user_id"]))
+        division = Division.objects.get(pk=request.session.get("division_id"))
+        if division == project.division and project.tender.id == tender_id:
+            divisions = [i.id for i in Division.objects.filter(division_admin=user)]
+            tender = Tender.objects.get(id=tender_id)
+            form_major = AddTendererForm(tender=tender)
+            form_minor = AddMissingCriteriaForm(tender=tender)
+            form_deadline = None
+            if tender.is_deadline:
+                form_deadline = AddMissingDeadlineForm(tender=tender)
+            form_guarantee = None
+            if tender.is_guarantee:
+                form_guarantee = AddMissingGuaranteeForm(tender=tender)
+            ctx = {
+                "divisions": divisions,
+                "project": project,
+                "tender": tender,
+                "form_major": form_major,
+                "form_minor": form_minor,
+                "form_deadline": form_deadline,
+                "form_guarantee": form_guarantee
+            }
+            return render(request, "add_tender_details.html", ctx)
+        return redirect("/projects")
 
     def post(self, request, project_id, tender_id):
         user = User.objects.get(pk=int(request.session["user_id"]))
@@ -2213,31 +2244,34 @@ class AddTenderDetails(StaffMemberCheck, View):
 class TenderDetailsView(ActivateUserCheck, View):
 
     def get(self, request, project_id, tender_id):
-        user = User.objects.get(pk=int(request.session["user_id"]))
-        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         project = Project.objects.get(id=project_id)
-        tender = Tender.objects.get(id=tender_id)
-        winner = None
-        rest = None
-        for i in tender.tenderer.all():
-            if i.is_winner:
-                winner = i
-                break
-        tenderers = None
-        if winner:
-            rest = tender.tenderer.filter().exclude(id=winner.id).order_by("offer_value")
-            tenderers = [winner] + [i for i in rest]
-        else:
-            rest = tender.tenderer.all().order_by("offer_value")
-            tenderers = [i for i in rest]
-        ctx = {
-            "divisions": divisions,
-            "project": project,
-            "tender": tender,
-            "winner": winner,
-            "tenderers": tenderers
-        }
-        return render(request, "tender_details.html", ctx)
+        user = User.objects.get(pk=int(request.session["user_id"]))
+        division = Division.objects.get(pk=request.session.get("division_id"))
+        if division == project.division and project.tender.id == tender_id:
+            divisions = [i.id for i in Division.objects.filter(division_admin=user)]
+            tender = Tender.objects.get(id=tender_id)
+            winner = None
+            rest = None
+            for i in tender.tenderer.all():
+                if i.is_winner:
+                    winner = i
+                    break
+            tenderers = None
+            if winner:
+                rest = tender.tenderer.filter().exclude(id=winner.id).order_by("offer_value")
+                tenderers = [winner] + [i for i in rest]
+            else:
+                rest = tender.tenderer.all().order_by("offer_value")
+                tenderers = [i for i in rest]
+            ctx = {
+                "divisions": divisions,
+                "project": project,
+                "tender": tender,
+                "winner": winner,
+                "tenderers": tenderers
+            }
+            return render(request, "tender_details.html", ctx)
+        return redirect("/projects")
 
 
 class MakeWinnerView(View):
@@ -2246,15 +2280,17 @@ class MakeWinnerView(View):
         tender = Tender.objects.get(id=tender_id)
         project = Project.objects.get(tender_id=tender_id)
         tenderer = Tenderer.objects.get(id=tenderer_id)
-        tenderer.is_winner = True
-        tenderer.save()
         division = Division.objects.get(pk=int(request.session.get("division_id")))
-        if tenderer.tenderer.id == division.division_company.all()[0].id:
-            status = Status.objects.get(id=5)
-            project.status = status
-            project.save()
-        
-        return redirect(f"/tender_details/{project.id}/{tender.id}")
+        if division == project.division and tenderer in [i for i in tender.tenderer.all()]:
+            tenderer.is_winner = True
+            tenderer.save()
+            if tenderer.tenderer.id == division.division_company.all()[0].id:
+                status = Status.objects.get(id=5)
+                project.status = status
+                project.save()
+            
+            return redirect(f"/tender_details/{project.id}/{tender.id}")
+        return redirect("/projects")
 
 
 class RemoveWinnerView(StaffMemberCheck, View):
@@ -2263,37 +2299,42 @@ class RemoveWinnerView(StaffMemberCheck, View):
         tender = Tender.objects.get(id=tender_id)
         project = Project.objects.get(tender_id=tender_id)
         tenderer = Tenderer.objects.get(id=tenderer_id)
-        tenderer.is_winner = False
-        tenderer.save()
         division = Division.objects.get(pk=int(request.session.get("division_id")))
-        if tenderer.tenderer.id == division.division_company.all()[0].id:
-            status = Status.objects.get(id=6)
-            project.status = status
-            project.save()
-        return redirect(f"/tender_details/{project.id}/{tender.id}")
+        if division == project.division and tenderer in [i for i in tender.tenderer.all()]:
+            tenderer.is_winner = False
+            tenderer.save()
+            if tenderer.tenderer.id == division.division_company.all()[0].id:
+                status = Status.objects.get(id=6)
+                project.status = status
+                project.save()
+            return redirect(f"/tender_details/{project.id}/{tender.id}")
+        return redirect("/projects")
 
 
 class EditTenderView(StaffMemberCheck, View):
     def get(self, request, project_id, tender_id):
-        user = User.objects.get(pk=int(request.session["user_id"]))
-        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         project = Project.objects.get(id=project_id)
-        tender = Tender.objects.get(id=tender_id)
-        initial_data = {
-            "investor_budget": tender.investor_budget,
-            "value_weight": tender.value_weight,
-            "is_guarantee": tender.is_guarantee,
-            "is_deadline": tender.is_deadline,
-            "is_other_criteria": tender.is_other_criteria
-        }
-        form = EditTenderForm(initial=initial_data)
-        ctx = {
-            "project": project,
-            "tender": tender,
-            "divisions": divisions,
-            "form": form
-        }
-        return render(request, "edit_tender.html", ctx)
+        user = User.objects.get(pk=int(request.session["user_id"]))
+        division = Division.objects.get(pk=request.session.get("division_id"))
+        if division == project.division:
+            divisions = [i.id for i in Division.objects.filter(division_admin=user)]
+            tender = Tender.objects.get(id=tender_id)
+            initial_data = {
+                "investor_budget": tender.investor_budget,
+                "value_weight": tender.value_weight,
+                "is_guarantee": tender.is_guarantee,
+                "is_deadline": tender.is_deadline,
+                "is_other_criteria": tender.is_other_criteria
+            }
+            form = EditTenderForm(initial=initial_data)
+            ctx = {
+                "project": project,
+                "tender": tender,
+                "divisions": divisions,
+                "form": form
+            }
+            return render(request, "edit_tender.html", ctx)
+        return redirect("/projects")
     
     def post(self, request, project_id, tender_id):
         user = User.objects.get(pk=int(request.session["user_id"]))
@@ -2427,6 +2468,10 @@ class DeleteOtherCriteriaView(StaffMemberCheck, View):
         project = Project.objects.get(id=project_id)
         tender = Tender.objects.get(id=tender_id)
         criterium = Criteria.objects.get(id=criteria_id)
+        for i in tender.tenderer.all():
+            for j in i.other_criteria.all():
+                if j.criteria_name == criterium.criteria_name:
+                    j.delete()
         criterium.delete()
         return redirect(f"/add_other_criteria/{project_id}/{tender_id}")
 
