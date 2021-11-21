@@ -2373,30 +2373,33 @@ class EditTenderView(StaffMemberCheck, View):
 
 class EditTenderCriteria(StaffMemberCheck, View):
     def get(self, request, project_id, tender_id):
-        user = User.objects.get(pk=int(request.session["user_id"]))
-        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         project = Project.objects.get(id=project_id)
         tender = Tender.objects.get(id=tender_id)
-        initial_data = {
-        }
-        if tender.guarantee:
-            initial_data["guarantee_min"] = tender.guarantee.months_min
-            initial_data["guarantee_max"] = tender.guarantee.months_max
-            initial_data["guarantee_weight"] = tender.guarantee.weight
-        if tender.deadline:
-            initial_data["deadline_min"] = tender.deadline.months_min
-            initial_data["deadline_max"] = tender.deadline.months_max
-            initial_data["deadline_weight"] = tender.deadline.weight
-        if tender.other_criteria:
-            initial_data["criteria"] = tender.other_criteria.all()
-        form = EditCriteriaForm(initial=initial_data, tender=tender)
-        ctx = {
-            "divisions": divisions,
-            "project": project,
-            "tender": tender,
-            "form": form
-        }
-        return render(request, "edit_tender_criteria.html", ctx)
+        user = User.objects.get(pk=int(request.session["user_id"]))
+        division = Division.objects.get(pk=request.session.get("division_id"))
+        if division == project.division and project.tender.id == tender_id:
+            divisions = [i.id for i in Division.objects.filter(division_admin=user)]
+            initial_data = {
+            }
+            if tender.guarantee:
+                initial_data["guarantee_min"] = tender.guarantee.months_min
+                initial_data["guarantee_max"] = tender.guarantee.months_max
+                initial_data["guarantee_weight"] = tender.guarantee.weight
+            if tender.deadline:
+                initial_data["deadline_min"] = tender.deadline.months_min
+                initial_data["deadline_max"] = tender.deadline.months_max
+                initial_data["deadline_weight"] = tender.deadline.weight
+            if tender.other_criteria:
+                initial_data["criteria"] = tender.other_criteria.all()
+            form = EditCriteriaForm(initial=initial_data, tender=tender)
+            ctx = {
+                "divisions": divisions,
+                "project": project,
+                "tender": tender,
+                "form": form
+            }
+            return render(request, "edit_tender_criteria.html", ctx)
+        return redirect("/projects")
     
     def post(self, request, project_id, tender_id):
         user = User.objects.get(pk=int(request.session["user_id"]))
@@ -2449,16 +2452,20 @@ class EditTenderCriteria(StaffMemberCheck, View):
 
 class DeleteTendererView(StaffMemberCheck, View):
     def get(self, request, project_id, tender_id, tenderer_id):
-        user = User.objects.get(pk=int(request.session["user_id"]))
-        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         project = Project.objects.get(id=project_id)
         tender = Tender.objects.get(id=tender_id)
         tenderer = Tenderer.objects.get(id=tenderer_id)
-        criteria = Criteria.objects.filter(tenderer=tenderer)
-        for i in criteria:
-            i.delete()
-        tenderer.delete()
-        return redirect(f"/add_tender_details/{project_id}/{tender_id}")
+        user = User.objects.get(pk=int(request.session["user_id"]))
+        division = Division.objects.get(pk=request.session.get("division_id"))
+        if division == project.division and tender == project.tender and tenderer in [i for i in tender.tenderer.all()]:
+            divisions = [i.id for i in Division.objects.filter(division_admin=user)]
+            tenderer = Tenderer.objects.get(id=tenderer_id)
+            criteria = Criteria.objects.filter(tenderer=tenderer)
+            for i in criteria:
+                i.delete()
+            tenderer.delete()
+            return redirect(f"/add_tender_details/{project_id}/{tender_id}")
+        return redirect("/projects")
 
 
 class DeleteOtherCriteriaView(StaffMemberCheck, View):
