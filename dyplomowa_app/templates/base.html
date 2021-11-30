@@ -2,140 +2,149 @@
 
 <!doctype html>
 <html lang="en" prefix="og: https://ogp.me/ns#">
-  <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <!-- Favicon -->
-    <!-- <link rel="shortcut icon" href="{% static 'images/favicon.png' %}"/> -->
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
+    integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
 
-    <!-- Title block-->
-    <title>{% block title %} {% endblock %}</title>
+  <!-- Favicon -->
+  <!-- <link rel="shortcut icon" href="{% static 'images/favicon.png' %}"/> -->
 
-  </head>
+  <!-- Title block-->
+  <title>{% block title %} {% endblock %}</title>
 
-  <body class="d-flex flex-column body" style="background-color:honeydew;">
-    <div class="d-flex flex-row justify-content-between align-items-center" style="padding: 0.5%;">      
-      <div class="d-flex flex-row justify-content-start align-items-center flex-grow-1" style="padding-right: 0.5%;">
-        <a href="{% url 'projects' %}" style="color: black;">
-          <button type="button" class="btn btn-outline-primary btn-lg align-self-center">Lista Przetargowa (beta)</button>
-        </a>
-      </div>
-      <div class="d-flex flex-row justify-content-center align-items-center"></div>
-        {% if user.is_authenticated %}
-        <div class="d-flex flex-column justify-content-end align-items-end" style="padding: 3px; color:darkslategray;">
-          <div>Zalogowany jako: <a href="{% url 'user-details' %}"><i>{{ user }}</i></a></div>
-          <i>{% if request.session.division_name %} Aktywny zespół:
-          <a href="{% url 'division-details' request.session.division_id %}">{{ request.session.division_name }}</a>
-          {% elif user.division_person.all.count > 0 %} Wybierz zespół w "Moje Zespoły"
-          {% else %} Utwórz zespół lub dołącz do istniejącego
-          {% endif %}</i>
-          <div class="d-flex flex-row justify-content-center align-items-center">
-          </div>
-        </div>
-        <a href="{% url 'logout' %}" class="btn btn-outline-danger m-1">Logout</a>
-        {% else %}
-        <div class="d-flex flex-row justify-content-end align-items-center">
-          <a href="{% url 'login' %}" class="btn btn-outline-danger m-1">Login</a>
-        </div>
-        <div class="d-flex flex-row justify-content-end align-items-center">
-          <a href="{% url 'register' %}" class="btn btn-outline-danger m-1">Register</a>
-        </div>
-        {% endif %}
+</head>
+
+<body class="d-flex flex-column body" style="background-color:honeydew;">
+  <div class="d-flex flex-row justify-content-between align-items-center" style="padding: 0.5%;">
+    <div class="d-flex flex-row justify-content-start align-items-center flex-grow-1" style="padding-right: 0.5%;">
+      <a href="{% url 'projects' %}" style="color: black;">
+        <button type="button" class="btn btn-outline-primary btn-lg align-self-center">Lista Przetargowa (beta)</button>
+      </a>
+    </div>
+    <div class="d-flex flex-row justify-content-center align-items-center"></div>
+    {% if user.is_authenticated %}
+    <div class="d-flex flex-column justify-content-end align-items-end" style="padding: 3px; color:darkslategray;">
+      <div>Zalogowany jako: <a href="{% url 'user-details' %}"><i>{{ user }}</i></a></div>
+      <i>{% if request.session.division_name %} Aktywny zespół:
+        <a href="{% url 'division-details' request.session.division_id %}">{{ request.session.division_name }}</a>
+        {% elif user.division_person.all.count > 0 %} Wybierz zespół w "Moje Zespoły"
+        {% else %} Utwórz zespół lub dołącz do istniejącego
+        {% endif %}</i>
+      <div class="d-flex flex-row justify-content-center align-items-center">
       </div>
     </div>
-    {% if user.is_authenticated %}
-    <div class="d-flex flex-row justify-content-between align-items-center flex-wrap">
-      {% if request.session.division_id %}
-      <div class="d-flex flex-row justify-content-center align-items-center" style="padding-left: 0.5%;">
-        <a href="{% url 'archives' %}" style="color: black;">
-          <button type="button" class="btn btn-outline-primary align-self-center" style="text-align: center">
-            Archiwum
-          </button>
-        </a>
-      </div>
-      <div class="d-flex flex-row justify-content-center align-items-center" style="padding-right: 0.5%; padding-left: 0.5%;">
-        <a href="{% url 'investors' %}" style="color: black; padding-right: 0.5%;">
-          <button type="button" class="btn btn-outline-primary align-self-center" style="text-align: center">
-            Inwestorzy
-          </button>
-        </a>
-        <a href="{% url 'companies' %}" style="color: black; padding-right: 0.5%;">
-          <button type="button" class="btn btn-outline-primary align-self-center" style="text-align: center;">
-            Firmy
-          </button>
-        </a>
-        <a href="{% url 'designers' %}" style="color: black;">
-          <button type="button" class="btn btn-outline-primary display-5 align-self-center" style="text-align: center;">
-            Projektanci
-          </button>
-        </a>
-      </div>
-      {% endif %}
-      {% if user.is_staff and request.session.division_id %}
-      {% if request.session.division_id in divisions %}
-      <div class="d-flex flex-row justify-content-center align-items-center"
-        style="padding-bottom: 0.5%; padding-top: 0.5%; padding-left: 0.5%;">
-        <a href="{% url 'add-project' %}" style="color: black;">
-          <button type="button" class="btn btn-outline-primary align-self-center" style="text-align: center;">
-            Dodaj Projekt
-          </button>
-        </a>
-        <a href="{% url 'add-investor' %}" style="color: black;">
-          <button type="button" class="btn btn-outline-primary align-self-center" style="text-align: center;">
-            Dodaj Inwestora
-          </button>
-        </a>
-        <a href="{% url 'add-company' %}" style="color: black;">
-          <button type="button" class="btn btn-outline-primary align-self-center" style="text-align: center;">
-            Dodaj Firmę
-          </button>
-        </a>
-        <a href="{% url 'add-designer' %}" style="color: black;">
-          <button type="button" class="btn btn-outline-primary align-self-center" style="text-align: center;">
-            Dodaj Projektanta
-          </button>
-        </a>
-      </div>
-      {% endif %}
-      {% endif %}
-      <div class="d-flex flex-row justify-content-center align-items-center" style="padding-left: 0.5%;">
-        <a href="{% url 'division-choice' %}" class="btn btn-outline-primary m-1">Moje zespoły</a>
-        <a href="{% url 'add-division' %}" class="btn btn-outline-danger m-1">Utwórz nowy zespół</a>
-        <a href="{% url 'join-division' %}" class="btn btn-outline-danger m-1">Dołącz do zespołu</a>
-      </div>
+    <a href="{% url 'logout' %}" class="btn btn-outline-danger m-1">Logout</a>
+    {% else %}
+    <div class="d-flex flex-row justify-content-end align-items-center">
+      <a href="{% url 'login' %}" class="btn btn-outline-danger m-1">Login</a>
+    </div>
+    <div class="d-flex flex-row justify-content-end align-items-center">
+      <a href="{% url 'register' %}" class="btn btn-outline-danger m-1">Register</a>
     </div>
     {% endif %}
-    <hr>
-      
-    <div class="d-flex flex-column justify-content-center align-items-center"></div>
-      {% block content %} {% endblock %}
+  </div>
+  </div>
+  {% if user.is_authenticated %}
+  <div class="d-flex flex-row justify-content-between align-items-center flex-wrap">
+    {% if request.session.division_id %}
+    <div class="d-flex flex-row justify-content-center align-items-center" style="padding-left: 0.5%;">
+      <a href="{% url 'archives' %}" style="color: black;">
+        <button type="button" class="btn btn-outline-primary align-self-center" style="text-align: center">
+          Archiwum
+        </button>
+      </a>
     </div>
-
-    <hr>
-    <div class="d-flex flex-column justify-content-center align-items-center">
-        {% if counter %}
-          <i>Ruch w aplikacji: {{ counter }} ({{ users.count }} {% if users.count == 1 %} użytkownik {% else %} użytkowników {% endif %})</i>
-        {% endif %}
-        <span><i>powered by:</i></span>
-        <a class="btn btn-link align-self-center" href="https://github.com/AndrzejBakula"
-            target="_blank" style="color: black;"><i>Andrzej Bakuła</i></a>
+    <div class="d-flex flex-row justify-content-center align-items-center"
+      style="padding-right: 0.5%; padding-left: 0.5%;">
+      <a href="{% url 'investors' %}" style="color: black; padding-right: 0.5%;">
+        <button type="button" class="btn btn-outline-primary align-self-center" style="text-align: center">
+          Inwestorzy
+        </button>
+      </a>
+      <a href="{% url 'companies' %}" style="color: black; padding-right: 0.5%;">
+        <button type="button" class="btn btn-outline-primary align-self-center" style="text-align: center;">
+          Firmy
+        </button>
+      </a>
+      <a href="{% url 'designers' %}" style="color: black;">
+        <button type="button" class="btn btn-outline-primary display-5 align-self-center" style="text-align: center;">
+          Projektanci
+        </button>
+      </a>
     </div>
+    {% endif %}
+    {% if user.is_staff and request.session.division_id %}
+    {% if request.session.division_id in divisions %}
+    <div class="d-flex flex-row justify-content-center align-items-center"
+      style="padding-bottom: 0.5%; padding-top: 0.5%; padding-left: 0.5%;">
+      <a href="{% url 'add-project' %}" style="color: black;">
+        <button type="button" class="btn btn-outline-primary align-self-center" style="text-align: center;">
+          Dodaj Projekt
+        </button>
+      </a>
+      <a href="{% url 'add-investor' %}" style="color: black;">
+        <button type="button" class="btn btn-outline-primary align-self-center" style="text-align: center;">
+          Dodaj Inwestora
+        </button>
+      </a>
+      <a href="{% url 'add-company' %}" style="color: black;">
+        <button type="button" class="btn btn-outline-primary align-self-center" style="text-align: center;">
+          Dodaj Firmę
+        </button>
+      </a>
+      <a href="{% url 'add-designer' %}" style="color: black;">
+        <button type="button" class="btn btn-outline-primary align-self-center" style="text-align: center;">
+          Dodaj Projektanta
+        </button>
+      </a>
+    </div>
+    {% endif %}
+    {% endif %}
+    <div class="d-flex flex-row justify-content-center align-items-center" style="padding-left: 0.5%;">
+      <a href="{% url 'division-choice' %}" class="btn btn-outline-primary m-1">Moje zespoły</a>
+      <a href="{% url 'add-division' %}" class="btn btn-outline-danger m-1">Utwórz nowy zespół</a>
+      <a href="{% url 'join-division' %}" class="btn btn-outline-danger m-1">Dołącz do zespołu</a>
+    </div>
+  </div>
+  {% endif %}
+  <hr>
 
-    <!-- Optional JavaScript; choose one of the two! -->
+  <div class="d-flex flex-column justify-content-center align-items-center"></div>
+  {% block content %} {% endblock %}
+  </div>
 
-    <!-- Option 1: jQuery and Bootstrap Bundle (includes Popper) -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+  <hr>
+  <div class="d-flex flex-column justify-content-center align-items-center">
+    {% if counter %}
+    <i>Ruch w aplikacji: {{ counter }} ({{ users.count }} {% if users.count == 1 %} użytkownik {% else %} użytkowników
+      {% endif %})</i>
+    {% endif %}
+    <span><i>powered by:</i></span>
+    <a class="btn btn-link align-self-center" href="https://github.com/AndrzejBakula" target="_blank"
+      style="color: black;"><i>Andrzej Bakuła</i></a>
+  </div>
 
-    <!-- Option 2: jQuery, Popper.js, and Bootstrap JS
+  <!-- Optional JavaScript; choose one of the two! -->
+
+  <!-- Option 1: jQuery and Bootstrap Bundle (includes Popper) -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+    integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
+    crossorigin="anonymous"></script>
+
+  <!-- Option 2: jQuery, Popper.js, and Bootstrap JS
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" integrity="sha384-w1Q4orYjBQndcko6MimVbzY0tgp4pWB4lZ7lr30WKz0vr/aWKhXdBNmNb5D92v7s" crossorigin="anonymous"></script>
     -->
-  </body>
+</body>
+
 </html>

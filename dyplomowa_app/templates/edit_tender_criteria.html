@@ -13,7 +13,8 @@
     dla zadania <i>{{ project.project_name }}</i>
     <hr>
 
-    <form class="d-flex flex-column justify-content-center align-items-center" style="height: 100%; width: 100%;" action="{% url 'edit-tender-criteria' project.id tender.id %}" method="POST">
+    <form class="d-flex flex-column justify-content-center align-items-center" style="height: 100%; width: 100%;"
+        action="{% url 'edit-tender-criteria' project.id tender.id %}" method="POST">
         {% csrf_token %}
         {{ form.as_table }}
         <hr>
@@ -26,7 +27,8 @@
     {% endif %}
     <hr>
     <div class="d-flex flex-row justify-content-center align-items-center" style="padding-left: 0.5%;">
-        <a href="{% url 'edit-tender' project.id tender.id %}" class="btn btn-outline-primary m-1">Edytuj przetarg od początku</a>
+        <a href="{% url 'edit-tender' project.id tender.id %}" class="btn btn-outline-primary m-1">Edytuj przetarg od
+            początku</a>
     </div>
 </div>
 

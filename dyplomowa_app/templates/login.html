@@ -20,8 +20,9 @@
     </div>
     <hr>
     {% endif %}
-    
-    <form class="d-flex flex-column align-items-center" style="height: 100%; width: 100%;" action="{% url 'login' %}" method="POST">
+
+    <form class="d-flex flex-column align-items-center" style="height: 100%; width: 100%;" action="{% url 'login' %}"
+        method="POST">
         {% csrf_token %}
 
         {{ form.as_p }}
@@ -29,8 +30,10 @@
         <button type="submit" id="submit">Zaloguj się</button>
     </form>
     <hr>
-    <span><a class="btn btn-link align-self-center" style="color: black;" href="{% url 'reset-password' %}">Resetuj hasło</a></span>
-    <span><a class="btn btn-link align-self-center" style="color: black;" href="{% url 'register' %}">Rejestracja</a></span>
+    <span><a class="btn btn-link align-self-center" style="color: black;" href="{% url 'reset-password' %}">Resetuj
+            hasło</a></span>
+    <span><a class="btn btn-link align-self-center" style="color: black;"
+            href="{% url 'register' %}">Rejestracja</a></span>
 
 </div>
 

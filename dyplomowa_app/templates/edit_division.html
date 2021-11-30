@@ -21,8 +21,9 @@
     </div>
     <hr>
     {% endif %}
-    
-    <form class="d-flex flex-column align-items-center" style="height: 100%; width: 100%;" action="{% url 'edit-division' division.id %}" method="POST">
+
+    <form class="d-flex flex-column align-items-center" style="height: 100%; width: 100%;"
+        action="{% url 'edit-division' division.id %}" method="POST">
         {% csrf_token %}
 
         {{ form.as_p }}

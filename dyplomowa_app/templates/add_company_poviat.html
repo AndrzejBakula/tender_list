@@ -21,8 +21,9 @@
     </div>
     <hr>
     {% endif %}
-    
-    <form class="d-flex flex-column align-items-center" style="height: 100%; width: 100%;" action="{% url 'add-company-poviat' company.id %}" method="POST">
+
+    <form class="d-flex flex-column align-items-center" style="height: 100%; width: 100%;"
+        action="{% url 'add-company-poviat' company.id %}" method="POST">
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit" id="submit">Dodaj Powiat</button>

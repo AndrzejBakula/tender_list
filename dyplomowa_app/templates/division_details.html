@@ -11,8 +11,8 @@
     </div>
 
     {% if division.id != request.session.division_id %}
-        <a href="{% url 'division-choice-confirm' division.id %}">Przełącz na ten zespół</a>
-        <hr>
+    <a href="{% url 'division-choice-confirm' division.id %}">Przełącz na ten zespół</a>
+    <hr>
     {% else %} Aktywny zespół
     {% endif %}
 
@@ -26,18 +26,19 @@
                 <tr>
                     <th scope="col">Twórca zespołu</th>
                     <td scope="col">
-                        <a href="{% url 'person-details' division.division_creator.id %}">{{ division.division_creator }}</a>
+                        <a
+                            href="{% url 'person-details' division.division_creator.id %}">{{ division.division_creator }}</a>
                     </td>
                 </tr>
                 <tr>
                     <th scope="col">Przypisana firma</th>
                     <td scope="col">
                         {% if division.division_company.all.0 %}
-                            <a href="{% url 'company-details' division.division_company.all.0.id %}">
-                                {{ division.division_company.all.0.company_name }}
-                            </a>
+                        <a href="{% url 'company-details' division.division_company.all.0.id %}">
+                            {{ division.division_company.all.0.company_name }}
+                        </a>
                         {% else %}
-                            Brak
+                        Brak
                         {% endif %}
                     </td>
                 </tr>
@@ -45,16 +46,16 @@
                     <th scope="col">Członkowie zespołu ({{ division.division_person.all.count }})</th>
                     <td scope="col">
                         {% for i in division.division_person.all|dictsort:"username" %}
-                            <a href="{% url 'person-details' i.id %}">{{ i.username }}</a>
-                            {% if not i in division.division_admin.all and user == division.division_creator and not i == division.division_creator %}
-                                <a href="{% url 'add-admin' division.id i.id %}">(Zrób adminem)</a>
-                            {% endif %}
-                            {% if user == division.division_creator and not i == division.division_creator %}
-                                <a href="{% url 'remove-member' division.id i.id %}">(Usuń z zespołu)</a>
-                            {% endif %}
-                            {% if division.division_person.all.count > 1 %}
-                            <hr>
-                            {% endif %}
+                        <a href="{% url 'person-details' i.id %}">{{ i.username }}</a>
+                        {% if not i in division.division_admin.all and user == division.division_creator and not i == division.division_creator %}
+                        <a href="{% url 'add-admin' division.id i.id %}">(Zrób adminem)</a>
+                        {% endif %}
+                        {% if user == division.division_creator and not i == division.division_creator %}
+                        <a href="{% url 'remove-member' division.id i.id %}">(Usuń z zespołu)</a>
+                        {% endif %}
+                        {% if division.division_person.all.count > 1 %}
+                        <hr>
+                        {% endif %}
                         {% endfor %}
                     </td>
                 </tr>
@@ -62,13 +63,13 @@
                     <th scope="col">Admini zespołu ({{ division.division_admin.all.count }})</th>
                     <td scope="col">
                         {% for i in division.division_admin.all|dictsort:"username" %}
-                            <a href="{% url 'person-details' i.id %}">{{ i.username }}</a>
-                            {% if user == division.division_creator and not i == division.division_creator %}
-                                <a href="{% url 'cancel-admin' division.id i.id %}">(Odbierz admina)</a>
-                            {% endif %}
-                            {% if division.division_admin.all.count > 1 %}
-                            <hr>
-                            {% endif %}
+                        <a href="{% url 'person-details' i.id %}">{{ i.username }}</a>
+                        {% if user == division.division_creator and not i == division.division_creator %}
+                        <a href="{% url 'cancel-admin' division.id i.id %}">(Odbierz admina)</a>
+                        {% endif %}
+                        {% if division.division_admin.all.count > 1 %}
+                        <hr>
+                        {% endif %}
                         {% endfor %}
                     </td>
                 </tr>
@@ -76,17 +77,20 @@
                     <th scope="col">Chcą dołączyć ({{ division.division_wannabe.all.count }})</th>
                     <td scope="col">
                         {% for i in division.division_wannabe.all|dictsort:"username" %}
-                            <a href="{% url 'person-details' i.id %}">{{ i.username }}</a>
-                            {% if user == division.division_creator %}
-                            <a href="{% url 'add-person' division.id i.id %}">(Dodaj)</a>
-                            {% endif %}
+                        <a href="{% url 'person-details' i.id %}">{{ i.username }}</a>
+                        {% if user == division.division_creator %}
+                        <a href="{% url 'add-person' division.id i.id %}">(Dodaj)</a>
+                        {% endif %}
                         {% endfor %}
                         {% if division.division_wannabe.all.count > 1 %}
-                            <hr>
-                            {% endif %}
+                        <hr>
+                        {% endif %}
                     </td>
                 </tr>
-                <tr><th></th><td></td></tr>
+                <tr>
+                    <th></th>
+                    <td></td>
+                </tr>
                 <tr>
                     <th scope="col">Liczba projektów</th>
                     <td scope="col">{{ division.project_set.all.count }}</td>
@@ -115,10 +119,12 @@
         </table>
 
         {% if user == division.division_creator %}
-        <button type="button" class="btn btn-dark"><a style="color:blanchedalmond" href="{% url 'edit-division' division.id %}">Edytuj zespół</a></button>
+        <button type="button" class="btn btn-dark"><a style="color:blanchedalmond"
+                href="{% url 'edit-division' division.id %}">Edytuj zespół</a></button>
         {% if user == division.division_creator %}
         <hr>
-        <button type="button" class="btn btn-dark"><a style="color:blanchedalmond" href="{% url 'delete-division' division.id %}">Usuń zespół</a></button>
+        <button type="button" class="btn btn-dark"><a style="color:blanchedalmond"
+                href="{% url 'delete-division' division.id %}">Usuń zespół</a></button>
         {% endif %}
         {% endif %}
 

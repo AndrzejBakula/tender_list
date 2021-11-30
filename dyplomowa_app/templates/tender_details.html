@@ -25,9 +25,9 @@
                     <th scope="col">Kwota zamawiającego</th>
                     <td scope="col">
                         {% if tender.investor_budget %}
-                            {{ tender.investor_budget }} zł brutto
+                        {{ tender.investor_budget }} zł brutto
                         {% else %}
-                            nieokreślono
+                        nieokreślono
                         {% endif %}
                     </td>
                 </tr>
@@ -55,13 +55,13 @@
             {% for i in tenderers %}
             {% if i.is_winner and i.tenderer.division_company %}
             <tr style="color: red; background-color: lightblue;">
-            {% elif i.is_winner %}
+                {% elif i.is_winner %}
             <tr style="color: red;">
-            {% elif i.tenderer.division_company %}
+                {% elif i.tenderer.division_company %}
             <tr style="background-color: lightblue;">
-            {% else %}
+                {% else %}
             <tr>
-            {% endif %}
+                {% endif %}
                 <td scope="col" style="text-align: center;">
                     <a href="{% url 'company-details' i.tenderer.id %}">{{ i.tenderer.company_name }}</a>
                     {% if not i.is_winner and not winner %}
@@ -92,14 +92,14 @@
     {% if user.is_staff and request.session.division_id in divisions %}
     <hr>
     <button type="button" class="btn btn-dark"><a style="color:blanchedalmond"
-    href="{% url 'edit-tender' project.id tender.id %}">Edytuj Przetarg</a></button>
+            href="{% url 'edit-tender' project.id tender.id %}">Edytuj Przetarg</a></button>
     {% if user.is_superuser %}
     <hr>
     <button type="button" class="btn btn-dark"><a style="color:blanchedalmond"
-    href="{% url 'delete-tender' project.id tender.id %}">Usuń Przetarg</a></button>
+            href="{% url 'delete-tender' project.id tender.id %}">Usuń Przetarg</a></button>
     {% endif %}
     {% endif %}
-    
+
 </div>
 
 {% endblock %}

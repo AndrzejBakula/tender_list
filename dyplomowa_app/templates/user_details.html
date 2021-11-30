@@ -15,7 +15,7 @@
             <tbody>
                 <tr>
                     <th scope="col">Nazwa użytkownika</th>
-                    <td scope="col">{{ user.username }} 
+                    <td scope="col">{{ user.username }}
                         <a href="{% url 'edit-user' %}">(Zmień nazwę)</a>
                     </td>
                 </tr>
@@ -23,12 +23,16 @@
                     <th scope="col">Email</th>
                     <td scope="col">{{ user.email }}</td>
                 </tr>
-                <tr><th></th><td></td></tr>
+                <tr>
+                    <th></th>
+                    <td></td>
+                </tr>
                 <tr>
                     <th scope="col">Liczba projektów</th>
                     <td scope="col">
                         {% for i in user_divisions_projects %}
-                            {{ i.0.division_name }}: {{ i.1 }} <hr>
+                        {{ i.0.division_name }}: {{ i.1 }}
+                        <hr>
                         {% endfor %}
                     </td>
                 </tr>
@@ -36,7 +40,8 @@
                     <th scope="col">W przygotowaniu</th>
                     <td scope="col">
                         {% for i in user_divisions_active %}
-                            {{ i.0.division_name }}: {{ i.1 }} <hr>
+                        {{ i.0.division_name }}: {{ i.1 }}
+                        <hr>
                         {% endfor %}
                     </td>
                 </tr>
@@ -44,7 +49,8 @@
                     <th scope="col">Wygrane przetargi</th>
                     <td scope="col">
                         {% for i in user_divisions_won %}
-                            {{ i.0.division_name }}: {{ i.1 }} <hr>
+                        {{ i.0.division_name }}: {{ i.1 }}
+                        <hr>
                         {% endfor %}
                     </td>
                 </tr>

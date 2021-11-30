@@ -6,33 +6,33 @@
 {% block content %}
 
 <div class="d-flex flex-row justify-content-center align-items-center">
-    <h2 class="display-5 align-self-center">Moje Zespoły</a></h2>
+  <h2 class="display-5 align-self-center">Moje Zespoły</a></h2>
 </div>
 
 <div class="d-flex flex-column align-items-center" style="height: 100%; width: 100%;">
 
-    <table class="table-responsive-xl table-striped table-bordered" style="width: 100%;">
-        <thead>
-          <tr>
-            <th scope="col" style="text-align: center;">Nazwa Zespołu</th>
-            <th scope="col" style="text-align: center;">Wybór zespołu</th>
-          </tr>
-        </thead>
-        <tbody>
-            {% for i in division_choice %}
-          <tr>
-            <td scope="col" style="text-align: center;">
-              <a href="{% url 'division-details' i.id %}">{{ i.division_name }} (kliknij by zobaczyć szczegóły)</a>
-            </td>
-            <td scope="col" style="text-align: center;">
-              {% if i.id != request.session.division_id %}
-              <a href="{% url 'division-choice-confirm' i.id %}">Przełącz na ten zespół</a>
-              {% else %} Aktywny zespół {% endif %}
-            </td>
-          </tr>
-            {% endfor %}
-        </tbody>
-      </table>
+  <table class="table-responsive-xl table-striped table-bordered" style="width: 100%;">
+    <thead>
+      <tr>
+        <th scope="col" style="text-align: center;">Nazwa Zespołu</th>
+        <th scope="col" style="text-align: center;">Wybór zespołu</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for i in division_choice %}
+      <tr>
+        <td scope="col" style="text-align: center;">
+          <a href="{% url 'division-details' i.id %}">{{ i.division_name }} (kliknij by zobaczyć szczegóły)</a>
+        </td>
+        <td scope="col" style="text-align: center;">
+          {% if i.id != request.session.division_id %}
+          <a href="{% url 'division-choice-confirm' i.id %}">Przełącz na ten zespół</a>
+          {% else %} Aktywny zespół {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
 
 
 </div>

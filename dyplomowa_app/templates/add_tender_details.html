@@ -25,9 +25,9 @@
                     <th scope="col">Kwota zamawiającego</th>
                     <td scope="col">
                         {% if tender.investor_budget %}
-                            {{ tender.investor_budget }} zł brutto
+                        {{ tender.investor_budget }} zł brutto
                         {% else %}
-                            nieokreślono
+                        nieokreślono
                         {% endif %}
                     </td>
                 </tr>
@@ -64,7 +64,8 @@
                     {% if i.offer_guarantee %}
                     {{ i.offer_guarantee }} mies.
                     {% else %}
-                    <form class="d-flex flex-column justify-content-center align-items-center" style="height: 100%; width: 100%;"
+                    <form class="d-flex flex-column justify-content-center align-items-center"
+                        style="height: 100%; width: 100%;"
                         action="{% url 'add-missing-guarantee' project.id tender.id i.id %}" method="POST">
                         {% csrf_token %}
                         {{ form_guarantee.as_p }}
@@ -78,7 +79,8 @@
                     {% if i.offer_deadline %}
                     {{ i.offer_deadline }}
                     {% else %}
-                    <form class="d-flex flex-column justify-content-center align-items-center" style="height: 100%; width: 100%;"
+                    <form class="d-flex flex-column justify-content-center align-items-center"
+                        style="height: 100%; width: 100%;"
                         action="{% url 'add-missing-deadline' project.id tender.id i.id %}" method="POST">
                         {% csrf_token %}
                         {{ form_deadline.as_p }}
@@ -90,14 +92,15 @@
                 {% for j in i.other_criteria.all|dictsort:"id" %}
                 <td scope="col" style="text-align: center;">
                     {% if j.criteria_value %}
-                        {{ j.criteria_value }}
+                    {{ j.criteria_value }}
                     {% else %}
-                        <form class="d-flex flex-column justify-content-center align-items-center" style="height: 100%; width: 100%;"
-                            action="{% url 'add-missing-criteria' project.id tender.id j.id %}" method="POST">
-                            {% csrf_token %}
-                            {{ form_minor.as_p }}
-                            <!-- <button type="submit" id="submit">Dodaj</button> -->
-                        </form>
+                    <form class="d-flex flex-column justify-content-center align-items-center"
+                        style="height: 100%; width: 100%;"
+                        action="{% url 'add-missing-criteria' project.id tender.id j.id %}" method="POST">
+                        {% csrf_token %}
+                        {{ form_minor.as_p }}
+                        <!-- <button type="submit" id="submit">Dodaj</button> -->
+                    </form>
                     {% endif %}
                 </td>
                 {% endfor %}
@@ -117,15 +120,18 @@
     </form>
     <hr>
     <div class="d-flex flex-row justify-content-center align-items-center" style="padding-left: 0.5%;">
-        <a href="{% url 'tender-details' project.id tender.id %}" class="btn btn-outline-primary m-1">Zakończ dodawanie oferentów</a>
+        <a href="{% url 'tender-details' project.id tender.id %}" class="btn btn-outline-primary m-1">Zakończ dodawanie
+            oferentów</a>
     </div>
     <div class="d-flex flex-row justify-content-center align-items-center" style="padding-left: 0.5%;">
-        <a href="{% url 'edit-tender-criteria' project.id tender.id %}" class="btn btn-outline-primary m-1">Edytuj główne kryteria</a>
+        <a href="{% url 'edit-tender-criteria' project.id tender.id %}" class="btn btn-outline-primary m-1">Edytuj
+            główne kryteria</a>
     </div>
     <div class="d-flex flex-row justify-content-center align-items-center" style="padding-left: 0.5%;">
-        <a href="{% url 'edit-tender' project.id tender.id %}" class="btn btn-outline-primary m-1">Edytuj przetarg od początku</a>
+        <a href="{% url 'edit-tender' project.id tender.id %}" class="btn btn-outline-primary m-1">Edytuj przetarg od
+            początku</a>
     </div>
-    
+
 </div>
 
 {% endblock %}

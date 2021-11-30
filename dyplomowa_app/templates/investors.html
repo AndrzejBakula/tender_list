@@ -6,66 +6,71 @@
 {% block content %}
 
 <div class="d-flex flex-column align-items-center" style="height: 100%; width: 100%;"></div>
-    <div class="d-flex flex-row justify-content-center align-items-center">
-        <h2 class="display-5 align-self-center">Zestawienie Inwestorów</a></h2>
-    </div>
+<div class="d-flex flex-row justify-content-center align-items-center">
+  <h2 class="display-5 align-self-center">Zestawienie Inwestorów</a></h2>
+</div>
 
-    {% if investors.all.count != 0 %}
-    <form class="d-flex flex-row justify-content-center align-items-center"
-      style="height: 100%; width: 100%;" action="{% url 'investors' %}" method="POST">
-      {% csrf_token %}
-      {{ form.as_p }}
-    </form>
-    {% endif %}
+{% if investors.all.count != 0 %}
+<form class="d-flex flex-row justify-content-center align-items-center" style="height: 100%; width: 100%;"
+  action="{% url 'investors' %}" method="POST">
+  {% csrf_token %}
+  {{ form.as_p }}
+</form>
+{% endif %}
 
-    <table class="table-responsive-xl table-striped table-bordered" style="width: 100%;">
-        <thead>
-          <tr>
-            <th scope="col" style="text-align: center;">Lp</th>
-            <th scope="col" style="text-align: center;">Nazwa</th>
-            <th scope="col" style="text-align: center;">Adres</th>
-            <th scope="col" style="text-align: center;">Poziom adm.</th>
-            <th scope="col" style="text-align: center;">Województwo</th>
-            <th scope="col" style="text-align: center;">Powiat</th>
-            <th scope="col" style="text-align: center;">Ocena</th>
-            <th scope="col" style="text-align: center;">Liczba przetargów</th>
-          </tr>
-        </thead>
-        <tbody>
-            {% for i in investors %}
-          <tr>
-            <th scope="col" style="text-align: center;">{{ forloop.counter0|add:investors.start_index }}</th>
-            <td scope="col" style="text-align: center;"><a href="{% url 'investor-details' i.id %}">{{ i.investor_name }}</a></td>
-            <td scope="col" style="text-align: center;">{{ i.investor_address }}</td>
-            <td scope="col" style="text-align: center;">{{ i.investor_administration_level }}</td>
-            <td scope="col" style="text-align: center;">{{ i.investor_voivodeship }}</td>
-            <td scope="col" style="text-align: center;">{% if i.investor_poviat %} {{ i.investor_poviat }} {% else %} nieokreślono {% endif %}</td>
-            <td scope="col" style="text-align: center;">{% if i.investor_note %} {{ i.investor_note }} {% else %} brak {% endif %}</td>
-            <td scope="col" style="text-align: center;">{{ i.project_set.all.count }}</td>
-          </tr>
-            {% endfor %}
-        </tbody>
-      </table>
+<table class="table-responsive-xl table-striped table-bordered" style="width: 100%;">
+  <thead>
+    <tr>
+      <th scope="col" style="text-align: center;">Lp</th>
+      <th scope="col" style="text-align: center;">Nazwa</th>
+      <th scope="col" style="text-align: center;">Adres</th>
+      <th scope="col" style="text-align: center;">Poziom adm.</th>
+      <th scope="col" style="text-align: center;">Województwo</th>
+      <th scope="col" style="text-align: center;">Powiat</th>
+      <th scope="col" style="text-align: center;">Ocena</th>
+      <th scope="col" style="text-align: center;">Liczba przetargów</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for i in investors %}
+    <tr>
+      <th scope="col" style="text-align: center;">{{ forloop.counter0|add:investors.start_index }}</th>
+      <td scope="col" style="text-align: center;"><a href="{% url 'investor-details' i.id %}">{{ i.investor_name }}</a>
+      </td>
+      <td scope="col" style="text-align: center;">{{ i.investor_address }}</td>
+      <td scope="col" style="text-align: center;">{{ i.investor_administration_level }}</td>
+      <td scope="col" style="text-align: center;">{{ i.investor_voivodeship }}</td>
+      <td scope="col" style="text-align: center;">{% if i.investor_poviat %} {{ i.investor_poviat }} {% else %}
+        nieokreślono {% endif %}</td>
+      <td scope="col" style="text-align: center;">{% if i.investor_note %} {{ i.investor_note }} {% else %} brak
+        {% endif %}</td>
+      <td scope="col" style="text-align: center;">{{ i.project_set.all.count }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
 
-      <div class="d-flex flex-row justify-content-center align-items-center">
-        <nav aria-label="Page navigation example">
-        <ul class="pagination">
-            {% if investors.has_previous %}
-            <li class="page-item"><a class="page-link" href="?page=1">pierwsza</a></li>
-            <li class="page-item"><a class="page-link" href="?page={{ investors.previous_page_number }}">poprzednia</a></li>
-            {% endif %}
-            {% for num in investors.paginator.page_range %}
-            {% if investors.number == num %}
-                <li class="page-item"><a class="page-link" href="?page={{ investors.page_number }}"><strong>{{ num }}/{{ investors.paginator.num_pages }}</strong></a></li>
-            {% endif %}
-            {% endfor %}
-            {% if investors.has_next %}
-            <li class="page-item"><a class="page-link" href="?page={{ investors.next_page_number }}">następna</a></li>
-            <li class="page-item"><a class="page-link" href="?page={{ investors.paginator.num_pages }}">ostatnia</a></li>
-            {% endif %}
-        </ul>
-        </nav>
-      </div>
+<div class="d-flex flex-row justify-content-center align-items-center">
+  <nav aria-label="Page navigation example">
+    <ul class="pagination">
+      {% if investors.has_previous %}
+      <li class="page-item"><a class="page-link" href="?page=1">pierwsza</a></li>
+      <li class="page-item"><a class="page-link" href="?page={{ investors.previous_page_number }}">poprzednia</a></li>
+      {% endif %}
+      {% for num in investors.paginator.page_range %}
+      {% if investors.number == num %}
+      <li class="page-item"><a class="page-link"
+          href="?page={{ investors.page_number }}"><strong>{{ num }}/{{ investors.paginator.num_pages }}</strong></a>
+      </li>
+      {% endif %}
+      {% endfor %}
+      {% if investors.has_next %}
+      <li class="page-item"><a class="page-link" href="?page={{ investors.next_page_number }}">następna</a></li>
+      <li class="page-item"><a class="page-link" href="?page={{ investors.paginator.num_pages }}">ostatnia</a></li>
+      {% endif %}
+    </ul>
+  </nav>
+</div>
 
 </div>
 

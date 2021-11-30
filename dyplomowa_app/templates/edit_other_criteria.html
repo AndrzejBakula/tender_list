@@ -28,7 +28,8 @@
                 {% endif %}
                 {% for i in tender.other_criteria.all %}
                 <th scope="col" style="text-align: center;">
-                    {{ i.criteria_name }}       <a href="{% url 'delete-other-criteria' project.id tender.id i.id %}">(usuń)</a>
+                    {{ i.criteria_name }} <a
+                        href="{% url 'delete-other-criteria' project.id tender.id i.id %}">(usuń)</a>
                 </th>
                 {% endfor %}
             </tr>
@@ -45,7 +46,7 @@
                 {% for i in tender.other_criteria.all %}
                 <td scope="col" style="text-align: center;">{{ i.weight }} %</td>
                 {% endfor %}
-            </tr> 
+            </tr>
         </tbody>
     </table>
     {% if 100 > count and form != None %}
@@ -53,7 +54,8 @@
     <div class="d-flex flex-row justify-content-center align-items-center">
         <h4 class="display-5 align-self-center header2"><i>Dodaj Nowe Kryterium</i></h4>
     </div>
-    <form class="d-flex flex-column justify-content-center align-items-center" style="height: 100%; width: 100%;" action="{% url 'edit-other-criteria' project.id tender.id %}" method="POST">
+    <form class="d-flex flex-column justify-content-center align-items-center" style="height: 100%; width: 100%;"
+        action="{% url 'edit-other-criteria' project.id tender.id %}" method="POST">
         {% csrf_token %}
         {{ form.as_p }}
         <hr>
@@ -63,7 +65,8 @@
     {% if 100 == count %}
     <hr>
     <div class="d-flex flex-row justify-content-center align-items-center" style="padding-left: 0.5%;">
-        <a href="{% url 'add-tender-details' project.id tender.id %}" class="btn btn-outline-primary m-1">Przejdź do modułu dodania wyników</a>
+        <a href="{% url 'add-tender-details' project.id tender.id %}" class="btn btn-outline-primary m-1">Przejdź do
+            modułu dodania wyników</a>
     </div>
     {% endif %}
 </div>

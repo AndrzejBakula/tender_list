@@ -6,90 +6,93 @@
 {% block content %}
 
 <div class="d-flex flex-column align-items-center" style="height: 100%; width: 100%;"></div>
-    <div class="d-flex flex-row justify-content-center align-items-center">
-        <h2 class="display-5 align-self-center">Zestawienie Firm</a></h2>
-    </div>
+<div class="d-flex flex-row justify-content-center align-items-center">
+  <h2 class="display-5 align-self-center">Zestawienie Firm</a></h2>
+</div>
 
-    <form class="d-flex flex-row justify-content-center align-items-center" style="height: 100%; width: 100%;" action="{% url 'companies' %}" method="POST">
-      {% csrf_token %}
-      {{ form.as_p }}
-    </form>
+<form class="d-flex flex-row justify-content-center align-items-center" style="height: 100%; width: 100%;"
+  action="{% url 'companies' %}" method="POST">
+  {% csrf_token %}
+  {{ form.as_p }}
+</form>
 
-    <table class="table-responsive-xl table-striped table-bordered" style="width: 100%;">
-        <thead>
-          <tr>
-            <th scope="col" style="text-align: center;">Lp</th>
-            <th scope="col" style="text-align: center;">Nazwa</th>
-            <th scope="col" style="text-align: center;">Adres</th>
-            <th scope="col" style="text-align: center;">Województwo</th>
-            <th scope="col" style="text-align: center;">Powiat</th>
-            <th scope="col" style="text-align: center;">W ilu przetargach</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for i in companies %}
-          {% if i.division_company %}
-          <tr style="background-color: lightblue;">
-            <th scope="col" style="text-align: center;">{{ forloop.counter0|add:companies.start_index }}</th>
-            <td scope="col" style="text-align: center;">
-              <a href="{% url 'company-details' i.id %}">{{ i.company_name }}</a>
-              {% if not i.division_company and not division_company %}
-                <a href="{% url 'add-my-company' i.id %}"> (Oznacz moją firmę)</a>
-              {% elif i.division_company %}
-              - Moja Firma
-              <a href="{% url 'remove-my-company' i.id %}"> (Zmień)</a>              
-              {% endif %}
-            </td>
-            <td scope="col" style="text-align: center;">{{ i.company_address }}</td>
-            <td scope="col" style="text-align: center;">{{ i.company_voivodeship }}</td>
-            <td scope="col" style="text-align: center;">
-              {% if i.company_poviat %} {{ i.company_poviat }} {% else %} nieokreślono {% endif %}
-            </td>
-            <td scope="col" style="text-align: center;">{{ i.tenderer_set.all.count }}</td> 
-          </tr>
-          {% else %}
-          <tr>
-            <th scope="col" style="text-align: center;">{{ forloop.counter0|add:companies.start_index }}</th>
-            <td scope="col" style="text-align: center;">
-              <a href="{% url 'company-details' i.id %}">{{ i.company_name }}</a>
-              {% if not i.division_company and not division_company %}
-                <a href="{% url 'add-my-company' i.id %}"> (Oznacz moją firmę)</a>
-              {% elif i.division_company %}
-              - Moja Firma
-              <a href="{% url 'remove-my-company' i.id %}"> (Zmień)</a>              
-              {% endif %}
-            </td>
-            <td scope="col" style="text-align: center;">{{ i.company_address }}</td>
-            <td scope="col" style="text-align: center;">{{ i.company_voivodeship }}</td>
-            <td scope="col" style="text-align: center;">
-              {% if i.company_poviat %} {{ i.company_poviat }} {% else %} nieokreślono {% endif %}
-            </td>
-            <td scope="col" style="text-align: center;">{{ i.tenderer_set.all.count }}</td>         
-          </tr>
-          {% endif %}
-          {% endfor %}
-        </tbody>
-      </table>
+<table class="table-responsive-xl table-striped table-bordered" style="width: 100%;">
+  <thead>
+    <tr>
+      <th scope="col" style="text-align: center;">Lp</th>
+      <th scope="col" style="text-align: center;">Nazwa</th>
+      <th scope="col" style="text-align: center;">Adres</th>
+      <th scope="col" style="text-align: center;">Województwo</th>
+      <th scope="col" style="text-align: center;">Powiat</th>
+      <th scope="col" style="text-align: center;">W ilu przetargach</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for i in companies %}
+    {% if i.division_company %}
+    <tr style="background-color: lightblue;">
+      <th scope="col" style="text-align: center;">{{ forloop.counter0|add:companies.start_index }}</th>
+      <td scope="col" style="text-align: center;">
+        <a href="{% url 'company-details' i.id %}">{{ i.company_name }}</a>
+        {% if not i.division_company and not division_company %}
+        <a href="{% url 'add-my-company' i.id %}"> (Oznacz moją firmę)</a>
+        {% elif i.division_company %}
+        - Moja Firma
+        <a href="{% url 'remove-my-company' i.id %}"> (Zmień)</a>
+        {% endif %}
+      </td>
+      <td scope="col" style="text-align: center;">{{ i.company_address }}</td>
+      <td scope="col" style="text-align: center;">{{ i.company_voivodeship }}</td>
+      <td scope="col" style="text-align: center;">
+        {% if i.company_poviat %} {{ i.company_poviat }} {% else %} nieokreślono {% endif %}
+      </td>
+      <td scope="col" style="text-align: center;">{{ i.tenderer_set.all.count }}</td>
+    </tr>
+    {% else %}
+    <tr>
+      <th scope="col" style="text-align: center;">{{ forloop.counter0|add:companies.start_index }}</th>
+      <td scope="col" style="text-align: center;">
+        <a href="{% url 'company-details' i.id %}">{{ i.company_name }}</a>
+        {% if not i.division_company and not division_company %}
+        <a href="{% url 'add-my-company' i.id %}"> (Oznacz moją firmę)</a>
+        {% elif i.division_company %}
+        - Moja Firma
+        <a href="{% url 'remove-my-company' i.id %}"> (Zmień)</a>
+        {% endif %}
+      </td>
+      <td scope="col" style="text-align: center;">{{ i.company_address }}</td>
+      <td scope="col" style="text-align: center;">{{ i.company_voivodeship }}</td>
+      <td scope="col" style="text-align: center;">
+        {% if i.company_poviat %} {{ i.company_poviat }} {% else %} nieokreślono {% endif %}
+      </td>
+      <td scope="col" style="text-align: center;">{{ i.tenderer_set.all.count }}</td>
+    </tr>
+    {% endif %}
+    {% endfor %}
+  </tbody>
+</table>
 
-      <div class="d-flex flex-row justify-content-center align-items-center">
-        <nav aria-label="Page navigation example">
-        <ul class="pagination">
-            {% if companies.has_previous %}
-            <li class="page-item"><a class="page-link" href="?page=1">pierwsza</a></li>
-            <li class="page-item"><a class="page-link" href="?page={{ companies.previous_page_number }}">poprzednia</a></li>
-            {% endif %}
-            {% for num in companies.paginator.page_range %}
-            {% if companies.number == num %}
-                <li class="page-item"><a class="page-link" href="?page={{ companies.page_number }}"><strong>{{ num }}/{{ companies.paginator.num_pages }}</strong></a></li>
-            {% endif %}
-            {% endfor %}
-            {% if companies.has_next %}
-            <li class="page-item"><a class="page-link" href="?page={{ companies.next_page_number }}">następna</a></li>
-            <li class="page-item"><a class="page-link" href="?page={{ companies.paginator.num_pages }}">ostatnia</a></li>
-            {% endif %}
-        </ul>
-        </nav>
-      </div>
+<div class="d-flex flex-row justify-content-center align-items-center">
+  <nav aria-label="Page navigation example">
+    <ul class="pagination">
+      {% if companies.has_previous %}
+      <li class="page-item"><a class="page-link" href="?page=1">pierwsza</a></li>
+      <li class="page-item"><a class="page-link" href="?page={{ companies.previous_page_number }}">poprzednia</a></li>
+      {% endif %}
+      {% for num in companies.paginator.page_range %}
+      {% if companies.number == num %}
+      <li class="page-item"><a class="page-link"
+          href="?page={{ companies.page_number }}"><strong>{{ num }}/{{ companies.paginator.num_pages }}</strong></a>
+      </li>
+      {% endif %}
+      {% endfor %}
+      {% if companies.has_next %}
+      <li class="page-item"><a class="page-link" href="?page={{ companies.next_page_number }}">następna</a></li>
+      <li class="page-item"><a class="page-link" href="?page={{ companies.paginator.num_pages }}">ostatnia</a></li>
+      {% endif %}
+    </ul>
+  </nav>
+</div>
 
 </div>
 

@@ -11,48 +11,54 @@
     </div>
 
     <div class="d-flex flex-column align-items-center" style="height: 100%;">
-    <table class="table table-striped table-bordered">
-        <tbody>
-            <tr>
-                <th scope="col">Nazwa firmy</th>
-                <td scope="col">{{ company.company_name }}</td>
-            </tr>
-            <tr>
-                <th scope="col">Adres firmy</th>
-                <td scope="col">{{ company.company_address }}</td>
-            </tr>
-            <tr>
-                <th scope="col">Województwo</th>
-                <td scope="col">{{ company.company_voivodeship }}</td>
-            </tr>
-            <tr>
-                <th scope="col">Powiat</th>
-                <td scope="col">{% if company.company_poviat %} {{ company.company_poviat }} {% else %} nieokreślono {% endif %}</td>
-            </tr>
-            {% if company.division_company %}
-            <tr>
-                <th scope="col">Zespoły</th>
-                <td scope="col">{{ company.division_company.division_name }}</th>
-            </tr>
-            {% endif %}
-            <tr><th></th><td></td></tr>
-            <tr>
-                <th scope="col">W ilu przetargach</th>
-                <td scope="col">{{ company.tenderer_set.all.count }}</td>
-            </tr>
-            <tr>
-                <th scope="col">Liczba wygranych</th>
-                <td scope="col">{{ won_tenders.count }}</td>
-            </tr>
-        </tbody>
-      </table>
-      {% if user in division.division_admin.all %}
-      <button type="button" class="btn btn-dark"><a style="color:blanchedalmond" href="{% url 'edit-company' company.id %}">Edytuj firmę</a></button>
-      {% if user.is_superuser %}
-      <hr>
-      <button type="button" class="btn btn-dark"><a style="color:blanchedalmond" href="{% url 'delete-company' company.id %}">Usuń firmę</a></button>
-      {% endif %}
-      {% endif %}
+        <table class="table table-striped table-bordered">
+            <tbody>
+                <tr>
+                    <th scope="col">Nazwa firmy</th>
+                    <td scope="col">{{ company.company_name }}</td>
+                </tr>
+                <tr>
+                    <th scope="col">Adres firmy</th>
+                    <td scope="col">{{ company.company_address }}</td>
+                </tr>
+                <tr>
+                    <th scope="col">Województwo</th>
+                    <td scope="col">{{ company.company_voivodeship }}</td>
+                </tr>
+                <tr>
+                    <th scope="col">Powiat</th>
+                    <td scope="col">{% if company.company_poviat %} {{ company.company_poviat }} {% else %} nieokreślono
+                        {% endif %}</td>
+                </tr>
+                {% if company.division_company %}
+                <tr>
+                    <th scope="col">Zespoły</th>
+                    <td scope="col">{{ company.division_company.division_name }}</th>
+                </tr>
+                {% endif %}
+                <tr>
+                    <th></th>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th scope="col">W ilu przetargach</th>
+                    <td scope="col">{{ company.tenderer_set.all.count }}</td>
+                </tr>
+                <tr>
+                    <th scope="col">Liczba wygranych</th>
+                    <td scope="col">{{ won_tenders.count }}</td>
+                </tr>
+            </tbody>
+        </table>
+        {% if user in division.division_admin.all %}
+        <button type="button" class="btn btn-dark"><a style="color:blanchedalmond"
+                href="{% url 'edit-company' company.id %}">Edytuj firmę</a></button>
+        {% if user.is_superuser %}
+        <hr>
+        <button type="button" class="btn btn-dark"><a style="color:blanchedalmond"
+                href="{% url 'delete-company' company.id %}">Usuń firmę</a></button>
+        {% endif %}
+        {% endif %}
     </div>
 
 </div>
