@@ -67,159 +67,161 @@ from .utils import token_generator
 
 
 # INITIAL FUNCTIONS
-# def administration_level_init():
-#     levels = AdministrationLevel.objects.all()
-#     levels_names = [i.level_name for i in levels]
-#     if len(levels) != len(AdministrationLevel.LEVEL):
-#         for i in AdministrationLevel.LEVEL:
-#             if i[1] not in levels_names:
-#                 AdministrationLevel.objects.create(level_name=i[1])
 
 
-# administration_level_init()
+def administration_level_init():
+    levels = AdministrationLevel.objects.all()
+    levels_names = [i.level_name for i in levels]
+    if len(levels) != len(AdministrationLevel.LEVEL):
+        for i in AdministrationLevel.LEVEL:
+            if i[1] not in levels_names:
+                AdministrationLevel.objects.create(level_name=i[1])
 
 
-# def note_init():
-#     notes = Note.objects.all()
-#     notes_names = [i.note for i in notes]
-#     if len(notes) != len(Note.NOTE):
-#         for i in Note.NOTE:
-#             if i[1] not in notes_names:
-#                 Note.objects.create(note=i[1])
+administration_level_init()
 
 
-# note_init()
+def note_init():
+    notes = Note.objects.all()
+    notes_names = [i.note for i in notes]
+    if len(notes) != len(Note.NOTE):
+        for i in Note.NOTE:
+            if i[1] not in notes_names:
+                Note.objects.create(note=i[1])
 
 
-# def priority_init():
-#     priorities = Priority.objects.all()
-#     priorities_names = [i.priority_name for i in priorities]
-#     if len(priorities) != len(Priority.PRIORITY):
-#         for i in Priority.PRIORITY:
-#             if i[1] not in priorities_names:
-#                 Priority.objects.create(priority_name=i[1])
+note_init()
 
 
-# priority_init()
+def priority_init():
+    priorities = Priority.objects.all()
+    priorities_names = [i.priority_name for i in priorities]
+    if len(priorities) != len(Priority.PRIORITY):
+        for i in Priority.PRIORITY:
+            if i[1] not in priorities_names:
+                Priority.objects.create(priority_name=i[1])
 
 
-# def status_init():
-#     statuses = Status.objects.all()
-#     statuses_names = [i.status_name for i in statuses]
-#     if len(statuses) != len(Status.STATUS):
-#         for i in Status.STATUS:
-#             if i[1] not in statuses_names:
-#                 Status.objects.create(status_name=i[1])
+priority_init()
 
 
-# status_init()
+def status_init():
+    statuses = Status.objects.all()
+    statuses_names = [i.status_name for i in statuses]
+    if len(statuses) != len(Status.STATUS):
+        for i in Status.STATUS:
+            if i[1] not in statuses_names:
+                Status.objects.create(status_name=i[1])
 
 
-# def payment_method_init():
-#     payment_methods = PaymentMethod.objects.all()
-#     payment_methods_names = [i.payment_method_name for i in payment_methods]
-#     if len(payment_methods) != len(PaymentMethod.PAYMENT_METHOD):
-#         for i in PaymentMethod.PAYMENT_METHOD:
-#             if i[1] not in payment_methods_names:
-#                 PaymentMethod.objects.create(payment_method_name=i[1])
+status_init()
 
 
-# payment_method_init()
+def payment_method_init():
+    payment_methods = PaymentMethod.objects.all()
+    payment_methods_names = [i.payment_method_name for i in payment_methods]
+    if len(payment_methods) != len(PaymentMethod.PAYMENT_METHOD):
+        for i in PaymentMethod.PAYMENT_METHOD:
+            if i[1] not in payment_methods_names:
+                PaymentMethod.objects.create(payment_method_name=i[1])
 
 
-# def voivodeship_init():
-#     voivodeships = Voivodeship.objects.all()
-#     voivodeships_names = [i.voivodeship_name for i in voivodeships]
-#     if len(voivodeships) != len(Voivodeship.VOIVODESHIP):
-#         for i in Voivodeship.VOIVODESHIP:
-#             if i[1] not in voivodeships_names:
-#                 Voivodeship.objects.create(voivodeship_name=i[1])
+payment_method_init()
 
 
-# voivodeship_init()
+def voivodeship_init():
+    voivodeships = Voivodeship.objects.all()
+    voivodeships_names = [i.voivodeship_name for i in voivodeships]
+    if len(voivodeships) != len(Voivodeship.VOIVODESHIP):
+        for i in Voivodeship.VOIVODESHIP:
+            if i[1] not in voivodeships_names:
+                Voivodeship.objects.create(voivodeship_name=i[1])
 
 
-# def poviat_init():
-#     poviats = Poviat.objects.all()
-#     poviats_names = [i.poviat_name for i in poviats]
-#     if len(poviats) != len(Poviat.POVIAT):
-#         for i in Poviat.POVIAT:
-#             if i[1] not in poviats_names:
-#                 if 0 < i[0] < 30:
-#                     v = Voivodeship.objects.get(voivodeship_name="dolnośląskie")
-#                     Poviat.objects.create(poviat_name=i[1], voivodeship=v)
-#                 if 29 < i[0] < 42:
-#                     v = Voivodeship.objects.get(voivodeship_name="opolskie")
-#                     Poviat.objects.create(poviat_name=i[1], voivodeship=v)
-#                 if 41 < i[0] < 77:
-#                     v = Voivodeship.objects.get(voivodeship_name="wielkopolskie")
-#                     Poviat.objects.create(poviat_name=i[1], voivodeship=v)
-#                 if 76 < i[0] < 113:
-#                     v = Voivodeship.objects.get(voivodeship_name="śląskie")
-#                     Poviat.objects.create(poviat_name=i[1], voivodeship=v)
-#                 if 112 < i[0] < 135:
-#                     v = Voivodeship.objects.get(voivodeship_name="małopolskie")
-#                     Poviat.objects.create(poviat_name=i[1], voivodeship=v)
-#                 if 134 < i[0] < 160:
-#                     v = Voivodeship.objects.get(voivodeship_name="podkarpackie")
-#                     Poviat.objects.create(poviat_name=i[1], voivodeship=v)
-#                 if 159 < i[0] < 174:
-#                     v = Voivodeship.objects.get(voivodeship_name="lubuskie")
-#                     Poviat.objects.create(poviat_name=i[1], voivodeship=v)
-#                 if 173 < i[0] < 195:
-#                     v = Voivodeship.objects.get(voivodeship_name="zachodniopomorskie")
-#                     Poviat.objects.create(poviat_name=i[1], voivodeship=v)
-#                 if 194 < i[0] < 215:
-#                     v = Voivodeship.objects.get(voivodeship_name="pomorskie")
-#                     Poviat.objects.create(poviat_name=i[1], voivodeship=v)
-#                 if 214 < i[0] < 238:
-#                     v = Voivodeship.objects.get(voivodeship_name="kujawsko-pomorskie")
-#                     Poviat.objects.create(poviat_name=i[1], voivodeship=v)
-#                 if 237 < i[0] < 262:
-#                     v = Voivodeship.objects.get(voivodeship_name="łódzkie")
-#                     Poviat.objects.create(poviat_name=i[1], voivodeship=v)
-#                 if 261 < i[0] < 286:
-#                     v = Voivodeship.objects.get(voivodeship_name="lubelskie")
-#                     Poviat.objects.create(poviat_name=i[1], voivodeship=v)
-#                 if 285 < i[0] < 328:
-#                     v = Voivodeship.objects.get(voivodeship_name="mazowieckie")
-#                     Poviat.objects.create(poviat_name=i[1], voivodeship=v)
-#                 if 327 < i[0] < 342:
-#                     v = Voivodeship.objects.get(voivodeship_name="świętokrzyskie")
-#                     Poviat.objects.create(poviat_name=i[1], voivodeship=v)
-#                 if 341 < i[0] < 363:
-#                     v = Voivodeship.objects.get(voivodeship_name="warmińsko-mazurskie")
-#                     Poviat.objects.create(poviat_name=i[1], voivodeship=v)
-#                 if 362 < i[0] < 380:
-#                     v = Voivodeship.objects.get(voivodeship_name="podlaskie")
-#                     Poviat.objects.create(poviat_name=i[1], voivodeship=v)
+voivodeship_init()
 
 
-# poviat_init()
+def poviat_init():
+    poviats = Poviat.objects.all()
+    poviats_names = [i.poviat_name for i in poviats]
+    if len(poviats) != len(Poviat.POVIAT):
+        for i in Poviat.POVIAT:
+            if i[1] not in poviats_names:
+                if 0 < i[0] < 30:
+                    v = Voivodeship.objects.get(voivodeship_name="dolnośląskie")
+                    Poviat.objects.create(poviat_name=i[1], voivodeship=v)
+                if 29 < i[0] < 42:
+                    v = Voivodeship.objects.get(voivodeship_name="opolskie")
+                    Poviat.objects.create(poviat_name=i[1], voivodeship=v)
+                if 41 < i[0] < 77:
+                    v = Voivodeship.objects.get(voivodeship_name="wielkopolskie")
+                    Poviat.objects.create(poviat_name=i[1], voivodeship=v)
+                if 76 < i[0] < 113:
+                    v = Voivodeship.objects.get(voivodeship_name="śląskie")
+                    Poviat.objects.create(poviat_name=i[1], voivodeship=v)
+                if 112 < i[0] < 135:
+                    v = Voivodeship.objects.get(voivodeship_name="małopolskie")
+                    Poviat.objects.create(poviat_name=i[1], voivodeship=v)
+                if 134 < i[0] < 160:
+                    v = Voivodeship.objects.get(voivodeship_name="podkarpackie")
+                    Poviat.objects.create(poviat_name=i[1], voivodeship=v)
+                if 159 < i[0] < 174:
+                    v = Voivodeship.objects.get(voivodeship_name="lubuskie")
+                    Poviat.objects.create(poviat_name=i[1], voivodeship=v)
+                if 173 < i[0] < 195:
+                    v = Voivodeship.objects.get(voivodeship_name="zachodniopomorskie")
+                    Poviat.objects.create(poviat_name=i[1], voivodeship=v)
+                if 194 < i[0] < 215:
+                    v = Voivodeship.objects.get(voivodeship_name="pomorskie")
+                    Poviat.objects.create(poviat_name=i[1], voivodeship=v)
+                if 214 < i[0] < 238:
+                    v = Voivodeship.objects.get(voivodeship_name="kujawsko-pomorskie")
+                    Poviat.objects.create(poviat_name=i[1], voivodeship=v)
+                if 237 < i[0] < 262:
+                    v = Voivodeship.objects.get(voivodeship_name="łódzkie")
+                    Poviat.objects.create(poviat_name=i[1], voivodeship=v)
+                if 261 < i[0] < 286:
+                    v = Voivodeship.objects.get(voivodeship_name="lubelskie")
+                    Poviat.objects.create(poviat_name=i[1], voivodeship=v)
+                if 285 < i[0] < 328:
+                    v = Voivodeship.objects.get(voivodeship_name="mazowieckie")
+                    Poviat.objects.create(poviat_name=i[1], voivodeship=v)
+                if 327 < i[0] < 342:
+                    v = Voivodeship.objects.get(voivodeship_name="świętokrzyskie")
+                    Poviat.objects.create(poviat_name=i[1], voivodeship=v)
+                if 341 < i[0] < 363:
+                    v = Voivodeship.objects.get(voivodeship_name="warmińsko-mazurskie")
+                    Poviat.objects.create(poviat_name=i[1], voivodeship=v)
+                if 362 < i[0] < 380:
+                    v = Voivodeship.objects.get(voivodeship_name="podlaskie")
+                    Poviat.objects.create(poviat_name=i[1], voivodeship=v)
 
 
-# def month_init():
-#     month = Month.objects.all()
-#     months = [i.month for i in month]
-#     if len(months) != len(Month.MONTH):
-#         for i in Month.MONTH:
-#             if i[1] not in months:
-#                 Month.objects.create(month=i[1])
+poviat_init()
 
 
-# month_init()
+def month_init():
+    month = Month.objects.all()
+    months = [i.month for i in month]
+    if len(months) != len(Month.MONTH):
+        for i in Month.MONTH:
+            if i[1] not in months:
+                Month.objects.create(month=i[1])
 
 
-# def weight_init():
-#     weight = Weight.objects.all()
-#     weights = [i.weight for i in weight]
-#     if len(weights) != len(Weight.WEIGHT):
-#         for i in Weight.WEIGHT:
-#             if i[1] not in weights:
-#                 Weight.objects.create(weight=i[1])
+month_init()
 
 
-# weight_init()
+def weight_init():
+    weight = Weight.objects.all()
+    weights = [i.weight for i in weight]
+    if len(weights) != len(Weight.WEIGHT):
+        for i in Weight.WEIGHT:
+            if i[1] not in weights:
+                Weight.objects.create(weight=i[1])
+
+
+weight_init()
 
 
 # AUXILIARY FUNCTIONS
