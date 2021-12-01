@@ -347,7 +347,7 @@ class RegisterView(View):
             )
             email.send(fail_silently=False)
 
-            message = f"Dodano nowego użytkownika {user.username}."
+            message = f"Dodano nowego użytkownika {user.username}. Na podany email wysłano link aktywacyjny."
             form = LoginForm()
             ctx = {"message": message, "form": form}
             return render(request, "login.html", ctx)
