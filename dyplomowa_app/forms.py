@@ -483,6 +483,11 @@ class EditProjectForm(forms.Form):
             required=False,
             queryset=User.objects.filter(division_person=division).order_by("username"),
         )
+        self.fields["tender_date"] = forms.CharField(
+            label="Data złożenia",
+            widget=forms.TextInput(attrs={"type": "date"}),
+            required=False,
+        )
 
     project_number = forms.CharField(
         label="",
@@ -511,13 +516,6 @@ class EditProjectForm(forms.Form):
     )
     voivodeship = forms.ModelChoiceField(
         label="Województwo", queryset=Voivodeship.objects.all()
-    )
-    tender_date = forms.CharField(
-        label="Data złożenia",
-        widget=forms.TextInput(
-            attrs={"type": "date", "min": date.today() + timedelta(days=1)}
-        ),
-        required=False,
     )
     project_name = forms.CharField(
         label="",

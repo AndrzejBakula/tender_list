@@ -1574,6 +1574,7 @@ class EditProject(StaffMemberCheck, View):
         return redirect("/projects")
 
     def post(self, request, project_id):
+        project = Project.objects.get(id=project_id)
         user = None
         division = None
         if request.session.get("user_id") not in ("", None):
