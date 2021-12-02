@@ -1,6 +1,6 @@
 # Tender List
 
-An application for managing tender projects, which is was my software engineer diploma work. It was written using python (django), html, bootstrap, postgresql.
+An application for managing tender projects, which was my software engineer diploma work. It was written using python (django), html, bootstrap, postgresql.
 
 ![investors view](screen1.png)
 
