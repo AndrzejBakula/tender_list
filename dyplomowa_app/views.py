@@ -147,7 +147,7 @@ def poviat_init():
     if len(poviats) != len(Poviat.POVIAT):
         for i in Poviat.POVIAT:
             if i[1] not in poviats_names:
-                if 0 < i[0] < 30:
+                if (0 < i[0] < 30) or i[0] == 380:
                     v = Voivodeship.objects.get(voivodeship_name="dolnośląskie")
                     Poviat.objects.create(poviat_name=i[1], voivodeship=v)
                 if 29 < i[0] < 42:

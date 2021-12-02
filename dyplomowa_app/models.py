@@ -119,6 +119,7 @@ class Poviat(models.Model):
         (27, "jeleniogórski"),
         (28, "zgorzelecki"),
         (29, "lubański"),
+        (380, "lwówiecki"),
         # OPOLSKIE
         (30, "Opole"),
         (31, "opolski"),
