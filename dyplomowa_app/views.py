@@ -914,9 +914,34 @@ class CompaniesView(ActivateUserCheck, View):
         if form.is_valid():
             data = form.cleaned_data
             text = data["text"]
-            companies = Company.objects.filter(
-                division=division, company_name__icontains=text
-            ).order_by("company_name")
+            voivodeship = data["voivodeship"]
+            poviat = data["poviat"]
+            companies = Company.objects.filter(division=division).order_by(
+                "company_name"
+            )
+            companies1 = Company.objects.filter(division=division).order_by(
+                "company_name"
+            )
+            if text:
+                companies1 = Company.objects.filter(
+                    division=division, company_name__icontains=text
+                ).order_by("company_name")
+            companies2 = Company.objects.filter(division=division).order_by(
+                "company_name"
+            )
+            if voivodeship:
+                companies2 = Company.objects.filter(
+                    division=division, company_voivodeship=voivodeship
+                ).order_by("company_name")
+            companies3 = Company.objects.filter(division=division).order_by(
+                "company_name"
+            )
+            if poviat:
+                companies3 = Company.objects.filter(
+                    division=division, company_poviat=poviat
+                ).order_by("company_name")
+            if text or voivodeship or poviat:
+                companies = companies1 & companies2 & companies3
             division_company = None
             rest = None
             for i in companies:
