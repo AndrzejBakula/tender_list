@@ -679,14 +679,25 @@ class SearchCompanyForm(forms.Form):
 
 class SearchDesignerForm(forms.Form):
     text = forms.CharField(
-        label="",
+        label="Szukany tekst",
         max_length=64,
         widget=forms.TextInput(
             attrs={
-                "size": 40,
-                "placeholder": "Wprowadź fragment nazwy projektanta i wciśnij enter",
+                "size": 32,
+                "placeholder": "Wprowadź fragment nazwy projektanta",
             }
         ),
+        required=False,
+    )
+    voivodeship = forms.ModelChoiceField(
+        label="Województwo",
+        queryset=Voivodeship.objects.all().order_by("voivodeship_name"),
+        required=False,
+    )
+    poviat = forms.ModelChoiceField(
+        label="Powiat",
+        queryset=Poviat.objects.all().order_by("poviat_name"),
+        required=False,
     )
 
 

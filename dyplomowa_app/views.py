@@ -1224,9 +1224,34 @@ class DesignersView(ActivateUserCheck, View):
         if form.is_valid():
             data = form.cleaned_data
             text = data["text"]
-            designers = Designer.objects.filter(
-                division=division, designer_name__icontains=text
-            ).order_by("designer_name")
+            voivodeship = data["voivodeship"]
+            poviat = data["poviat"]
+            designers = Designer.objects.filter(division=division).order_by(
+                "designer_name"
+            )
+            designers1 = Designer.objects.filter(division=division).order_by(
+                "designer_name"
+            )
+            if text:
+                designers1 = Designer.objects.filter(
+                    division=division, designer_name__icontains=text
+                ).order_by("designer_name")
+            designers2 = Designer.objects.filter(division=division).order_by(
+                "designer_name"
+            )
+            if voivodeship:
+                designers2 = Designer.objects.filter(
+                    division=division, designer_voivodeship=voivodeship
+                ).order_by("designer_name")
+            designers3 = Designer.objects.filter(division=division).order_by(
+                "designer_name"
+            )
+            if poviat:
+                designers3 = Designer.objects.filter(
+                    division=division, designer_poviat=poviat
+                ).order_by("designer_name")
+            if text or voivodeship or poviat:
+                designers = designers1 & designers2 & designers3
 
             paginator = Paginator(designers, 15)
             page = request.GET.get("page")

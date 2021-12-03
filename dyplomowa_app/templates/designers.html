@@ -13,7 +13,8 @@
 <form class="d-flex flex-row justify-content-center align-items-center" style="height: 100%; width: 100%;"
   action="{% url 'designers' %}" method="POST">
   {% csrf_token %}
-  {{ form.as_p }}
+  {{ form.as_table }}
+  <button type="submit" id="submit">Szukaj</button>
 </form>
 
 <table class="table-responsive-xl table-striped table-bordered" style="width: 100%;">
