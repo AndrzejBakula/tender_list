@@ -595,9 +595,43 @@ class InvestorsView(ActivateUserCheck, View):
         if form.is_valid():
             data = form.cleaned_data
             text = data["text"]
-            investors = Investor.objects.filter(
-                division=division, investor_name__icontains=text
-            ).order_by("investor_name")
+            voivodeship = data["voivodeship"]
+            poviat = data["poviat"]
+            administration_level = data["administration_level"]
+            investors = Investor.objects.filter(division=division).order_by(
+                "investor_name"
+            )
+            investors1 = Investor.objects.filter(division=division).order_by(
+                "investor_name"
+            )
+            if text:
+                investors1 = Investor.objects.filter(
+                    division=division, investor_name__icontains=text
+                ).order_by("investor_name")
+            investors2 = Investor.objects.filter(division=division).order_by(
+                "investor_name"
+            )
+            if voivodeship:
+                investors2 = Investor.objects.filter(
+                    division=division, investor_voivodeship=voivodeship
+                ).order_by("investor_name")
+            investors3 = Investor.objects.filter(division=division).order_by(
+                "investor_name"
+            )
+            if poviat:
+                investors3 = Investor.objects.filter(
+                    division=division, investor_poviat=poviat
+                ).order_by("investor_name")
+            investors4 = Investor.objects.filter(division=division).order_by(
+                "investor_name"
+            )
+            if administration_level:
+                investors4 = Investor.objects.filter(
+                    division=division,
+                    investor_administration_level=administration_level,
+                ).order_by("investor_name")
+            if text or voivodeship or poviat or administration_level:
+                investors = investors1 & investors2 & investors3 & investors4
 
             paginator = Paginator(investors, 15)
             page = request.GET.get("page")

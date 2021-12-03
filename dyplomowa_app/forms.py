@@ -626,14 +626,30 @@ class SearchArchiveForm(forms.Form):
 
 class SearchInvestorForm(forms.Form):
     text = forms.CharField(
-        label="",
+        label="Szukany tekst",
         max_length=64,
         widget=forms.TextInput(
             attrs={
-                "size": 40,
-                "placeholder": "Wprowadź fragment nazwy inwestora i wciśnij enter",
+                "size": 32,
+                "placeholder": "Fragment nazwy inwestora",
             }
         ),
+        required=False,
+    )
+    voivodeship = forms.ModelChoiceField(
+        label="Województwo",
+        queryset=Voivodeship.objects.all().order_by("voivodeship_name"),
+        required=False,
+    )
+    poviat = forms.ModelChoiceField(
+        label="Powiat",
+        queryset=Poviat.objects.all().order_by("poviat_name"),
+        required=False,
+    )
+    administration_level = forms.ModelChoiceField(
+        label="Poziom administracyjny",
+        queryset=AdministrationLevel.objects.all().order_by("level_name"),
+        required=False,
     )
 
 
