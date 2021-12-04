@@ -39,6 +39,7 @@
     </form>
     {% endif %}
 
+    {% if wannabe_divisions.count > 0 %}
     <hr>
     <div class="d-flex flex-row justify-content-center align-items-center">
         <h4 class="display-5 align-self-center header2"><i>Prośby o dołączenie:</i></h4>
@@ -48,6 +49,7 @@
         {{ i.division_name }} <a href="{% url 'remove-wannabe' i.id %}"> (Zrezygnuj)</a><br>
     </div>
     {% endfor %}
+    {% endif %}
 
 </div>
 
