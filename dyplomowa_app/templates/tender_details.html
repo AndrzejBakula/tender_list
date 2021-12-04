@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load mathfilters %}
 
 {% block title %} Szczegóły Przetargu {% endblock %}
 
@@ -71,7 +72,10 @@
                     <a href="{% url 'remove-winner' tender.id i.id %}">(Zmień)</a>
                     {% endif %}
                 </td>
-                <td scope="col" style="text-align: center;">{{ i.offer_value }}</td>
+                <td scope="col" style="text-align: center;">
+                    {{ i.offer_value }} zł brutto<br>
+                    {{ i.offer_value|div:1.23|floatformat:2 }} zł netto
+                </td>
                 {% if i.offer_guarantee %}
                 <td scope="col" style="text-align: center;">{{ i.offer_guarantee }} mies.</td>
                 {% endif %}
