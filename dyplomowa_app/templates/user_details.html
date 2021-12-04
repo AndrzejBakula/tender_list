@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load mathfilters %}
 
 {% block title %} Mój Kącik {% endblock %}
 
@@ -50,6 +51,18 @@
                     <td scope="col">
                         {% for i in user_divisions_won %}
                         {{ i.0.division_name }}: {{ i.1 }}
+                        <br>
+                        {% for j in user_divisions_projects %}
+                        {% if i.0 == j.0 %}
+                        {% with numerator=i.1 denominator=j.1 %}
+                        {% if denominator != 0 %}
+                        {% with answer=numerator|div:denominator %}
+                        ({{ answer|mul:100|floatformat:2 }} % skuteczności)
+                        {% endwith %}
+                        {% endif %}
+                        {% endwith %}
+                        {% endif %}
+                        {% endfor %}
                         <hr>
                         {% endfor %}
                     </td>

@@ -248,7 +248,7 @@ urlpatterns = [
         name="division-details",
     ),
     path(
-        "deactivate_division/<int:division_id>",
+        "deactivate_division/",
         DeactivateDivisionView.as_view(),
         name="deactivate-division",
     ),

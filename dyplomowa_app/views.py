@@ -1923,9 +1923,11 @@ class RemoveWannabeView(ActivateUserCheck, View):
     def get(self, request, division_id):
         division = Division.objects.get(id=division_id)
         user = User.objects.get(pk=int(request.session["user_id"]))
-        division.division_wannabe.remove(user)
-        division.save()
-        return redirect("/join_division")
+        if division in [i for i in Division.objects.filter(division_wannabe=user)]:
+            division.division_wannabe.remove(user)
+            division.save()
+            return redirect("/join_division")
+        return redirect("/projects")
 
 
 class DivisionChoiceView(ActivateUserCheck, View):
@@ -1980,8 +1982,7 @@ class DivisionDetails(ActivateUserCheck, View):
 
 
 class DeactivateDivisionView(ActivateUserCheck, View):
-    def get(self, request, division_id):
-        division = Division.objects.get(id=division_id)
+    def get(self, request):
         request.session["division_id"] = None
         request.session["division_name"] = None
         request.session.save()
