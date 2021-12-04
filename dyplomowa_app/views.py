@@ -2120,18 +2120,24 @@ class PersonDetailsView(ActivateUserCheck, View):
             if request.session.get("division_id"):
                 division = Division.objects.get(id=request.session.get("division_id"))
             person_projects = Project.objects.filter(person=person, division=division)
-            person_divisions_active = Project.objects.filter(
+            person_division_active = Project.objects.filter(
                 person=person, division=division, status=2
             )
-            person_divisions_won = Project.objects.filter(
+            person_division_bade = (
+                Project.objects.filter(division=division)
+                .exclude(status=1)
+                .exclude(status=2)
+            )
+            person_division_won = Project.objects.filter(
                 person=person, division=division, status=5
             )
             ctx = {
                 "person": person,
                 "divisions": divisions,
                 "person_projects": person_projects,
-                "person_divisions_active": person_divisions_active,
-                "person_divisions_won": person_divisions_won,
+                "person_division_active": person_division_active,
+                "person_division_bade": person_division_bade,
+                "person_division_won": person_division_won,
             }
             return render(request, "person_details.html", ctx)
         return redirect("/projects")

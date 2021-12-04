@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load mathfilters %}
 
 {% block title %} Szczegóły Użytkownika {% endblock %}
 
@@ -32,11 +33,24 @@
                 </tr>
                 <tr>
                     <th scope="col">W przygotowaniu</th>
-                    <td scope="col">{{ person_divisions_active.count }}</td>
+                    <td scope="col">{{ person_division_active.count }}</td>
+                </tr>
+                <tr>
+                    <th scope="col">Złożone oferty</th>
+                    <td scope="col">{{ person_division_bade.count }}</td>
                 </tr>
                 <tr>
                     <th scope="col">Wygrane przetargi</th>
-                    <td scope="col">{{ person_divisions_won.count }}</td>
+                    <td scope="col">
+                        {{ person_division_won.count }}
+                        {% with numerator=person_division_won.count denumerator=person_division_bade.count %}
+                        {% if denumerator != 0 %}
+                        {% with answer=numerator|div:denumerator %}
+                        ({{ answer|mul:100|floatformat:2 }}% skuteczności)
+                        {% endwith %}
+                        {% endif %}
+                        {% endwith %}
+                    </td>
                 </tr>
             </tbody>
         </table>
