@@ -600,28 +600,52 @@ class EditProjectPoviatForm(forms.Form):
 
 class SearchProjectForm(forms.Form):
     text = forms.CharField(
-        label="",
+        label="Szukany tekst",
         max_length=64,
         widget=forms.TextInput(
             attrs={
-                "size": 38,
-                "placeholder": "Wprowadź fragment nazwy projektu i wciśnij enter",
+                "size": 32,
+                "placeholder": "Wprowadź fragment nazwy projektu",
             }
         ),
     )
 
 
 class SearchArchiveForm(forms.Form):
-    text = forms.CharField(
-        label="",
-        max_length=64,
-        widget=forms.TextInput(
-            attrs={
-                "size": 38,
-                "placeholder": "Wprowadź fragment nazwy projektu i wciśnij enter",
-            }
-        ),
-    )
+    def __init__(self, *args, **kwargs):
+        division = kwargs.get("division", None)
+        kwargs.pop("division", None)
+        self.division = division
+        super(SearchArchiveForm, self).__init__(*args, **kwargs)
+        self.fields["text"] = forms.CharField(
+            label="Szukany tekst",
+            max_length=64,
+            widget=forms.TextInput(
+                attrs={
+                    "size": 32,
+                    "placeholder": "Wprowadź fragment nazwy projektu",
+                }
+            ),
+            required=False,
+        )
+        self.fields["investor"] = forms.ModelChoiceField(
+            label="Inwestor",
+            queryset=Investor.objects.filter(division=division).order_by(
+                "investor_name"
+            ),
+            required=False,
+        )
+        self.fields["payment_method"] = forms.ModelChoiceField(
+            label="rozliczenie", queryset=PaymentMethod.objects.all(), required=False
+        )
+        self.fields["person"] = forms.ModelChoiceField(
+            label="osoba",
+            queryset=User.objects.filter(division_person=division).order_by("username"),
+            required=False,
+        )
+        self.fields["status"] = forms.ModelChoiceField(
+            label="status", queryset=Status.objects.all().exclude(id=2), required=False
+        )
 
 
 class SearchInvestorForm(forms.Form):

@@ -17,14 +17,14 @@
   <div class="d-flex flex-row justify-content-center align-items-center">
     <h2 class="display-5 align-self-center">Archiwum Projektów</a></h2>
   </div>
+  {% endif %}
 
-  {% if archives.count > 15 %}
-  <form class="d-flex flex-row justify-content-center align-items-center" style="height: 100%; width: 100%;"
+  <form class="d-flex flex-row flex-wrap justify-content-center align-items-center" style="height: 100%; width: 100%;"
     action="{% url 'archives' %}" method="POST">
     {% csrf_token %}
-    {{ form.as_p }}
+    {{ form.as_table }}
+    <button type="submit" id="submit">Szukaj</button>
   </form>
-  {% endif %}
 
   <table class="table table-succes table-responsive-xl table-hover table-striped table-bordered"
     style="width: 100%; padding: 1%;">
@@ -96,7 +96,7 @@
     </tbody>
   </table>
 
-  {% endif %}
+
 </div>
 {% endif %}
 {% endif %}

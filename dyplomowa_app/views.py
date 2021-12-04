@@ -1789,12 +1789,13 @@ class ArchivesView(ActivateUserCheck, View):
     def get(self, request):
         counter = get_counter()
         user = None
+        division = None
         if request.session.get("user_id") not in ("", None):
             user = User.objects.get(pk=int(request.session["user_id"]))
         if request.session.get("division_id") not in ("", None):
             division = Division.objects.get(id=request.session.get("division_id"))
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
-        form = SearchArchiveForm()
+        form = SearchArchiveForm(division=division)
         archives_date = date.today() + timedelta(days=-1)
         archives1 = Project.objects.filter(
             division=division, tender_date__range=["2021-01-01", archives_date]
@@ -1807,26 +1808,92 @@ class ArchivesView(ActivateUserCheck, View):
 
     def post(self, request):
         user = None
+        division = Division.objects.get(id=request.session.get("division_id"))
         if request.session.get("user_id") not in ("", None):
             user = User.objects.get(pk=int(request.session["user_id"]))
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         today = date.today()
         finish = today + timedelta(days=100)
-        form = SearchArchiveForm(request.POST)
+        form = SearchArchiveForm(request.POST, division=division)
         if form.is_valid():
             data = form.cleaned_data
             text = data["text"]
-            archives_date = date.today() + timedelta(days=-1)
-            archives1 = Project.objects.filter(
-                project_name__icontains=text,
-                tender_date__range=["2021-01-01", archives_date],
-            ).order_by("tender_date", "tender_time", "project_number")
-            archives2 = (
-                Project.objects.filter(project_name__icontains=text)
+            investor = data["investor"]
+            payment_method = data["payment_method"]
+            person = data["person"]
+            status = data["status"]
+            archives1 = (
+                Project.objects.filter(division=division)
                 .exclude(status=2)
                 .order_by("tender_date", "tender_time", "project_number")
             )
-            archives = archives1 | archives2
+            if text:
+                archives1 = (
+                    Project.objects.filter(
+                        project_name__icontains=text,
+                        division=division,
+                    )
+                    .exclude(status=2)
+                    .order_by("tender_date", "tender_time", "project_number")
+                )
+            archives2 = (
+                Project.objects.filter(division=division)
+                .exclude(status=2)
+                .order_by("tender_date", "tender_time", "project_number")
+            )
+            if investor:
+                archives2 = (
+                    Project.objects.filter(
+                        investor=investor,
+                        division=division,
+                    )
+                    .exclude(status=2)
+                    .order_by("tender_date", "tender_time", "project_number")
+                )
+            archives3 = (
+                Project.objects.filter(division=division)
+                .exclude(status=2)
+                .order_by("tender_date", "tender_time", "project_number")
+            )
+            if payment_method:
+                archives3 = (
+                    Project.objects.filter(
+                        payment_method=payment_method,
+                        division=division,
+                    )
+                    .exclude(status=2)
+                    .order_by("tender_date", "tender_time", "project_number")
+                )
+            archives4 = (
+                Project.objects.filter(division=division)
+                .exclude(status=2)
+                .order_by("tender_date", "tender_time", "project_number")
+            )
+            if person:
+                archives4 = (
+                    Project.objects.filter(
+                        person=person,
+                        division=division,
+                    )
+                    .exclude(status=2)
+                    .order_by("tender_date", "tender_time", "project_number")
+                )
+            archives5 = (
+                Project.objects.filter(division=division)
+                .exclude(status=2)
+                .order_by("tender_date", "tender_time", "project_number")
+            )
+            if status:
+                archives5 = (
+                    Project.objects.filter(
+                        status=status,
+                        division=division,
+                    )
+                    .exclude(status=2)
+                    .order_by("tender_date", "tender_time", "project_number")
+                )
+            archives = archives1 & archives2 & archives3 & archives4 & archives5
+
             ctx = {
                 "form": form,
                 "archives": archives,
