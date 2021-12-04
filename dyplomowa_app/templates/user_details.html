@@ -47,17 +47,23 @@
                     </td>
                 </tr>
                 <tr>
+                    <th scope="col">Złożone oferty</th>
+                    <td scope="col">
+                        {% for i in user_divisions_bade %}
+                        {{ i.0.division_name }}: {{ i.1 }}
+                        <hr>
+                        {% endfor %}
+                    </td>
+                </tr>
+                <tr>
                     <th scope="col">Wygrane przetargi</th>
                     <td scope="col">
                         {% for i in user_divisions_won %}
                         {{ i.0.division_name }}: {{ i.1 }}
                         <br>
-                        {% for k in user_divisions_active %}
-                        {% for j in user_divisions_projects %}
-                        {% if k.0 == j.0 %}
-                        {% with sum=j.1|sub:k.1 %}
+                        {% for j in user_divisions_bade %}
                         {% if i.0 == j.0 %}
-                        {% with numerator=i.1 denominator=sum %}
+                        {% with numerator=i.1 denominator=j.1 %}
                         {% if denominator != 0 %}
                         {% with answer=numerator|div:denominator %}
                         ({{ answer|mul:100|floatformat:2 }} % skuteczności)
@@ -65,9 +71,6 @@
                         {% endif %}
                         {% endwith %}
                         {% endif %}
-                        {% endwith %}
-                        {% endif %}
-                        {% endfor %}
                         {% endfor %}
                         <hr>
                         {% endfor %}

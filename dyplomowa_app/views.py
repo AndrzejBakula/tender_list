@@ -2154,6 +2154,21 @@ class UserDetailsView(ActivateUserCheck, View):
             user_divisions_active.append(
                 (i, len([j for j in i.project_set.filter(person=user, status=2)]))
             )
+        user_divisions_bade = []
+        for i in Division.objects.filter(division_person=user):
+            user_divisions_bade.append(
+                (
+                    i,
+                    len(
+                        [
+                            j
+                            for j in Project.objects.filter(division=division)
+                            .exclude(status=1)
+                            .exclude(status=2)
+                        ]
+                    ),
+                )
+            )
         user_divisions_won = []
         for i in Division.objects.filter(division_person=user):
             user_divisions_won.append(
@@ -2163,6 +2178,7 @@ class UserDetailsView(ActivateUserCheck, View):
             "divisions": divisions,
             "user_divisions_projects": user_divisions_projects,
             "user_divisions_active": user_divisions_active,
+            "user_divisions_bade": user_divisions_bade,
             "user_divisions_won": user_divisions_won,
         }
         return render(request, "user_details.html", ctx)
