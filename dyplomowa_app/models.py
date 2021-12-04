@@ -116,7 +116,7 @@ class Poviat(models.Model):
         (24, "bolesławiecki"),
         (25, "złotoryjski"),
         (26, "Jelenia Góra"),
-        (27, "jeleniogórski"),
+        (27, "karkonoski"),
         (28, "zgorzelecki"),
         (29, "lubański"),
         (380, "lwówiecki"),
