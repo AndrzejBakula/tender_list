@@ -52,9 +52,12 @@
                         {% for i in user_divisions_won %}
                         {{ i.0.division_name }}: {{ i.1 }}
                         <br>
+                        {% for k in user_divisions_active %}
                         {% for j in user_divisions_projects %}
+                        {% if k.0 == j.0 %}
+                        {% with sum=j.1|sub:k.1 %}
                         {% if i.0 == j.0 %}
-                        {% with numerator=i.1 denominator=j.1 %}
+                        {% with numerator=i.1 denominator=sum %}
                         {% if denominator != 0 %}
                         {% with answer=numerator|div:denominator %}
                         ({{ answer|mul:100|floatformat:2 }} % skuteczności)
@@ -62,6 +65,9 @@
                         {% endif %}
                         {% endwith %}
                         {% endif %}
+                        {% endwith %}
+                        {% endif %}
+                        {% endfor %}
                         {% endfor %}
                         <hr>
                         {% endfor %}
