@@ -1916,7 +1916,16 @@ class JoinDivisionView(ActivateUserCheck, View):
             division = data["division"]
             division.division_wannabe.add(user)
             division.save()
-            return redirect("/division_choice")
+            return redirect("/join_division")
+
+
+class RemoveWannabeView(ActivateUserCheck, View):
+    def get(self, request, division_id):
+        division = Division.objects.get(id=division_id)
+        user = User.objects.get(pk=int(request.session["user_id"]))
+        division.division_wannabe.remove(user)
+        division.save()
+        return redirect("/join_division")
 
 
 class DivisionChoiceView(ActivateUserCheck, View):
@@ -1967,6 +1976,15 @@ class DivisionDetails(ActivateUserCheck, View):
                 "actual_projects": actual_projects,
             }
             return render(request, "division_details.html", ctx)
+        return redirect("/projects")
+
+
+class DeactivateDivisionView(ActivateUserCheck, View):
+    def get(self, request, division_id):
+        division = Division.objects.get(id=division_id)
+        request.session["division_id"] = None
+        request.session["division_name"] = None
+        request.session.save()
         return redirect("/projects")
 
 

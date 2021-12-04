@@ -39,6 +39,16 @@
     </form>
     {% endif %}
 
+    <hr>
+    <div class="d-flex flex-row justify-content-center align-items-center">
+        <h4 class="display-5 align-self-center header2"><i>Prośby o dołączenie:</i></h4>
+    </div>
+    {% for i in wannabe_divisions %}
+    <div class="d-flex flex-row justify-content-center align-items-center">
+        {{ i.division_name }} <a href="{% url 'remove-wannabe' i.id %}"> (Zrezygnuj)</a><br>
+    </div>
+    {% endfor %}
+
 </div>
 
 {% endblock %}

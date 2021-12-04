@@ -43,6 +43,7 @@ from dyplomowa_app.views import (
     CompaniesView,
     CompanyDetails,
     CompletePasswordReset,
+    DeactivateDivisionView,
     DeleteCompany,
     DeleteCompanyConfirm,
     DeleteDesigner,
@@ -86,6 +87,7 @@ from dyplomowa_app.views import (
     RegisterView,
     RemoveMemberView,
     RemoveMyCompanyView,
+    RemoveWannabeView,
     RemoveWinnerView,
     RequestPasswordResetEmail,
     TenderDetailsView,
@@ -229,6 +231,11 @@ urlpatterns = [
     path("archives/", ArchivesView.as_view(), name="archives"),
     path("add_division/", AddDivisionView.as_view(), name="add-division"),
     path("join_division/", JoinDivisionView.as_view(), name="join-division"),
+    path(
+        "remove_wannabe/<int:division_id>",
+        RemoveWannabeView.as_view(),
+        name="remove-wannabe",
+    ),
     path("division_choice/", DivisionChoiceView.as_view(), name="division-choice"),
     path(
         "division_choice_confirm/<int:division_id>",
@@ -239,6 +246,11 @@ urlpatterns = [
         "division_details/<int:division_id>",
         DivisionDetails.as_view(),
         name="division-details",
+    ),
+    path(
+        "deactivate_division/<int:division_id>",
+        DeactivateDivisionView.as_view(),
+        name="deactivate-division",
     ),
     path(
         "edit_division/<int:division_id>",

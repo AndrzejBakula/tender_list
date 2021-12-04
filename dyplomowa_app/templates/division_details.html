@@ -13,7 +13,10 @@
     {% if division.id != request.session.division_id %}
     <a href="{% url 'division-choice-confirm' division.id %}">Przełącz na ten zespół</a>
     <hr>
-    {% else %} Aktywny zespół
+    {% else %}
+    <div class="d-flex flex-row justify-content-center align-items-center">
+        Aktywny zespół <a href="{% url 'deactivate-division' division.id %}"> (Deaktywuj)</a>
+    </div>
     {% endif %}
 
     <div class="d-flex flex-column align-items-center" style="height: 100%;">
