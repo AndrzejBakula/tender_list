@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load mathfilters %}
 
 {% block title %} Szczegóły Zespołu {% endblock %}
 
@@ -108,7 +109,16 @@
                 </tr>
                 <tr>
                     <th scope="col">Wygrane przetargi</th>
-                    <td scope="col">{{ won_projects.count }}</td>
+                    <td scope="col">
+                        {{ won_projects.count }}
+                        {% with numerator=won_projects.count denumerator=bade_projects.count %}
+                        {% if denumerator != 0 %}
+                        {% with answer=numerator|div:denumerator %}
+                        ({{ answer|mul:100|floatformat:2 }}% skuteczności)
+                        {% endwith %}
+                        {% endif %}
+                        {% endwith %}
+                    </td>
                 </tr>
                 <tr>
                     <th scope="col">Rezygnacja ze startu</th>
