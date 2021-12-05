@@ -1683,7 +1683,7 @@ class EditProject(StaffMemberCheck, View):
             project.voivodeship = data["voivodeship"]
             if data["tender_date"] not in (None, ""):
                 project.tender_date = data["tender_date"]
-            project_name = data["project_name"]
+            project.project_name = data["project_name"]
             project.estimated_value = data["estimated_value"]
             project.investor = data["investor"]
             if data["project_deadline_date"] not in (None, ""):
