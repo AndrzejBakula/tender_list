@@ -32,6 +32,35 @@
                         {% endif %}
                     </td>
                 </tr>
+                <tr>
+                    <th scope="col">Waga - cena</th>
+                    <td scope="col">{{ tender.value_weight.weight }} %</td>
+                </tr>
+                {% if tender.guarantee %}
+                <tr>
+                    <th scope="col">Waga - gwarancja</th>
+                    <td scope="col">{{ tender.guarantee.weight.weight }} %
+                        (Min: {{ tender.guarantee.months_min.month }}, Max: {{ tender.guarantee.months_max.month }})
+                    </td>
+                </tr>
+                {% endif %}
+                {% if tender.deadline %}
+                <tr>
+                    <th scope="col">Waga - termin</th>
+                    <td scope="col">{{ tender.deadline.weight.weight }} %
+                        (Min: {{ tender.deadline.months_min.month }}, Max: {{ tender.deadline.months_max.month }})
+                    </td>
+                </tr>
+                {% endif %}
+                {% for i in tender.other_criteria.all %}
+                <tr>
+                    <th scope="col">Waga - {{ i.criteria_name }}</th>
+                    <td scope="col">{{ i.weight.weight }} %</td>
+                </tr>
+                {% endfor %}
+                {% if tender.other_criteria %}
+
+                {% endif %}
             </tbody>
         </table>
     </div>
