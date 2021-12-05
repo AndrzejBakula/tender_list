@@ -49,7 +49,7 @@
                 <tr>
                     <th scope="col">Członkowie zespołu ({{ division.division_person.all.count }})</th>
                     <td scope="col">
-                        {% for i in division.division_person.all|dictsort:"username" %}
+                        {% for i in division.division_person.all|dictsort:'username' %}
                         <a href="{% url 'person-details' i.id %}">{{ i.username }}</a>
                         {% if not i in division.division_admin.all and user == division.division_creator and not i == division.division_creator %}
                         <a href="{% url 'add-admin' division.id i.id %}">(Zrób adminem)</a>
