@@ -41,6 +41,8 @@
             <tr>
                 <th scope="col" style="text-align: center;">Oferent</th>
                 <th scope="col" style="text-align: center;">Cena ({{ tender.value_weight.weight }}%)</th>
+                <th scope="col" style="text-align: center;">Do inwestora</th>
+                <th scope="col" style="text-align: center;">Do wygranego</th>
                 {% if tender.is_guarantee %}
                 <th scope="col" style="text-align: center;">Gwarancja ({{ tender.guarantee.weight.weight }}%)</th>
                 {% endif %}
@@ -75,6 +77,12 @@
                 <td scope="col" style="text-align: center;">
                     {{ i.offer_value }} zł brutto<br>
                     {{ i.offer_value|div:1.23|floatformat:2 }} zł netto
+                </td>
+                <td scope="col" style="text-align: center;">
+                    {{ i.offer_value|div:tender.investor_budget|mul:100|floatformat:2 }} %
+                </td>
+                <td scope="col" style="text-align: center;">
+                    {{ i.offer_value|div:tenderers.0.offer_value|mul:100|floatformat:2 }} %
                 </td>
                 {% if i.offer_guarantee %}
                 <td scope="col" style="text-align: center;">{{ i.offer_guarantee }} mies.</td>
