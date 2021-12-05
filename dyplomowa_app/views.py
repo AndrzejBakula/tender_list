@@ -2191,7 +2191,7 @@ class PersonDetailsView(ActivateUserCheck, View):
                 person=person, division=division, status=2
             )
             person_division_bade = (
-                Project.objects.filter(division=division)
+                Project.objects.filter(person=person, division=division)
                 .exclude(status=1)
                 .exclude(status=2)
             )
