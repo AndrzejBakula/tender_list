@@ -736,7 +736,7 @@ class Project(models.Model):
     payment_method = models.ForeignKey(
         PaymentMethod, on_delete=models.DO_NOTHING, null=True, default=None
     )
-    project_url = models.URLField(unique=True, null=True, default=None)
+    project_url = models.URLField(unique=True, max_length=500, null=True, default=None)
     person = models.ManyToManyField(User, default=None)
     division = models.ForeignKey(Division, on_delete=models.DO_NOTHING)
     rc_date = models.DateField(blank=True, null=True)

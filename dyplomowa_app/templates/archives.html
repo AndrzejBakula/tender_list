@@ -58,9 +58,9 @@
         </td>
         <td scope="col" style="text-align: center;">
           <a href="{% url 'investor-details' i.investor.id %}">{{ i.investor.investor_name }}</a></td>
-        <td scope="col" style="text-align: center;">
-          {% if i.project_deadline %} {{ i.project_deadline }} {% else %} brak {% endif %}
-        </td>
+        <td scope="col" style="text-align: center;">{% if i.project_deadline_date %} {{ i.project_deadline_date }}
+          {% elif i.project_deadline_months %} {{ i.project_deadline_months }} mies. {% elif i.project_deadline_days %}
+          {{ i.project_deadline_days }} dni {% else %} brak {% endif %}</td>
         <td scope="col" style="text-align: center;">
           {% if i.mma_quantity %} {{ i.mma_quantity }} {% else %} brak {% endif %}
         </td>

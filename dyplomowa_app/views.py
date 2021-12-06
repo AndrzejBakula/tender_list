@@ -1422,6 +1422,7 @@ class AddProject(StaffMemberCheck, View):
         division = None
         if request.session.get("user_id") not in ("", None):
             user = User.objects.get(pk=int(request.session["user_id"]))
+        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         if request.session.get("division_id") not in ("", None):
             division = Division.objects.get(id=request.session.get("division_id"))
         form = AddProjectForm(request.POST, user=user, division=division)
@@ -1508,6 +1509,14 @@ class AddProject(StaffMemberCheck, View):
                 return redirect(f"/add_project_poviat/{project.id}")
             else:
                 return redirect("/projects")
+        error_message = "Sprawdź komunikaty walidacyjne i spróbój ponownie"
+        ctx = {
+            "form": form,
+            "division": division,
+            "divisions": divisions,
+            "error_message": error_message,
+        }
+        return render(request, "add_project.html", ctx)
 
 
 class AddProjectPoviat(StaffMemberCheck, View):
@@ -1665,6 +1674,7 @@ class EditProject(StaffMemberCheck, View):
         division = None
         if request.session.get("user_id") not in ("", None):
             user = User.objects.get(pk=int(request.session["user_id"]))
+        divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         if request.session.get("division_id") not in ("", None):
             division = Division.objects.get(id=request.session.get("division_id"))
         form = EditProjectForm(request.POST, user=user, division=division)
@@ -1708,9 +1718,6 @@ class EditProject(StaffMemberCheck, View):
             project.designer = data["designer"]
             project.status = data["status"]
             project.save()
-            ctx = {
-                "project": project,
-            }
             if (
                 project.voivodeship != None
                 and project.voivodeship.voivodeship_name != "nieokreślono"
@@ -1727,6 +1734,15 @@ class EditProject(StaffMemberCheck, View):
                 return redirect("/projects")
             else:
                 return redirect("/projects")
+        error_message = "Sprawdź komunikaty walidacyjne i spróbój ponownie"
+        ctx = {
+            "form": form,
+            "division": division,
+            "divisions": divisions,
+            "error_message": error_message,
+            "project": project,
+        }
+        return render(request, "edit_project.html", ctx)
 
 
 class EditProjectPoviat(StaffMemberCheck, View):
