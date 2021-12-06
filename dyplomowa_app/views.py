@@ -1564,7 +1564,7 @@ class Projects(View):
         ).order_by("tender_date", "tender_time", "project_number")
         projects2 = Project.objects.filter(
             division=division, tender_date__isnull=True, status=2
-        )
+        ).order_by("tender_date", "tender_time", "project_number")
         projects = projects1 | projects2
         users = User.objects.filter(is_active=True)
         ctx = {
@@ -1815,10 +1815,13 @@ class ArchivesView(ActivateUserCheck, View):
         archives_date = date.today() + timedelta(days=-1)
         archives1 = Project.objects.filter(
             division=division, tender_date__range=["2021-01-01", archives_date]
+        ).order_by("-tender_date", "-tender_time", "-project_number")
+        archives2 = (
+            Project.objects.filter(division=division)
+            .exclude(status=2)
+            .order_by("-tender_date", "-tender_time", "-project_number")
         )
-        archives2 = Project.objects.filter(division=division).exclude(status=2)
         archives = archives1 | archives2
-        archives = archives.order_by("-tender_date", "-tender_time", "-project_number")
         ctx = {"archives": archives, "divisions": divisions, "form": form}
         return render(request, "archives.html", ctx)
 
