@@ -68,6 +68,7 @@
     <table class="table-responsive-xl table-striped table-bordered" style="width: 100%;">
         <thead>
             <tr>
+                <th scope="col" style="text-align: center;">Lp</th>
                 <th scope="col" style="text-align: center;">Oferent</th>
                 <th scope="col" style="text-align: center;">Cena ({{ tender.value_weight.weight }}%)</th>
                 <th scope="col" style="text-align: center;">Do inwestora</th>
@@ -94,6 +95,7 @@
                 {% else %}
             <tr>
                 {% endif %}
+                <th scope="col" style="text-align: center;">{{ forloop.counter }}</th>
                 <td scope="col" style="text-align: center;">
                     <a href="{% url 'company-details' i.tenderer.id %}">{{ i.tenderer.company_name }}</a>
                     {% if not i.is_winner and not winner %}
