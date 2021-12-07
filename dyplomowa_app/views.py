@@ -1854,7 +1854,7 @@ class ArchivesView(ActivateUserCheck, View):
             archives1 = (
                 Project.objects.filter(division=division)
                 .exclude(status=2)
-                .order_by("tender_date", "tender_time", "project_number")
+                .order_by("-tender_date", "-tender_time", "-project_number")
             )
             if text:
                 archives1 = (
@@ -1863,12 +1863,12 @@ class ArchivesView(ActivateUserCheck, View):
                         division=division,
                     )
                     .exclude(status=2)
-                    .order_by("tender_date", "tender_time", "project_number")
+                    .order_by("-tender_date", "-tender_time", "-project_number")
                 )
             archives2 = (
                 Project.objects.filter(division=division)
                 .exclude(status=2)
-                .order_by("tender_date", "tender_time", "project_number")
+                .order_by("-tender_date", "-tender_time", "-project_number")
             )
             if investor:
                 archives2 = (
@@ -1877,12 +1877,12 @@ class ArchivesView(ActivateUserCheck, View):
                         division=division,
                     )
                     .exclude(status=2)
-                    .order_by("tender_date", "tender_time", "project_number")
+                    .order_by("-tender_date", "-tender_time", "-project_number")
                 )
             archives3 = (
                 Project.objects.filter(division=division)
                 .exclude(status=2)
-                .order_by("tender_date", "tender_time", "project_number")
+                .order_by("-tender_date", "-tender_time", "-project_number")
             )
             if payment_method:
                 archives3 = (
@@ -1891,12 +1891,12 @@ class ArchivesView(ActivateUserCheck, View):
                         division=division,
                     )
                     .exclude(status=2)
-                    .order_by("tender_date", "tender_time", "project_number")
+                    .order_by("-tender_date", "-tender_time", "-project_number")
                 )
             archives4 = (
                 Project.objects.filter(division=division)
                 .exclude(status=2)
-                .order_by("tender_date", "tender_time", "project_number")
+                .order_by("-tender_date", "-tender_time", "-project_number")
             )
             if person:
                 archives4 = (
@@ -1905,12 +1905,12 @@ class ArchivesView(ActivateUserCheck, View):
                         division=division,
                     )
                     .exclude(status=2)
-                    .order_by("tender_date", "tender_time", "project_number")
+                    .order_by("-tender_date", "-tender_time", "-project_number")
                 )
             archives5 = (
                 Project.objects.filter(division=division)
                 .exclude(status=2)
-                .order_by("tender_date", "tender_time", "project_number")
+                .order_by("-tender_date", "-tender_time", "-project_number")
             )
             if status:
                 archives5 = (
@@ -1919,7 +1919,7 @@ class ArchivesView(ActivateUserCheck, View):
                         division=division,
                     )
                     .exclude(status=2)
-                    .order_by("tender_date", "tender_time", "project_number")
+                    .order_by("-tender_date", "-tender_time", "-project_number")
                 )
             archives = archives1 & archives2 & archives3 & archives4 & archives5
 

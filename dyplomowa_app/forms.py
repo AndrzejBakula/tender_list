@@ -243,7 +243,8 @@ class AddDesignerForm(forms.Form):
         widget=forms.TextInput(attrs={"size": 38, "placeholder": "Adres Projektanta"}),
     )
     designer_voivodeship = forms.ModelChoiceField(
-        label="Województwo", queryset=Voivodeship.objects.all()
+        label="Województwo",
+        queryset=Voivodeship.objects.all().order_by("voivodeship_name"),
     )
     designer_note = forms.ModelChoiceField(
         label="Ocena projektanta", queryset=Note.objects.all(), required=False
@@ -365,9 +366,7 @@ class AddProjectForm(forms.Form):
     )
     tender_date = forms.CharField(
         label="Data złożenia",
-        widget=forms.TextInput(
-            attrs={"type": "date", "min": date.today() + timedelta(days=1)}
-        ),
+        widget=forms.TextInput(attrs={"type": "date"}),
         required=False,
     )
     project_name = forms.CharField(
@@ -377,7 +376,7 @@ class AddProjectForm(forms.Form):
     estimated_value = forms.FloatField(label="Szacunkowa wartość", required=False)
     project_deadline_date = forms.CharField(
         label="Termin realizacji (data)",
-        widget=forms.TextInput(attrs={"type": "date", "min": date.today()}),
+        widget=forms.TextInput(attrs={"type": "date"}),
         required=False,
     )
     project_deadline_months = forms.IntegerField(
@@ -524,7 +523,7 @@ class EditProjectForm(forms.Form):
     estimated_value = forms.FloatField(label="Szacunkowa wartość", required=False)
     project_deadline_date = forms.CharField(
         label="Termin realizacji (data)",
-        widget=forms.TextInput(attrs={"type": "date", "min": date.today()}),
+        widget=forms.TextInput(attrs={"type": "date"}),
         required=False,
     )
     project_deadline_months = forms.IntegerField(

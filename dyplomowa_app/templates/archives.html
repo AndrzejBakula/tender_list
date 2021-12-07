@@ -77,7 +77,7 @@
         <td scope="col" style="text-align: center;">
           {% if i.person.all %}
           {% for j in i.person.all %}
-          {{ j.username }} <br>
+          <a href="{% url 'person-details' j.id %}">{{ j.username }}</a> <br>
           {% endfor %}
           {% else %}
           nieokreślono
