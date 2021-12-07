@@ -1567,6 +1567,11 @@ class Projects(View):
         ).order_by("tender_date", "tender_time", "project_number")
         projects = projects1 | projects2
         users = User.objects.filter(is_active=True)
+
+        paginator = Paginator(projects, 15)
+        page = request.GET.get("page")
+        projects = paginator.get_page(page)
+
         ctx = {
             "projects": projects,
             "divisions": divisions,
@@ -1822,6 +1827,11 @@ class ArchivesView(ActivateUserCheck, View):
             .order_by("-tender_date", "-tender_time", "-project_number")
         )
         archives = archives1 | archives2
+
+        paginator = Paginator(archives, 15)
+        page = request.GET.get("page")
+        archives = paginator.get_page(page)
+
         ctx = {"archives": archives, "divisions": divisions, "form": form}
         return render(request, "archives.html", ctx)
 
