@@ -2264,7 +2264,7 @@ class UserDetailsView(ActivateUserCheck, View):
                     len(
                         [
                             j
-                            for j in Project.objects.filter(division=division)
+                            for j in Project.objects.filter(person=user)
                             .exclude(status=1)
                             .exclude(status=2)
                         ]
