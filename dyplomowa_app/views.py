@@ -1923,6 +1923,10 @@ class ArchivesView(ActivateUserCheck, View):
                 )
             archives = archives1 & archives2 & archives3 & archives4 & archives5
 
+            paginator = Paginator(archives, 15)
+            page = request.GET.get("page")
+            archives = paginator.get_page(page)
+
             ctx = {
                 "form": form,
                 "archives": archives,
