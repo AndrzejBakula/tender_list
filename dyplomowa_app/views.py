@@ -2068,6 +2068,7 @@ class DivisionDetails(ActivateUserCheck, View):
             won_projects = Project.objects.filter(division=division, status=5)
             abandoned_projects = Project.objects.filter(division=division, status=3)
             annulled_projects = Project.objects.filter(division=division, status=4)
+            exclused_projects = Project.objects.filter(division=division, status=7)
             ctx = {
                 "division": division,
                 "divisions": divisions,
@@ -2076,6 +2077,7 @@ class DivisionDetails(ActivateUserCheck, View):
                 "abandoned_projects": abandoned_projects,
                 "annulled_projects": annulled_projects,
                 "actual_projects": actual_projects,
+                "exclused_projects": exclused_projects,
             }
             return render(request, "division_details.html", ctx)
         return redirect("/projects")
