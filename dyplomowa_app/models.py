@@ -565,6 +565,7 @@ class Status(models.Model):
         (4, "unieważniony"),
         (5, "wygrany"),
         (6, "przegrany"),
+        (7, "wykluczenie"),
     ]
 
     status_name = models.CharField(max_length=32, unique=True, choices=STATUS)
