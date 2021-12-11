@@ -1851,6 +1851,8 @@ class ArchivesView(ActivateUserCheck, View):
             payment_method = data["payment_method"]
             person = data["person"]
             status = data["status"]
+            date_start = data["date_start"]
+            date_end = data["date_end"]
             archives1 = (
                 Project.objects.filter(division=division)
                 .exclude(status=2)
@@ -1921,7 +1923,43 @@ class ArchivesView(ActivateUserCheck, View):
                     .exclude(status=2)
                     .order_by("-tender_date", "-tender_time", "-project_number")
                 )
-            archives = archives1 & archives2 & archives3 & archives4 & archives5
+            archives6 = (
+                Project.objects.filter(division=division)
+                .exclude(status=2)
+                .order_by("-tender_date", "-tender_time", "-project_number")
+            )
+            if date_start:
+                archives6 = (
+                    Project.objects.filter(
+                        tender_date__gte=date_start,
+                        division=division,
+                    )
+                    .exclude(status=2)
+                    .order_by("-tender_date", "-tender_time", "-project_number")
+                )
+            archives7 = (
+                Project.objects.filter(division=division)
+                .exclude(status=2)
+                .order_by("-tender_date", "-tender_time", "-project_number")
+            )
+            if date_end:
+                archives7 = (
+                    Project.objects.filter(
+                        tender_date__lte=date_end,
+                        division=division,
+                    )
+                    .exclude(status=2)
+                    .order_by("-tender_date", "-tender_time", "-project_number")
+                )
+            archives = (
+                archives1
+                & archives2
+                & archives3
+                & archives4
+                & archives5
+                & archives6
+                & archives7
+            )
 
             paginator = Paginator(archives, 15)
             page = request.GET.get("page")

@@ -645,6 +645,16 @@ class SearchArchiveForm(forms.Form):
         self.fields["status"] = forms.ModelChoiceField(
             label="status", queryset=Status.objects.all().exclude(id=2), required=False
         )
+        self.fields["date_start"] = forms.DateField(
+            label="data od",
+            widget=forms.TextInput(attrs={"type": "date"}),
+            required=False,
+        )
+        self.fields["date_end"] = forms.DateField(
+            label="data do",
+            widget=forms.TextInput(attrs={"type": "date"}),
+            required=False,
+        )
 
 
 class SearchInvestorForm(forms.Form):
