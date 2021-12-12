@@ -1968,7 +1968,6 @@ class ArchivesView(ActivateUserCheck, View):
             ctx = {
                 "form": form,
                 "archives": archives,
-                "post": request.POST,
                 "divisions": divisions,
             }
             return render(request, "archives.html", ctx)
