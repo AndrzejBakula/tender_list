@@ -29,7 +29,7 @@ class RegisterForm(forms.Form):
     username = forms.CharField(
         label="",
         max_length=128,
-        widget=forms.TextInput(attrs={"size": 34, "placeholder": "Nazwa urzytkownika"}),
+        widget=forms.TextInput(attrs={"size": 34, "placeholder": "Nazwa użytkownika"}),
     )
     email = forms.EmailField(
         label="",
