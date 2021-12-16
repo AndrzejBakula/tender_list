@@ -1962,7 +1962,7 @@ class ArchivesView(ActivateUserCheck, View):
             )
 
             paginator = Paginator(archives, 15)
-            page = request.POST.get("page")
+            page = request.GET.get("page")
             archives = paginator.get_page(page)
 
             ctx = {
