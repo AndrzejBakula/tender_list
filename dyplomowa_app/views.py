@@ -2962,7 +2962,7 @@ class DeleteTenderConfirm(StaffMemberCheck, View):
         tender = Tender.objects.get(id=tender_id)
         division = Division.objects.get(pk=request.session.get("division_id"))
         if division == project.division and tender == project.tender:  # url lock
-            criteria = Criteria.objects.filter(tender=ternder)
+            criteria = Criteria.objects.filter(tender=tender)
             for i in criteria:
                 i.delete()
             tenderers = Tenderer.objects.filter(tender=tender)
