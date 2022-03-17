@@ -122,15 +122,42 @@
                 </tr>
                 <tr>
                     <th scope="col">Rezygnacja ze startu</th>
-                    <td scope="col">{{ abandoned_projects.count }}</td>
+                    <td scope="col">
+                        {{ abandoned_projects.count }}
+                        {% with numerator=abandoned_projects.count denumerator=bade_projects.count %}
+                        {% if denumerator != 0 %}
+                        {% with answer=numerator|div:denumerator %}
+                        ({{ answer|mul:100|floatformat:2 }}% skuteczności)
+                        {% endwith %}
+                        {% endif %}
+                        {% endwith %}
+                    </td>
                 </tr>
                 <tr>
                     <th scope="col">Unieważnione przetargi</th>
-                    <td scope="col">{{ annulled_projects.count }}</td>
+                    <td scope="col">
+                        {{ annulled_projects.count }}
+                        {% with numerator=annulled_projects.count denumerator=bade_projects.count %}
+                        {% if denumerator != 0 %}
+                        {% with answer=numerator|div:denumerator %}
+                        ({{ answer|mul:100|floatformat:2 }}% skuteczności)
+                        {% endwith %}
+                        {% endif %}
+                        {% endwith %}
+                    </td>
                 </tr>
                 <tr>
                     <th scope="col">Wykluczenie z przetargu</th>
-                    <td scope="col">{{ exclused_projects.count }}</td>
+                    <td scope="col">
+                        {{ exclused_projects.count }}
+                        {% with numerator=exclused_projects.count denumerator=bade_projects.count %}
+                        {% if denumerator != 0 %}
+                        {% with answer=numerator|div:denumerator %}
+                        ({{ answer|mul:100|floatformat:2 }}% skuteczności)
+                        {% endwith %}
+                        {% endif %}
+                        {% endwith %}
+                    </td>
                 </tr>
             </tbody>
         </table>
