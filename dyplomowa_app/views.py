@@ -2319,12 +2319,30 @@ class UserDetailsView(ActivateUserCheck, View):
             user_divisions_won.append(
                 (i, len([j for j in i.project_set.filter(person=user, status=5)]))
             )
+        user_divisions_abandoned = []
+        for i in Division.objects.filter(division_person=user):
+            user_divisions_abandoned.append(
+                (i, len([j for j in i.project_set.filter(person=user, status=3)]))
+            )
+        user_divisions_annulled = []
+        for i in Division.objects.filter(division_person=user):
+            user_divisions_annulled.append(
+                (i, len([j for j in i.project_set.filter(person=user, status=4)]))
+            )
+        user_divisions_exclused = []
+        for i in Division.objects.filter(division_person=user):
+            user_divisions_exclused.append(
+                (i, len([j for j in i.project_set.filter(person=user, status=7)]))
+            )
         ctx = {
             "divisions": divisions,
             "user_divisions_projects": user_divisions_projects,
             "user_divisions_active": user_divisions_active,
             "user_divisions_bade": user_divisions_bade,
             "user_divisions_won": user_divisions_won,
+            "user_divisions_abandoned": user_divisions_abandoned,
+            "user_divisions_annulled": user_divisions_annulled,
+            "user_divisions_exclused": user_divisions_exclused
         }
         return render(request, "user_details.html", ctx)
 
