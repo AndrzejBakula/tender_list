@@ -2971,6 +2971,7 @@ class DeleteTenderConfirm(StaffMemberCheck, View):
                 for j in criteria:
                     j.delete()
                 i.delete()
-            tender.delete()
+            project.tender = None
+            project.save()
             return redirect("/projects")
         return redirect("/projects")
