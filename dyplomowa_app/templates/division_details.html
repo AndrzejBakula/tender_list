@@ -127,7 +127,7 @@
                         {% with numerator=abandoned_projects.count denumerator=bade_projects.count %}
                         {% if denumerator != 0 %}
                         {% with answer=numerator|div:denumerator %}
-                        ({{ answer|mul:100|floatformat:2 }}% skuteczności)
+                        ({{ answer|mul:100|floatformat:2 }}%)
                         {% endwith %}
                         {% endif %}
                         {% endwith %}
@@ -140,7 +140,7 @@
                         {% with numerator=annulled_projects.count denumerator=bade_projects.count %}
                         {% if denumerator != 0 %}
                         {% with answer=numerator|div:denumerator %}
-                        ({{ answer|mul:100|floatformat:2 }}% skuteczności)
+                        ({{ answer|mul:100|floatformat:2 }}%)
                         {% endwith %}
                         {% endif %}
                         {% endwith %}
@@ -153,7 +153,7 @@
                         {% with numerator=exclused_projects.count denumerator=bade_projects.count %}
                         {% if denumerator != 0 %}
                         {% with answer=numerator|div:denumerator %}
-                        ({{ answer|mul:100|floatformat:2 }}% skuteczności)
+                        ({{ answer|mul:100|floatformat:2 }}%)
                         {% endwith %}
                         {% endif %}
                         {% endwith %}
