@@ -2342,7 +2342,7 @@ class UserDetailsView(ActivateUserCheck, View):
             "user_divisions_won": user_divisions_won,
             "user_divisions_abandoned": user_divisions_abandoned,
             "user_divisions_annulled": user_divisions_annulled,
-            "user_divisions_exclused": user_divisions_exclused
+            "user_divisions_exclused": user_divisions_exclused,
         }
         return render(request, "user_details.html", ctx)
 
@@ -2649,6 +2649,7 @@ class AddTenderDetails(StaffMemberCheck, View):
             form_guarantee = None
             if tender.is_guarantee:
                 form_guarantee = AddMissingGuaranteeForm(tender=tender)
+
             ctx = {
                 "divisions": divisions,
                 "project": project,
@@ -2722,12 +2723,19 @@ class TenderDetailsView(ActivateUserCheck, View):
             else:
                 rest = tender.tenderer.all().order_by("offer_value")
                 tenderers = [i for i in rest]
+            avarange_price = None
+            if Tenderer.objects.filter(tender=tender).count() > 0:
+                avarange_price = (
+                    sum([i.offer_value for i in Tenderer.objects.filter(tender=tender)])
+                    / Tenderer.objects.filter(tender=tender).count()
+                )
             ctx = {
                 "divisions": divisions,
                 "project": project,
                 "tender": tender,
                 "winner": winner,
                 "tenderers": tenderers,
+                "avarange_price": avarange_price,
             }
             return render(request, "tender_details.html", ctx)
         return redirect("/projects")
