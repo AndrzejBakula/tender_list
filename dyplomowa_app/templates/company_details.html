@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load mathfilters %}
 
 {% block title %} Szczegóły Firmy {% endblock %}
 
@@ -41,12 +42,21 @@
                     <td></td>
                 </tr>
                 <tr>
-                    <th scope="col">W ilu przetargach</th>
+                    <th scope="col">Wspólne przetargi</th>
                     <td scope="col">{{ company.tenderer_set.all.count }}</td>
                 </tr>
                 <tr>
                     <th scope="col">Liczba wygranych</th>
-                    <td scope="col">{{ won_tenders.count }}</td>
+                    <td scope="col">
+                        {{ won_tenders.count }}
+                        {% with numerator=won_tenders.count denumerator=company.tenderer_set.all.count %}
+                        {% if denumerator != 0 %}
+                        {% with answer=numerator|div:denumerator %}
+                        ({{ answer|mul:100|floatformat:2 }}% skuteczności)
+                        {% endwith %}
+                        {% endif %}
+                        {% endwith %}
+                    </td>
                 </tr>
             </tbody>
         </table>
