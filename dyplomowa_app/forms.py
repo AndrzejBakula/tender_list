@@ -242,6 +242,13 @@ class AddDesignerForm(forms.Form):
         max_length=256,
         widget=forms.TextInput(attrs={"size": 38, "placeholder": "Adres Projektanta"}),
     )
+    designer_email = forms.EmailField(
+        label="",
+        max_length=128,
+        widget=forms.EmailInput(
+            attrs={"size": 34, "placeholder": "Adres email (opcjonalne)"}
+        ),
+    )
     designer_voivodeship = forms.ModelChoiceField(
         label="Województwo",
         queryset=Voivodeship.objects.all().order_by("voivodeship_name"),
@@ -282,6 +289,13 @@ class EditDesignerForm(forms.Form):
         label="",
         max_length=256,
         widget=forms.TextInput(attrs={"size": 38, "placeholder": "Adres Projektanta"}),
+    )
+    designer_email = forms.EmailField(
+        label="",
+        max_length=128,
+        widget=forms.EmailInput(
+            attrs={"size": 34, "placeholder": "Adres email (opcjonalne)"}
+        ),
     )
     designer_voivodeship = forms.ModelChoiceField(
         label="Województwo", queryset=Voivodeship.objects.all()
@@ -621,7 +635,7 @@ class SearchArchiveForm(forms.Form):
             max_length=64,
             widget=forms.TextInput(
                 attrs={
-                    "size": 32,
+                    "size": 34,
                     "placeholder": "Wprowadź fragment nazwy projektu",
                 }
             ),
@@ -663,7 +677,7 @@ class SearchInvestorForm(forms.Form):
         max_length=64,
         widget=forms.TextInput(
             attrs={
-                "size": 32,
+                "size": 34,
                 "placeholder": "Fragment nazwy inwestora",
             }
         ),
@@ -692,7 +706,7 @@ class SearchCompanyForm(forms.Form):
         max_length=64,
         widget=forms.TextInput(
             attrs={
-                "size": 32,
+                "size": 34,
                 "placeholder": "Wprowadź fragment nazwy firmy",
             }
         ),
@@ -716,7 +730,7 @@ class SearchDesignerForm(forms.Form):
         max_length=64,
         widget=forms.TextInput(
             attrs={
-                "size": 32,
+                "size": 34,
                 "placeholder": "Wprowadź fragment nazwy projektanta",
             }
         ),

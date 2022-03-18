@@ -119,7 +119,7 @@ class Poviat(models.Model):
         (27, "karkonoski"),
         (28, "zgorzelecki"),
         (29, "lubański"),
-        (380, "lwówiecki"),
+        (380, "lwówecki"),
         # OPOLSKIE
         (30, "Opole"),
         (31, "opolski"),
@@ -525,6 +525,7 @@ class InvestorNote(models.Model):
 class Designer(models.Model):
     designer_name = models.CharField(max_length=128)
     designer_address = models.CharField(max_length=128)
+    designer_email = models.EmailField(max_length=64, null=True, default=None)
     designer_voivodeship = models.ForeignKey(
         Voivodeship, on_delete=models.DO_NOTHING, default=Voivodeship.VOIVODESHIP[0][0]
     )

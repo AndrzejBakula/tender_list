@@ -108,7 +108,9 @@
                     <a href="{% url 'make-winner' tender.id i.id %}"> (Oznacz jako wygranego)</a>
                     {% elif i.is_winner %}
                     WYGRANY!
+                    {% if user in division.division_admin.all %}
                     <a href="{% url 'remove-winner' tender.id i.id %}">(Zmień)</a>
+                    {% endif %}
                     {% endif %}
                 </td>
                 <td scope="col" style="text-align: center;">
@@ -119,7 +121,9 @@
                     {{ i.offer_value|div:tender.investor_budget|mul:100|floatformat:2 }} %
                 </td>
                 <td scope="col" style="text-align: center;">
+                    {% if tenderers.0.offer_value > 0 %}
                     {{ i.offer_value|div:tenderers.0.offer_value|mul:100|floatformat:2 }} %
+                    {% endif %}
                 </td>
                 {% if i.offer_guarantee %}
                 <td scope="col" style="text-align: center;">{{ i.offer_guarantee }} mies.</td>

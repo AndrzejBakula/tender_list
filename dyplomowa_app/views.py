@@ -1128,6 +1128,7 @@ class AddDesigner(StaffMemberCheck, View):
             data = form.cleaned_data
             designer_name = data["designer_name"]
             designer_address = data["designer_address"]
+            designer_email = data["designer_email"]
             designer_voivodeship = data["designer_voivodeship"]
             designer_note = data["designer_note"]
             designers_names = [
@@ -1138,6 +1139,7 @@ class AddDesigner(StaffMemberCheck, View):
                 designer = Designer.objects.create(
                     designer_name=designer_name,
                     designer_address=designer_address,
+                    designer_email=designer_email,
                     designer_voivodeship=designer_voivodeship,
                     designer_added_by=user,
                 )
@@ -1324,6 +1326,7 @@ class EditDesigner(StaffMemberCheck, View):
             initial_data = {
                 "designer_name": designer.designer_name,
                 "designer_address": designer.designer_address,
+                "designer_email": designer.designer_email,
                 "designer_voivodeship": designer.designer_voivodeship,
             }
             form = EditDesignerForm(initial=initial_data)
@@ -1338,6 +1341,7 @@ class EditDesigner(StaffMemberCheck, View):
             data = form.cleaned_data
             designer.designer_name = data["designer_name"]
             designer.designer_address = data["designer_address"]
+            designer.designer_email = data["designer_email"]
             designer.designer_voivodeship = data["designer_voivodeship"]
             designer.save()
             ctx = {
@@ -2731,6 +2735,7 @@ class TenderDetailsView(ActivateUserCheck, View):
                 )
             ctx = {
                 "divisions": divisions,
+                "division": division,
                 "project": project,
                 "tender": tender,
                 "winner": winner,
