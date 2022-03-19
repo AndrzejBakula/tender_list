@@ -59,7 +59,8 @@
       <td scope="col" style="text-align: center;"><a href="{% url 'designer-details' i.id %}">{{ i.designer_name }}</a>
       </td>
       <td scope="col" style="text-align: center;">{{ i.designer_address }}</td>
-      <td scope="col" style="text-align: center;">{{ i.designer_email }}</td>
+      <td scope="col" style="text-align: center;">{% if i.designer_email %} {{ i.designer_email }} {% else %} brak
+        {% endif %}</td>
       <td scope="col" style="text-align: center;">{{ i.designer_voivodeship }}</td>
       <td scope="col" style="text-align: center;">{% if i.designer_poviat %} {{ i.designer_poviat }} {% else %}
         nieokreślono {% endif %}</td>

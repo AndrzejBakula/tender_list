@@ -23,7 +23,8 @@
                 </tr>
                 <tr>
                     <th scope="col">Email projektanta</th>
-                    <td scope="col">{{ designer.designer_email }}</td>
+                    <td scope="col">{% if designer.designer_email %} {{ designer.designer_email }} {% else %} brak
+                        {% endif %}</td>
                 </tr>
                 <tr>
                     <th scope="col">Województwo</th>
