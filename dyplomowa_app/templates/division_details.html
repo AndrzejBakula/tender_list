@@ -100,6 +100,10 @@
                     <td scope="col">{{ division.project_set.all.count }}</td>
                 </tr>
                 <tr>
+                    <th scope="col">Najstarszy projekt</th>
+                    <td scope="col">{{ oldest_project.project_name }} ({{ oldest_project.tender_date }})</td>
+                </tr>
+                <tr>
                     <th scope="col">W przygotowaniu</th>
                     <td scope="col">{{ actual_projects.count }}</td>
                 </tr>

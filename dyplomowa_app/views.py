@@ -20,6 +20,8 @@ from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.views import View
 from horyzont_app.settings import PROTOCOLE
 
+from django.db.models import Min
+
 from .forms import (
     AddCompanyForm,
     AddCompanyPoviatForm,
@@ -1835,12 +1837,18 @@ class ArchivesView(ActivateUserCheck, View):
             .order_by("-tender_date", "-tender_time", "-project_number")
         )
         archives = archives1 | archives2
+        oldest_project = archives.reverse()[0]
 
         paginator = Paginator(archives, 15)
         page = request.GET.get("page")
         archives = paginator.get_page(page)
 
-        ctx = {"archives": archives, "divisions": divisions, "form": form}
+        ctx = {
+            "archives": archives,
+            "divisions": divisions,
+            "form": form,
+            "oldest_project": oldest_project,
+        }
         return render(request, "archives.html", ctx)
 
     def post(self, request):
@@ -2114,6 +2122,7 @@ class DivisionDetails(ActivateUserCheck, View):
             abandoned_projects = Project.objects.filter(division=division, status=3)
             annulled_projects = Project.objects.filter(division=division, status=4)
             exclused_projects = Project.objects.filter(division=division, status=7)
+            oldest_project = bade_projects.reverse()[0]
             ctx = {
                 "division": division,
                 "divisions": divisions,
@@ -2123,6 +2132,7 @@ class DivisionDetails(ActivateUserCheck, View):
                 "annulled_projects": annulled_projects,
                 "actual_projects": actual_projects,
                 "exclused_projects": exclused_projects,
+                "oldest_project": oldest_project,
             }
             return render(request, "division_details.html", ctx)
         return redirect("/projects")
