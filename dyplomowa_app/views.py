@@ -2350,6 +2350,16 @@ class UserDetailsView(ActivateUserCheck, View):
                     ),
                 )
             )
+        user_divisions_oldest = []
+        for i in Division.objects.filter(division_person=user):
+            user_divisions_oldest.append(
+                (
+                    i,
+                    Project.objects.filter(division=i, person=user).order_by(
+                        "tender_date"
+                    ),
+                )
+            )
         user_divisions_won = []
         for i in Division.objects.filter(division_person=user):
             user_divisions_won.append(
@@ -2373,6 +2383,7 @@ class UserDetailsView(ActivateUserCheck, View):
         ctx = {
             "divisions": divisions,
             "user_divisions_projects": user_divisions_projects,
+            "user_divisions_oldest": user_divisions_oldest,
             "user_divisions_active": user_divisions_active,
             "user_divisions_bade": user_divisions_bade,
             "user_divisions_won": user_divisions_won,

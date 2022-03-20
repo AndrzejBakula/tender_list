@@ -38,6 +38,19 @@
                     </td>
                 </tr>
                 <tr>
+                    <th scope="col">Najstarszy projekt</th>
+                    <td scope="col">
+                        {% for i in user_divisions_oldest %}
+                        {% if i.1.count > 0 %}
+                        {{ i.0.division_name }}: {{ i.1.0.tender_date }}
+                        {% else %}
+                        {{ i.0.division_name }}: brak projektów
+                        {% endif %}
+                        <hr>
+                        {% endfor %}
+                    </td>
+                </tr>
+                <tr>
                     <th scope="col">W przygotowaniu</th>
                     <td scope="col">
                         {% for i in user_divisions_active %}
