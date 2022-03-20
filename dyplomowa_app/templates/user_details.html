@@ -42,7 +42,7 @@
                     <td scope="col">
                         {% for i in user_divisions_oldest %}
                         {% if i.1.count > 0 %}
-                        {{ i.0.division_name }}: {{ i.1.0.tender_date }}
+                        {{ i.0.division_name }}: {{ i.1.0.project_name }} ({{ i.1.0.tender_date }})
                         {% else %}
                         {{ i.0.division_name }}: brak projektów
                         {% endif %}
