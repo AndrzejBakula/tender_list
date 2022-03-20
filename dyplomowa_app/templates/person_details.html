@@ -33,8 +33,17 @@
                 </tr>
                 <tr>
                     <th scope="col">Najstarszy projekt</th>
-                    <td scope="col">{% if person_division_oldest.count > 0 %}{{ person_division_oldest.0.project_name }}
-                        ({{ person_division_oldest.0.tender_date }}) {% else %} brak projektów {% endif %}</td>
+                    <td scope="col">
+                        {% if person_division_oldest.count > 0 %}
+                        {{ person_division_oldest.0.project_name }}
+                        {% if person_division_oldest.0.tender_date %}
+                        </br>
+                        ({{ person_division_oldest.0.tender_date }})
+                        {% endif %}
+                        {% else %}
+                        brak projektów
+                        {% endif %}
+                    </td>
                 </tr>
                 <tr>
                     <th scope="col">W przygotowaniu</th>

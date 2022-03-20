@@ -2140,7 +2140,9 @@ class DivisionDetails(ActivateUserCheck, View):
             abandoned_projects = Project.objects.filter(division=division, status=3)
             annulled_projects = Project.objects.filter(division=division, status=4)
             exclused_projects = Project.objects.filter(division=division, status=7)
-            oldest_project = bade_projects.reverse()[0]
+            oldest_project = None
+            if bade_projects.count() > 0:
+                oldest_project = bade_projects.reverse()[0]
             ctx = {
                 "division": division,
                 "divisions": divisions,
