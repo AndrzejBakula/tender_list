@@ -965,9 +965,9 @@ class CompaniesView(ActivateUserCheck, View):
                 rest = companies.all().order_by("company_name")
                 companies = [i for i in rest]
 
-            paginator = Paginator(companies, 15)
-            page = request.GET.get("page")
-            companies = paginator.get_page(page)
+            # paginator = Paginator(companies, 15)
+            # page = request.GET.get("page")
+            # companies = paginator.get_page(page)
 
             ctx = {
                 "form": form,

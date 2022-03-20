@@ -7,7 +7,7 @@
 
 <div class="d-flex flex-column align-items-center" style="height: 100%; width: 100%;"></div>
 <div class="d-flex flex-row justify-content-center align-items-center">
-  <h2 class="display-5 align-self-center">Zestawienie Firm</a></h2>
+  <h2 class="display-5 align-self-center">Zestawienie Firm ({{ companies|length }})</a></h2>
 </div>
 
 <form class="d-flex flex-row flex-wrap justify-content-center align-items-center" style="height: 100%; width: 100%;"
@@ -42,7 +42,6 @@
 <table class="table-responsive-xl table-striped table-bordered" style="width: 100%;">
   <thead>
     <tr>
-      <th scope="col" style="text-align: center;">Lp</th>
       <th scope="col" style="text-align: center;">Nazwa</th>
       <th scope="col" style="text-align: center;">Adres</th>
       <th scope="col" style="text-align: center;">Województwo</th>
@@ -54,7 +53,6 @@
     {% for i in companies %}
     {% if i.division_company %}
     <tr style="background-color: lightblue;">
-      <th scope="col" style="text-align: center;">{{ forloop.counter0|add:companies.start_index }}</th>
       <td scope="col" style="text-align: center;">
         <a href="{% url 'company-details' i.id %}">{{ i.company_name }}</a>
         {% if not i.division_company and not division_company %}
@@ -73,7 +71,6 @@
     </tr>
     {% else %}
     <tr>
-      <th scope="col" style="text-align: center;">{{ forloop.counter0|add:companies.start_index }}</th>
       <td scope="col" style="text-align: center;">
         <a href="{% url 'company-details' i.id %}">{{ i.company_name }}</a>
         {% if not i.division_company and not division_company %}
