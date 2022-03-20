@@ -1990,6 +1990,9 @@ class ArchivesView(ActivateUserCheck, View):
                 & archives6
                 & archives7
             )
+            oldest_project = None
+            if archives.count() > 0:
+                oldest_project = archives.reverse()[0]
 
             # paginator = Paginator(archives, 15)
             # page = request.GET.get("page")
@@ -1999,6 +2002,7 @@ class ArchivesView(ActivateUserCheck, View):
                 "form": form,
                 "archives": archives,
                 "divisions": divisions,
+                "oldest_project": oldest_project,
             }
             return render(request, "archives.html", ctx)
 
