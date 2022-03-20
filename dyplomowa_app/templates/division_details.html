@@ -101,7 +101,8 @@
                 </tr>
                 <tr>
                     <th scope="col">Najstarszy projekt</th>
-                    <td scope="col">{{ oldest_project.project_name }} ({{ oldest_project.tender_date }})</td>
+                    <td scope="col">{% if oldest_project %}{{ oldest_project.project_name }}
+                        ({{ oldest_project.tender_date }}) {% else %} brak projektów {% endif %}</td>
                 </tr>
                 <tr>
                     <th scope="col">W przygotowaniu</th>

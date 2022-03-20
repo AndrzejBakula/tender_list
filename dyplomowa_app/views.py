@@ -2295,6 +2295,9 @@ class PersonDetailsView(ActivateUserCheck, View):
             if request.session.get("division_id"):
                 division = Division.objects.get(id=request.session.get("division_id"))
             person_projects = Project.objects.filter(person=person, division=division)
+            person_division_oldest = Project.objects.filter(
+                person=person, division=division
+            ).order_by("tender_date")
             person_division_active = Project.objects.filter(
                 person=person, division=division, status=2
             )
@@ -2310,6 +2313,7 @@ class PersonDetailsView(ActivateUserCheck, View):
                 "person": person,
                 "divisions": divisions,
                 "person_projects": person_projects,
+                "person_division_oldest": person_division_oldest,
                 "person_division_active": person_division_active,
                 "person_division_bade": person_division_bade,
                 "person_division_won": person_division_won,
