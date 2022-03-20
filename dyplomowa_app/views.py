@@ -2733,9 +2733,17 @@ class TenderDetailsView(ActivateUserCheck, View):
                 tenderers = [i for i in rest]
             avarange_price = None
             if Tenderer.objects.filter(tender=tender).count() > 0:
-                avarange_price = (
-                    sum([i.offer_value for i in Tenderer.objects.filter(tender=tender)])
-                    / Tenderer.objects.filter(tender=tender).count()
+                avarange_price = round(
+                    (
+                        sum(
+                            [
+                                i.offer_value
+                                for i in Tenderer.objects.filter(tender=tender)
+                            ]
+                        )
+                        / Tenderer.objects.filter(tender=tender).count()
+                    ),
+                    2,
                 )
             ctx = {
                 "divisions": divisions,
