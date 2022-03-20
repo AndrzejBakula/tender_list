@@ -7,7 +7,7 @@
 
 <div class="d-flex flex-column align-items-center" style="height: 100%; width: 100%;"></div>
 <div class="d-flex flex-row justify-content-center align-items-center">
-  <h2 class="display-5 align-self-center">Zestawienie Projektantów</a></h2>
+  <h2 class="display-5 align-self-center">Zestawienie Projektantów ({{ all_designers|length }})</a></h2>
 </div>
 
 <form class="d-flex flex-row justify-content-center align-items-center flex-wrap" style="height: 100%; width: 100%;"
@@ -42,7 +42,6 @@
 <table class="table-responsive-xl table-striped table-bordered" style="width: 100%;">
   <thead>
     <tr>
-      <th scope="col" style="text-align: center;">LP</th>
       <th scope="col" style="text-align: center;">Nazwa</th>
       <th scope="col" style="text-align: center;">Adres</th>
       <th scope="col" style="text-align: center;">Email</th>
@@ -55,7 +54,6 @@
   <tbody>
     {% for i in designers %}
     <tr>
-      <th scope="col" style="text-align: center;">{{ forloop.counter0|add:designers.start_index }}</th>
       <td scope="col" style="text-align: center;"><a href="{% url 'designer-details' i.id %}">{{ i.designer_name }}</a>
       </td>
       <td scope="col" style="text-align: center;">{{ i.designer_address }}</td>

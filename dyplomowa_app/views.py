@@ -578,13 +578,19 @@ class InvestorsView(ActivateUserCheck, View):
         divisions = [i.id for i in Division.objects.filter(division_admin=user)]
         division = Division.objects.get(id=request.session.get("division_id"))
         investors = Investor.objects.filter(division=division).order_by("investor_name")
+        all_investors = investors
         form = SearchInvestorForm()
 
         paginator = Paginator(investors, 15)
         page = request.GET.get("page")
         investors = paginator.get_page(page)
 
-        ctx = {"investors": investors, "divisions": divisions, "form": form}
+        ctx = {
+            "investors": investors,
+            "all_investors": all_investors,
+            "divisions": divisions,
+            "form": form,
+        }
         return render(request, "investors.html", ctx)
 
     def post(self, request):
@@ -895,6 +901,7 @@ class CompaniesView(ActivateUserCheck, View):
         else:
             rest = companies.all().order_by("company_name")
             companies = [i for i in rest]
+        all_companies = companies
 
         paginator = Paginator(companies, 15)
         page = request.GET.get("page")
@@ -902,6 +909,7 @@ class CompaniesView(ActivateUserCheck, View):
 
         ctx = {
             "companies": companies,
+            "all_companies": all_companies,
             "divisions": divisions,
             "form": form,
             "division_company": division_company,
@@ -1214,12 +1222,18 @@ class DesignersView(ActivateUserCheck, View):
             division = Division.objects.get(pk=request.session["division_id"])
         form = SearchDesignerForm()
         designers = Designer.objects.filter(division=division).order_by("designer_name")
+        all_designers = designers
 
         paginator = Paginator(designers, 15)
         page = request.GET.get("page")
         designers = paginator.get_page(page)
 
-        ctx = {"designers": designers, "divisions": divisions, "form": form}
+        ctx = {
+            "designers": designers,
+            "all_designers": all_designers,
+            "divisions": divisions,
+            "form": form,
+        }
         return render(request, "designers.html", ctx)
 
     def post(self, request):
@@ -1261,9 +1275,9 @@ class DesignersView(ActivateUserCheck, View):
             if text or voivodeship or poviat:
                 designers = designers1 & designers2 & designers3
 
-            paginator = Paginator(designers, 15)
-            page = request.GET.get("page")
-            designers = paginator.get_page(page)
+            # paginator = Paginator(designers, 15)
+            # page = request.GET.get("page")
+            # designers = paginator.get_page(page)
 
             ctx = {
                 "form": form,
