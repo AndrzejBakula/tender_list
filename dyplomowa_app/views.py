@@ -635,9 +635,9 @@ class InvestorsView(ActivateUserCheck, View):
             if text or voivodeship or poviat or administration_level:
                 investors = investors1 & investors2 & investors3 & investors4
 
-            paginator = Paginator(investors, 15)
-            page = request.GET.get("page")
-            investors = paginator.get_page(page)
+            # paginator = Paginator(investors, 15)
+            # page = request.GET.get("page")
+            # investors = paginator.get_page(page)
 
             ctx = {
                 "form": form,
