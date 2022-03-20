@@ -668,6 +668,9 @@ class InvestorDetails(ActivateUserCheck, View):
             abandoned_projects = Project.objects.filter(
                 investor=investor, division=division, status=3
             )
+            exclused_projects = Project.objects.filter(
+                investor=investor, division=division, status=7
+            )
             noters = [
                 i.investor_note_user
                 for i in InvestorNote.objects.filter(investor_note_investor=investor)
@@ -682,6 +685,7 @@ class InvestorDetails(ActivateUserCheck, View):
                 "won_projects": won_projects,
                 "annulled_projects": annulled_projects,
                 "abandoned_projects": abandoned_projects,
+                "exclused_projects": exclused_projects,
                 "noters": noters,
                 "form": form,
             }
