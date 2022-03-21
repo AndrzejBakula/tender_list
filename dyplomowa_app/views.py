@@ -2349,9 +2349,10 @@ class UserDetailsView(ActivateUserCheck, View):
                     len(
                         [
                             j
-                            for j in Project.objects.filter(person=user)
+                            for j in Project.objects.filter(division=i, person=user)
                             .exclude(status=1)
                             .exclude(status=2)
+                            .exclude(status=3)
                         ]
                     ),
                 )
@@ -2361,9 +2362,11 @@ class UserDetailsView(ActivateUserCheck, View):
             user_divisions_oldest.append(
                 (
                     i,
-                    Project.objects.filter(division=i, person=user).order_by(
-                        "tender_date"
-                    ),
+                    Project.objects.filter(division=i, person=user)
+                    .exclude(status=1)
+                    .exclude(status=2)
+                    .exclude(status=3)
+                    .order_by("tender_date"),
                 )
             )
         user_divisions_won = []
