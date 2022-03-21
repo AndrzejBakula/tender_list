@@ -2334,7 +2334,12 @@ class UserDetailsView(ActivateUserCheck, View):
         user_divisions_projects = []
         for i in Division.objects.filter(division_person=user):
             user_divisions_projects.append(
-                (i, len([j for j in i.project_set.filter(person=user)]))
+                (
+                    i,
+                    len(
+                        [j for j in i.project_set.filter(person=user).exclude(status=1)]
+                    ),
+                )
             )
         user_divisions_active = []
         for i in Division.objects.filter(division_person=user):
