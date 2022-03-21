@@ -1851,7 +1851,9 @@ class ArchivesView(ActivateUserCheck, View):
             .order_by("-tender_date", "-tender_time", "-project_number")
         )
         archives = archives1 | archives2
-        oldest_project = archives.reverse()[0]
+        oldest_project = None
+        if archives.count() > 0:
+            oldest_project = archives.reverse()[0]
 
         paginator = Paginator(archives, 15)
         page = request.GET.get("page")
@@ -2135,6 +2137,7 @@ class DivisionDetails(ActivateUserCheck, View):
                 Project.objects.filter(division=division)
                 .exclude(status=1)
                 .exclude(status=2)
+                .exclude(status=3)
             )
             won_projects = Project.objects.filter(division=division, status=5)
             abandoned_projects = Project.objects.filter(division=division, status=3)
@@ -2296,10 +2299,16 @@ class PersonDetailsView(ActivateUserCheck, View):
             division = None
             if request.session.get("division_id"):
                 division = Division.objects.get(id=request.session.get("division_id"))
-            person_projects = Project.objects.filter(person=person, division=division)
-            person_division_oldest = Project.objects.filter(
+            person_projects = Project.objects.filter(
                 person=person, division=division
-            ).order_by("tender_date")
+            ).exclude(status=1)
+            person_division_oldest = (
+                Project.objects.filter(person=person, division=division)
+                .exclude(status=1)
+                .exclude(status=2)
+                .exclude(status=3)
+                .order_by("tender_date")
+            )
             person_division_active = Project.objects.filter(
                 person=person, division=division, status=2
             )
@@ -2307,6 +2316,7 @@ class PersonDetailsView(ActivateUserCheck, View):
                 Project.objects.filter(person=person, division=division)
                 .exclude(status=1)
                 .exclude(status=2)
+                .exclude(status=3)
             )
             person_division_won = Project.objects.filter(
                 person=person, division=division, status=5
