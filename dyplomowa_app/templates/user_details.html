@@ -98,7 +98,7 @@
                         {% for i in user_divisions_abandoned %}
                         {{ i.0.division_name }}: {{ i.1 }}
                         <br>
-                        {% for j in user_divisions_bade %}
+                        {% for j in user_divisions_projects %}
                         {% if i.0 == j.0 %}
                         {% with numerator=i.1 denominator=j.1 %}
                         {% if denominator != 0 %}
