@@ -296,6 +296,7 @@ class EditDesignerForm(forms.Form):
         widget=forms.EmailInput(
             attrs={"size": 34, "placeholder": "Adres email (opcjonalne)"}
         ),
+        required=False,
     )
     designer_voivodeship = forms.ModelChoiceField(
         label="Województwo", queryset=Voivodeship.objects.all()
