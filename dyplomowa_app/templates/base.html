@@ -121,6 +121,7 @@
 
   <hr>
   <div class="d-flex flex-column justify-content-center align-items-center">
+    {{ global_date }}
     {% if counter %}
     <i>Ruch w aplikacji: {{ counter }} ({{ users.count }} {% if users.count == 1 %} użytkownik {% else %} użytkowników
       {% endif %})</i>
