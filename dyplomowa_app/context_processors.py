@@ -3,6 +3,6 @@ from django.utils import timezone
 
 
 def date_processor(request):
-    part_date = timezone.localtime(value=None, timezone=None).date()
-    global_date = f"{part_date.strftime('%A')} {part_date}"
+    global_date = timezone.localtime(value=None, timezone=None).date()
+    # global_date = f"{part_date.strftime('%A')} {part_date}"
     return {"global_date": global_date}
