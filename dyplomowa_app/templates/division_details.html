@@ -103,7 +103,7 @@
                     <th scope="col">Najstarszy projekt</th>
                     <td scope="col">
                         {% if oldest_project %}
-                        {{ oldest_project.project_name }}
+                        <a href="{% url 'project-details' oldest_project.id %}">{{ oldest_project.project_name }}</a>
                         {% if oldest_project.tender_date %}
                         </br>
                         ({{ oldest_project.tender_date }})

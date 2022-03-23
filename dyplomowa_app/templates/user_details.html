@@ -42,7 +42,8 @@
                     <td scope="col">
                         {% for i in user_divisions_oldest %}
                         {% if i.1.count > 0 %}
-                        {{ i.0.division_name }}: </br> {{ i.1.0.project_name }}
+                        {{ i.0.division_name }}: </br> <a
+                            href="{% url 'project-details' i.1.0.id %}">{{ i.1.0.project_name }}</a>
                         {% if i.1.0.tender_date %}
                         </br>({{ i.1.0.tender_date }})
                         {% endif %}

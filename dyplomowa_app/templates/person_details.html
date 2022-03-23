@@ -35,7 +35,8 @@
                     <th scope="col">Najstarszy projekt</th>
                     <td scope="col">
                         {% if person_division_oldest.count > 0 %}
-                        {{ person_division_oldest.0.project_name }}
+                        <a
+                            href="{% url 'project-details' person_division_oldest.0.id %}">{{ person_division_oldest.0.project_name }}</a>
                         {% if person_division_oldest.0.tender_date %}
                         </br>
                         ({{ person_division_oldest.0.tender_date }})
