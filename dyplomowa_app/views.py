@@ -74,7 +74,7 @@ def values():
     for i in projects:
         if i.tender:
             for j in i.tender.tenderer.all():
-                if j.tenderer.company_name == "Eurovia Polska S.A.":
+                if j.tenderer.company_name == "EUROVIA Polska S.A.":
                     i.estimated_value = j.offer_value
                     i.save()
 
