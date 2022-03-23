@@ -1857,10 +1857,19 @@ class ArchivesView(ActivateUserCheck, View):
         mma_sum = round(
             sum([i.mma_quantity for i in archives if i.mma_quantity != None]), 2
         )
+        mma_avarange = 0
+        if archives.count() > 0:
+            mma_avarange = round(mma_sum / archives.count(), 2)
         deposit_sum = round(sum([i.deposit for i in archives if i.deposit != None]), 2)
+        deposit_avarange = 0
+        if archives.count() > 0:
+            deposit_avarange = round(deposit_sum / archives.count(), 2)
         value_sum = round(
             sum([i.estimated_value for i in archives if i.estimated_value != None]), 2
         )
+        value_avarange = 0
+        if archives.count() > 0:
+            value_avarange = round(value_sum / archives.count(), 2)
 
         paginator = Paginator(archives, 15)
         page = request.GET.get("page")
@@ -1872,8 +1881,11 @@ class ArchivesView(ActivateUserCheck, View):
             "form": form,
             "oldest_project": oldest_project,
             "mma_sum": mma_sum,
+            "mma_avarange": mma_avarange,
             "deposit_sum": deposit_sum,
+            "deposit_avarange": deposit_avarange,
             "value_sum": value_sum,
+            "value_avarange": value_avarange,
         }
         return render(request, "archives.html", ctx)
 
@@ -2008,13 +2020,22 @@ class ArchivesView(ActivateUserCheck, View):
             mma_sum = round(
                 sum([i.mma_quantity for i in archives if i.mma_quantity != None]), 2
             )
+            mma_avarange = 0
+            if archives.count() > 0:
+                mma_avarange = round(mma_sum / archives.count(), 2)
             deposit_sum = round(
                 sum([i.deposit for i in archives if i.deposit != None]), 2
             )
+            deposit_avarange = 0
+            if archives.count() > 0:
+                deposit_avarange = round(deposit_sum / archives.count(), 2)
             value_sum = round(
                 sum([i.estimated_value for i in archives if i.estimated_value != None]),
                 2,
             )
+            value_avarange = 0
+            if archives.count() > 0:
+                value_avarange = round(value_sum / archives.count(), 2)
 
             # paginator = Paginator(archives, 15)
             # page = request.GET.get("page")
@@ -2026,8 +2047,11 @@ class ArchivesView(ActivateUserCheck, View):
                 "divisions": divisions,
                 "oldest_project": oldest_project,
                 "mma_sum": mma_sum,
+                "mma_avarange": mma_avarange,
                 "deposit_sum": deposit_sum,
+                "deposit_avarange": deposit_avarange,
                 "value_sum": value_sum,
+                "value_avarange": value_avarange,
             }
             return render(request, "archives.html", ctx)
 
