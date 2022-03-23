@@ -1854,6 +1854,13 @@ class ArchivesView(ActivateUserCheck, View):
         oldest_project = None
         if archives.count() > 0:
             oldest_project = archives.reverse()[0]
+        mma_sum = round(
+            sum([i.mma_quantity for i in archives if i.mma_quantity != None]), 2
+        )
+        deposit_sum = round(sum([i.deposit for i in archives if i.deposit != None]), 2)
+        value_sum = round(
+            sum([i.estimated_value for i in archives if i.estimated_value != None]), 2
+        )
 
         paginator = Paginator(archives, 15)
         page = request.GET.get("page")
@@ -1864,6 +1871,9 @@ class ArchivesView(ActivateUserCheck, View):
             "divisions": divisions,
             "form": form,
             "oldest_project": oldest_project,
+            "mma_sum": mma_sum,
+            "deposit_sum": deposit_sum,
+            "value_sum": value_sum,
         }
         return render(request, "archives.html", ctx)
 
@@ -1995,6 +2005,16 @@ class ArchivesView(ActivateUserCheck, View):
             oldest_project = None
             if archives.count() > 0:
                 oldest_project = archives.reverse()[0]
+            mma_sum = round(
+                sum([i.mma_quantity for i in archives if i.mma_quantity != None]), 2
+            )
+            deposit_sum = round(
+                sum([i.deposit for i in archives if i.deposit != None]), 2
+            )
+            value_sum = round(
+                sum([i.estimated_value for i in archives if i.estimated_value != None]),
+                2,
+            )
 
             # paginator = Paginator(archives, 15)
             # page = request.GET.get("page")
@@ -2005,6 +2025,9 @@ class ArchivesView(ActivateUserCheck, View):
                 "archives": archives,
                 "divisions": divisions,
                 "oldest_project": oldest_project,
+                "mma_sum": mma_sum,
+                "deposit_sum": deposit_sum,
+                "value_sum": value_sum,
             }
             return render(request, "archives.html", ctx)
 

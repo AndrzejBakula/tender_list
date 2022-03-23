@@ -57,6 +57,7 @@
         <th scope="col" style="text-align: center;">Wadium</th>
         <th scope="col" style="text-align: center;">Data <br> złożenia</th>
         <th scope="col" style="text-align: center;">Nazwa</th>
+        <th scope="col" style="text-align: center;">Wartość</th>
         <th scope="col" style="text-align: center;">Inwestor</th>
         <th scope="col" style="text-align: center;">Termin</th>
         <th scope="col" style="text-align: center;">MMA</th>
@@ -65,6 +66,22 @@
         <th scope="col" style="text-align: center;">Osoby</th>
         <th scope="col" style="text-align: center;">Status</th>
         <th scope="col" style="text-align: center;">PRZETARG</th>
+
+      </tr>
+      <tr>
+        <th scope="col" style="text-align: center;"></th>
+        <th scope="col" style="text-align: center;">{{ deposit_sum }}</th>
+        <th scope="col" style="text-align: center;"></th>
+        <th scope="col" style="text-align: center;"></th>
+        <th scope="col" style="text-align: center;">{{ value_sum }}</th>
+        <th scope="col" style="text-align: center;"></th>
+        <th scope="col" style="text-align: center;"></th>
+        <th scope="col" style="text-align: center;">{{ mma_sum }}</th>
+        <th scope="col" style="text-align: center;"></th>
+        <th scope="col" style="text-align: center;"></th>
+        <th scope="col" style="text-align: center;"></th>
+        <th scope="col" style="text-align: center;"></th>
+        <th scope="col" style="text-align: center;"></th>
 
       </tr>
     </thead>
@@ -79,6 +96,8 @@
         <td scope="col" style="text-align: center;">
           <a href="{% url 'project-details' i.id %}">{{ i.project_name }}</a>
         </td>
+        <td scope="col" style="text-align: center;">{% if i.estimated_value %} {{ i.estimated_value }} {% else %} brak
+          {% endif %}</td>
         <td scope="col" style="text-align: center;">
           <a href="{% url 'investor-details' i.investor.id %}">{{ i.investor.investor_name }}</a></td>
         <td scope="col" style="text-align: center;">{% if i.project_deadline_date %} {{ i.project_deadline_date }}
