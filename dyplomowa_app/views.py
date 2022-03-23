@@ -75,7 +75,7 @@ def values():
         if i.tender:
             for j in i.tender.tenderer.all():
                 if j.tenderer.company_name == "EUROVIA Polska S.A.":
-                    i.estimated_value = j.offer_value
+                    i.estimated_value = round(j.offer_value / 1.23, 2)
                     i.save()
 
 
