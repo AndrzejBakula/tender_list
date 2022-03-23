@@ -69,6 +69,17 @@ from .utils import token_generator
 
 
 # INITIAL FUNCTIONS
+def values():
+    projects = Project.objects.all()
+    for i in projects:
+        if i.tender:
+            for j in i.tender.tenderer.all():
+                if j.tenderer.company_name == "Eurovia Polska S.A.":
+                    i.estimated_value = j.offer_value
+                    i.save()
+
+
+values()
 
 
 def administration_level_init():
