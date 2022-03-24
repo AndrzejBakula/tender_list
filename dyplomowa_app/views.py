@@ -1881,6 +1881,7 @@ class ArchivesView(ActivateUserCheck, View):
         value_avarange = 0
         if archives.count() > 0:
             value_avarange = round(value_sum / archives.count(), 2)
+        tenders = archives.exclude(status=1).exclude(status=2).exclude(status=3)
 
         paginator = Paginator(archives, 15)
         page = request.GET.get("page")
@@ -1897,6 +1898,7 @@ class ArchivesView(ActivateUserCheck, View):
             "deposit_avarange": deposit_avarange,
             "value_sum": value_sum,
             "value_avarange": value_avarange,
+            "tenders": tenders,
         }
         return render(request, "archives.html", ctx)
 
@@ -2047,6 +2049,7 @@ class ArchivesView(ActivateUserCheck, View):
             value_avarange = 0
             if archives.count() > 0:
                 value_avarange = round(value_sum / archives.count(), 2)
+            tenders = archives.exclude(status=1).exclude(status=2).exclude(status=3)
 
             # paginator = Paginator(archives, 15)
             # page = request.GET.get("page")
@@ -2063,6 +2066,7 @@ class ArchivesView(ActivateUserCheck, View):
                 "deposit_avarange": deposit_avarange,
                 "value_sum": value_sum,
                 "value_avarange": value_avarange,
+                "tenders": tenders,
             }
             return render(request, "archives.html", ctx)
 

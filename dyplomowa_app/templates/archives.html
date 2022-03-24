@@ -15,7 +15,8 @@
   </div>
   {% else %}
   <div class="d-flex flex-row justify-content-center align-items-center">
-    <h2 class="display-5 align-self-center">Archiwum Projektów (od {{ oldest_project.tender_date }})</a></h2>
+    <h2 class="display-5 align-self-center">Archiwum Projektów - ilość {{ archives|length }} (od
+      {{ oldest_project.tender_date }})</a></h2>
   </div>
   {% endif %}
 
@@ -90,6 +91,9 @@
         <td scope="col" style="text-align: center;">
         </td>
         <td scope="col" style="text-align: center;">
+          {% if tenders|length != 0 %}{{ tenders|length }}{% if tenders|length == 1 %} oferta
+          {% elif tenders|length > 1 and 5 > tenders|length %}
+          oferty {% else %} ofert {% endif %}{% endif %}
         </td>
 
       </tr>
