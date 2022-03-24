@@ -1862,6 +1862,7 @@ class ArchivesView(ActivateUserCheck, View):
             .order_by("-tender_date", "-tender_time", "-project_number")
         )
         archives = archives1 | archives2
+        archives_all = archives
         oldest_project = None
         if archives.count() > 0:
             oldest_project = archives.reverse()[0]
@@ -1889,6 +1890,7 @@ class ArchivesView(ActivateUserCheck, View):
 
         ctx = {
             "archives": archives,
+            "archives_all": archives_all,
             "divisions": divisions,
             "form": form,
             "oldest_project": oldest_project,
@@ -2027,6 +2029,7 @@ class ArchivesView(ActivateUserCheck, View):
                 & archives6
                 & archives7
             )
+            alrchives_all = archives
             oldest_project = None
             if archives.count() > 0:
                 oldest_project = archives.reverse()[0]
@@ -2058,6 +2061,7 @@ class ArchivesView(ActivateUserCheck, View):
             ctx = {
                 "form": form,
                 "archives": archives,
+                "archives_all": archives_all,
                 "divisions": divisions,
                 "oldest_project": oldest_project,
                 "mma_sum": mma_sum,
