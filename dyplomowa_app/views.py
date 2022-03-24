@@ -2029,7 +2029,7 @@ class ArchivesView(ActivateUserCheck, View):
                 & archives6
                 & archives7
             )
-            alrchives_all = archives
+            archives_all = archives
             oldest_project = None
             if archives.count() > 0:
                 oldest_project = archives.reverse()[0]
