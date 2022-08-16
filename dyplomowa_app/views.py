@@ -1908,6 +1908,10 @@ class ArchivesView(ActivateUserCheck, View):
                 2,
             )
         tenders = archives.exclude(status=1).exclude(status=2).exclude(status=3)
+        investor_list = []
+        if archives.count() > 0:
+            investor_list = [i.investor.investor_name for i in archives]
+        super_investor = max(investor_list, key=investor_list.count)
 
         paginator = Paginator(archives, 15)
         page = request.GET.get("page")
@@ -1929,6 +1933,7 @@ class ArchivesView(ActivateUserCheck, View):
             "value_avarange": value_avarange,
             "value_median": value_median,
             "tenders": tenders,
+            "super_investor": super_investor,
         }
         return render(request, "archives.html", ctx)
 
@@ -2123,6 +2128,10 @@ class ArchivesView(ActivateUserCheck, View):
                     2,
                 )
             tenders = archives.exclude(status=1).exclude(status=2).exclude(status=3)
+            investor_list = []
+            if archives.count() > 0:
+                investor_list = [i.investor.investor_name for i in archives]
+            super_investor = max(investor_list, key=investor_list.count)
 
             # paginator = Paginator(archives, 15)
             # page = request.GET.get("page")
@@ -2144,6 +2153,7 @@ class ArchivesView(ActivateUserCheck, View):
                 "value_avarange": value_avarange,
                 "value_median": value_median,
                 "tenders": tenders,
+                "super_investor": super_investor,
             }
             return render(request, "archives.html", ctx)
 
