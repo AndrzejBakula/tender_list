@@ -1,4 +1,5 @@
 from datetime import date, timedelta, timezone
+from statistics import median
 
 from django import forms
 from django.contrib.auth import authenticate, get_user_model, login, logout
@@ -1872,16 +1873,34 @@ class ArchivesView(ActivateUserCheck, View):
         mma_avarange = 0
         if archives.count() > 0:
             mma_avarange = round(mma_sum / archives.count(), 2)
+        mma_median = 0
+        if archives.count() > 0:
+            mma_median = round(
+                median([i.mma_quantity for i in archives if i.mma_quantity != None]), 2
+            )
         deposit_sum = round(sum([i.deposit for i in archives if i.deposit != None]), 2)
         deposit_avarange = 0
         if archives.count() > 0:
             deposit_avarange = round(deposit_sum / archives.count(), 2)
+        deposit_median = 0
+        if archives.count() > 0:
+            deposit_median = round(
+                median([i.deposit for i in archives if i.deposit != None]), 2
+            )
         value_sum = round(
             sum([i.estimated_value for i in archives if i.estimated_value != None]), 2
         )
         value_avarange = 0
         if archives.count() > 0:
             value_avarange = round(value_sum / archives.count(), 2)
+        value_median = 0
+        if archives.count() > 0:
+            value_median = round(
+                median(
+                    [i.estimated_value for i in archives if i.estimated_value != None]
+                ),
+                2,
+            )
         tenders = archives.exclude(status=1).exclude(status=2).exclude(status=3)
 
         paginator = Paginator(archives, 15)
@@ -1896,10 +1915,13 @@ class ArchivesView(ActivateUserCheck, View):
             "oldest_project": oldest_project,
             "mma_sum": mma_sum,
             "mma_avarange": mma_avarange,
+            "mma_median": mma_median,
             "deposit_sum": deposit_sum,
             "deposit_avarange": deposit_avarange,
+            "deposit_median": deposit_median,
             "value_sum": value_sum,
             "value_avarange": value_avarange,
+            "value_median": value_median,
             "tenders": tenders,
         }
         return render(request, "archives.html", ctx)
@@ -1917,6 +1939,7 @@ class ArchivesView(ActivateUserCheck, View):
             data = form.cleaned_data
             text = data["text"]
             investor = data["investor"]
+            designer = data["designer"]
             payment_method = data["payment_method"]
             person = data["person"]
             status = data["status"]
@@ -1945,6 +1968,20 @@ class ArchivesView(ActivateUserCheck, View):
                 archives2 = (
                     Project.objects.filter(
                         investor=investor,
+                        division=division,
+                    )
+                    .exclude(status=2)
+                    .order_by("-tender_date", "-tender_time", "-project_number")
+                )
+            archives8 = (
+                Project.objects.filter(division=division)
+                .exclude(status=2)
+                .order_by("-tender_date", "-tender_time", "-project_number")
+            )
+            if designer:
+                archives8 = (
+                    Project.objects.filter(
+                        designer=designer,
                         division=division,
                     )
                     .exclude(status=2)
@@ -2028,6 +2065,7 @@ class ArchivesView(ActivateUserCheck, View):
                 & archives5
                 & archives6
                 & archives7
+                & archives8
             )
             archives_all = archives
             oldest_project = None
@@ -2039,12 +2077,25 @@ class ArchivesView(ActivateUserCheck, View):
             mma_avarange = 0
             if archives.count() > 0:
                 mma_avarange = round(mma_sum / archives.count(), 2)
+            mma_median = 0
+            if archives.count() > 0:
+                mma_median = round(
+                    median(
+                        [i.mma_quantity for i in archives if i.mma_quantity != None]
+                    ),
+                    2,
+                )
             deposit_sum = round(
                 sum([i.deposit for i in archives if i.deposit != None]), 2
             )
             deposit_avarange = 0
             if archives.count() > 0:
                 deposit_avarange = round(deposit_sum / archives.count(), 2)
+            deposit_median = 0
+            if archives.count() > 0:
+                deposit_median = round(
+                    median([i.deposit for i in archives if i.deposit != None]), 2
+                )
             value_sum = round(
                 sum([i.estimated_value for i in archives if i.estimated_value != None]),
                 2,
@@ -2052,6 +2103,18 @@ class ArchivesView(ActivateUserCheck, View):
             value_avarange = 0
             if archives.count() > 0:
                 value_avarange = round(value_sum / archives.count(), 2)
+            value_median = 0
+            if archives.count() > 0:
+                value_median = round(
+                    median(
+                        [
+                            i.estimated_value
+                            for i in archives
+                            if i.estimated_value != None
+                        ]
+                    ),
+                    2,
+                )
             tenders = archives.exclude(status=1).exclude(status=2).exclude(status=3)
 
             # paginator = Paginator(archives, 15)
@@ -2066,10 +2129,13 @@ class ArchivesView(ActivateUserCheck, View):
                 "oldest_project": oldest_project,
                 "mma_sum": mma_sum,
                 "mma_avarange": mma_avarange,
+                "mma_median": mma_median,
                 "deposit_sum": deposit_sum,
                 "deposit_avarange": deposit_avarange,
+                "deposit_median": deposit_median,
                 "value_sum": value_sum,
                 "value_avarange": value_avarange,
+                "value_median": value_median,
                 "tenders": tenders,
             }
             return render(request, "archives.html", ctx)

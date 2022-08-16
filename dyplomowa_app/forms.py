@@ -649,6 +649,13 @@ class SearchArchiveForm(forms.Form):
             ),
             required=False,
         )
+        self.fields["designer"] = forms.ModelChoiceField(
+            label="Projektant",
+            queryset=Designer.objects.filter(division=division).order_by(
+                "designer_name"
+            ),
+            required=False,
+        )
         self.fields["payment_method"] = forms.ModelChoiceField(
             label="rozliczenie", queryset=PaymentMethod.objects.all(), required=False
         )
