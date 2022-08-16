@@ -1867,26 +1867,32 @@ class ArchivesView(ActivateUserCheck, View):
         oldest_project = None
         if archives.count() > 0:
             oldest_project = archives.reverse()[0]
-        mma_sum = round(
-            sum([i.mma_quantity for i in archives if i.mma_quantity != None]), 2
-        )
+        mma_list = []
+        if archives.count() > 0:
+            mma_list = [i.mma_quantity for i in archives]
+        for i in range(len(mma_list)):
+            if mma_list[i] == None:
+                mma_list[i] = 0
+        mma_sum = round(sum(mma_list), 2)
         mma_avarange = 0
         if archives.count() > 0:
             mma_avarange = round(mma_sum / archives.count(), 2)
         mma_median = 0
         if archives.count() > 0:
-            mma_median = round(
-                median([i.mma_quantity for i in archives if i.mma_quantity != None]), 2
-            )
-        deposit_sum = round(sum([i.deposit for i in archives if i.deposit != None]), 2)
+            mma_median = round(median(mma_list), 2)
+        deposit_list = []
+        if archives.count() > 0:
+            deposit_list = [i.deposit for i in archives]
+        for i in range(len(deposit_list)):
+            if deposit_list[i] == None:
+                deposit_list[i] = 0
+        deposit_sum = round(sum(deposit_list), 2)
         deposit_avarange = 0
         if archives.count() > 0:
             deposit_avarange = round(deposit_sum / archives.count(), 2)
         deposit_median = 0
         if archives.count() > 0:
-            deposit_median = round(
-                median([i.deposit for i in archives if i.deposit != None]), 2
-            )
+            deposit_median = round(median(deposit_list), 2)
         value_sum = round(
             sum([i.estimated_value for i in archives if i.estimated_value != None]), 2
         )
@@ -2071,31 +2077,32 @@ class ArchivesView(ActivateUserCheck, View):
             oldest_project = None
             if archives.count() > 0:
                 oldest_project = archives.reverse()[0]
-            mma_sum = round(
-                sum([i.mma_quantity for i in archives if i.mma_quantity != None]), 2
-            )
+            mma_list = []
+            if archives.count() > 0:
+                mma_list = [i.mma_quantity for i in archives]
+            for i in range(len(mma_list)):
+                if mma_list[i] == None:
+                    mma_list[i] = 0
+            mma_sum = round(sum(mma_list), 2)
             mma_avarange = 0
             if archives.count() > 0:
                 mma_avarange = round(mma_sum / archives.count(), 2)
             mma_median = 0
             if archives.count() > 0:
-                mma_median = round(
-                    median(
-                        [i.mma_quantity for i in archives if i.mma_quantity != None]
-                    ),
-                    2,
-                )
-            deposit_sum = round(
-                sum([i.deposit for i in archives if i.deposit != None]), 2
-            )
+                mma_median = round(median(mma_list), 2)
+            deposit_list = []
+            if archives.count() > 0:
+                deposit_list = [i.deposit for i in archives]
+            for i in range(len(deposit_list)):
+                if deposit_list[i] == None:
+                    deposit_list[i] = 0
+            deposit_sum = round(sum(deposit_list), 2)
             deposit_avarange = 0
             if archives.count() > 0:
                 deposit_avarange = round(deposit_sum / archives.count(), 2)
             deposit_median = 0
             if archives.count() > 0:
-                deposit_median = round(
-                    median([i.deposit for i in archives if i.deposit != None]), 2
-                )
+                deposit_median = round(median(deposit_list), 2)
             value_sum = round(
                 sum([i.estimated_value for i in archives if i.estimated_value != None]),
                 2,
