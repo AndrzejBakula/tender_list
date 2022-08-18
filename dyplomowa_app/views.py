@@ -2927,6 +2927,8 @@ class AddTenderDetails(StaffMemberCheck, View):
                     criteria_value=criteria_value,
                 )
                 tenderer.other_criteria.add(criterium)
+            if tenderer.tenderer.division_company:
+                project.estimated_value = tenderer.offer_value
             tenderer.save()
             tender.tenderer.add(tenderer)
             tender.save()
