@@ -691,6 +691,12 @@ class InvestorDetails(ActivateUserCheck, View):
             exclused_projects = Project.objects.filter(
                 investor=investor, division=division, status=7
             )
+            oldest_project = None
+            if investor_projects.count() > 0:
+                sorted_investor_projects = sorted(
+                    investor_projects, key=lambda x: x.tender_date
+                )
+                oldest_project = sorted_investor_projects[0]
             noters = [
                 i.investor_note_user
                 for i in InvestorNote.objects.filter(investor_note_investor=investor)
@@ -706,6 +712,7 @@ class InvestorDetails(ActivateUserCheck, View):
                 "annulled_projects": annulled_projects,
                 "abandoned_projects": abandoned_projects,
                 "exclused_projects": exclused_projects,
+                "oldest_project": oldest_project,
                 "noters": noters,
                 "form": form,
             }
@@ -1326,6 +1333,12 @@ class DesignerDetails(ActivateUserCheck, View):
             division_designer = Project.objects.filter(
                 designer=designer, division=division
             )
+            oldest_project = None
+            if division_designer.count() > 0:
+                sorted_division_designer = sorted(
+                    division_designer, key=lambda x: x.tender_date
+                )
+                oldest_project = sorted_division_designer[0]
             noters = [
                 i.designer_note_user
                 for i in DesignerNote.objects.filter(designer_note_designer=designer)
@@ -1337,6 +1350,7 @@ class DesignerDetails(ActivateUserCheck, View):
                 "division": division,
                 "division_designer": division_designer,
                 "form": form,
+                "oldest_project": oldest_project,
                 "noters": noters,
             }
             return render(request, "designer_details.html", ctx)

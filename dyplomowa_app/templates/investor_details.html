@@ -49,6 +49,18 @@
                     <td scope="col">{{ investor_projects.count }}</td>
                 </tr>
                 <tr>
+                    <th scope="col">Najstarszy przetarg</th>
+                    <td scope="col">
+                        {% if oldest_project %}
+                        <a href="{% url 'project-details' oldest_project.id %}">{{ oldest_project.project_name }}</a>
+                        {% if oldest_project.tender_date %}
+                        </br>
+                        ({{ oldest_project.tender_date }})
+                        {% endif %}
+                        {% else %} brak przetargów {% endif %}
+                    </td>
+                </tr>
+                <tr>
                     <th scope="col">W przygotowaniu</th>
                     <td scope="col">{{ active_projects.count }}</td>
                 </tr>

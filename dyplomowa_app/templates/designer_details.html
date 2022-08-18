@@ -48,6 +48,18 @@
                     <th scope="col">W ilu projektach zespołu</th>
                     <td scope="col">{{ division_designer.count }}</td>
                 </tr>
+                <tr>
+                    <th scope="col">Najstarszy przetarg</th>
+                    <td scope="col">
+                        {% if oldest_project %}
+                        <a href="{% url 'project-details' oldest_project.id %}">{{ oldest_project.project_name }}</a>
+                        {% if oldest_project.tender_date %}
+                        </br>
+                        ({{ oldest_project.tender_date }})
+                        {% endif %}
+                        {% else %} brak przetargów {% endif %}
+                    </td>
+                </tr>
             </tbody>
         </table>
 
