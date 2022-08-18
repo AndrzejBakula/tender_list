@@ -1912,6 +1912,14 @@ class ArchivesView(ActivateUserCheck, View):
         if archives.count() > 0:
             investor_list = [i.investor.investor_name for i in archives]
         super_investor = max(investor_list, key=investor_list.count)
+        payment_method_list = []
+        if archives.count() > 0:
+            payment_method_list = [
+                i.payment_method.payment_method_name
+                for i in archives
+                if i.payment_method != None
+            ]
+        super_payment_method = max(payment_method_list, key=payment_method_list.count)
 
         paginator = Paginator(archives, 15)
         page = request.GET.get("page")
@@ -1934,6 +1942,7 @@ class ArchivesView(ActivateUserCheck, View):
             "value_median": value_median,
             "tenders": tenders,
             "super_investor": super_investor,
+            "super_payment_method": super_payment_method,
         }
         return render(request, "archives.html", ctx)
 
@@ -2108,30 +2117,35 @@ class ArchivesView(ActivateUserCheck, View):
             deposit_median = 0
             if archives.count() > 0:
                 deposit_median = round(median(deposit_list), 2)
-            value_sum = round(
-                sum([i.estimated_value for i in archives if i.estimated_value != None]),
-                2,
-            )
+            value_list = 0
+            if archives.count() > 0:
+                value_list = [
+                    i.estimated_value for i in archives if i.estimated_value != None
+                ]
+            value_sum = round(sum(value_list), 2)
             value_avarange = 0
             if archives.count() > 0:
                 value_avarange = round(value_sum / archives.count(), 2)
             value_median = 0
-            if archives.count() > 0:
-                value_median = round(
-                    median(
-                        [
-                            i.estimated_value
-                            for i in archives
-                            if i.estimated_value != None
-                        ]
-                    ),
-                    2,
-                )
+            if archives.count() > 0 and len(value_list) > 0:
+                value_median = round(median(value_list), 2)
             tenders = archives.exclude(status=1).exclude(status=2).exclude(status=3)
             investor_list = []
             if archives.count() > 0:
                 investor_list = [i.investor.investor_name for i in archives]
             super_investor = max(investor_list, key=investor_list.count)
+            payment_method_list = []
+            if archives.count() > 0:
+                payment_method_list = [
+                    i.payment_method.payment_method_name
+                    for i in archives
+                    if i.payment_method != None
+                ]
+            super_payment_method = None
+            if len(payment_method_list) > 0:
+                super_payment_method = max(
+                    payment_method_list, key=payment_method_list.count
+                )
 
             # paginator = Paginator(archives, 15)
             # page = request.GET.get("page")
@@ -2154,6 +2168,7 @@ class ArchivesView(ActivateUserCheck, View):
                 "value_median": value_median,
                 "tenders": tenders,
                 "super_investor": super_investor,
+                "super_payment_method": super_payment_method,
             }
             return render(request, "archives.html", ctx)
 
