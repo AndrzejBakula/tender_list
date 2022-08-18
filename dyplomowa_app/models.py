@@ -498,6 +498,8 @@ class Investor(models.Model):
 
     investor_name = models.CharField(max_length=128)
     investor_address = models.CharField(max_length=256)
+    investor_email = models.EmailField(max_length=64, null=True, default=None)
+    investor_phone = models.CharField(max_length=16, null=True, default=None)
     investor_voivodeship = models.ForeignKey(
         Voivodeship, on_delete=models.DO_NOTHING, default=Voivodeship.VOIVODESHIP[0][0]
     )
