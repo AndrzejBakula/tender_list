@@ -46,6 +46,7 @@
       <th scope="col" style="text-align: center;">Nazwa</th>
       <th scope="col" style="text-align: center;">Adres</th>
       <th scope="col" style="text-align: center;">Email</th>
+      <th scope="col" style="text-align: center;">Telefon</th>
       <th scope="col" style="text-align: center;">Województwo</th>
       <th scope="col" style="text-align: center;">Powiat</th>
       <th scope="col" style="text-align: center;">Ocena</th>
@@ -59,6 +60,8 @@
       </td>
       <td scope="col" style="text-align: center;">{{ i.designer_address }}</td>
       <td scope="col" style="text-align: center;">{% if i.designer_email %} {{ i.designer_email }} {% else %} brak
+        {% endif %}</td>
+      <td scope="col" style="text-align: center;">{% if i.designer_phone %} {{ i.designer_phone }} {% else %} brak
         {% endif %}</td>
       <td scope="col" style="text-align: center;">{{ i.designer_voivodeship }}</td>
       <td scope="col" style="text-align: center;">{% if i.designer_poviat %} {{ i.designer_poviat }} {% else %}

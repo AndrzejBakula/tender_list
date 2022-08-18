@@ -526,6 +526,7 @@ class Designer(models.Model):
     designer_name = models.CharField(max_length=128)
     designer_address = models.CharField(max_length=128)
     designer_email = models.EmailField(max_length=64, null=True, default=None)
+    designer_phone = models.CharField(max_length=16, null=True, default=None)
     designer_voivodeship = models.ForeignKey(
         Voivodeship, on_delete=models.DO_NOTHING, default=Voivodeship.VOIVODESHIP[0][0]
     )

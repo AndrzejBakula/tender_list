@@ -249,6 +249,13 @@ class AddDesignerForm(forms.Form):
             attrs={"size": 34, "placeholder": "Adres email (opcjonalne)"}
         ),
     )
+    designer_phone = forms.CharField(
+        label="",
+        max_length=16,
+        widget=forms.TextInput(
+            attrs={"size": 24, "placeholder": "Telefon Kontaktowy (opcjonalnie)"}
+        ),
+    )
     designer_voivodeship = forms.ModelChoiceField(
         label="Województwo",
         queryset=Voivodeship.objects.all().order_by("voivodeship_name"),

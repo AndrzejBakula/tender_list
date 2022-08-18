@@ -1178,6 +1178,7 @@ class AddDesigner(StaffMemberCheck, View):
             designer_name = data["designer_name"]
             designer_address = data["designer_address"]
             designer_email = data["designer_email"]
+            designer_phone = data["designer_phone"]
             designer_voivodeship = data["designer_voivodeship"]
             designer_note = data["designer_note"]
             designers_names = [
@@ -1189,6 +1190,7 @@ class AddDesigner(StaffMemberCheck, View):
                     designer_name=designer_name,
                     designer_address=designer_address,
                     designer_email=designer_email,
+                    designer_phone=designer_phone,
                     designer_voivodeship=designer_voivodeship,
                     designer_added_by=user,
                 )
