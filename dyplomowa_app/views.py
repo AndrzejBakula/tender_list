@@ -1040,11 +1040,27 @@ class CompanyDetails(ActivateUserCheck, View):
             won_tenders = Tenderer.objects.filter(
                 tenderer=company, tender__project__division=division, is_winner=True
             )
+            oldest_project = None
+            if company.tenderer_set.all().count() > 0:
+                company_tenders = [
+                    i.tender_set.all() for i in company.tenderer_set.all()
+                ]
+                company_projects = []
+                for i in company_tenders:
+                    if i.count() > 0:
+                        company_projects.append(i[0].project)
+                if len(company_projects) > 0:
+                    company_projects = sorted(
+                        company_projects, key=lambda x: x.tender_date
+                    )
+                if len(company_projects) > 0:
+                    oldest_project = company_projects[0]
             ctx = {
                 "company": company,
                 "divisions": divisions,
                 "division": division,
                 "won_tenders": won_tenders,
+                "oldest_project": oldest_project,
             }
             return render(request, "company_details.html", ctx)
         return redirect("/projects")

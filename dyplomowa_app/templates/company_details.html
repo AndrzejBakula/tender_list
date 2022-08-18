@@ -46,6 +46,18 @@
                     <td scope="col">{{ company.tenderer_set.all.count }}</td>
                 </tr>
                 <tr>
+                    <th scope="col">Najstarszy przetarg</th>
+                    <td scope="col">
+                        {% if oldest_project %}
+                        <a href="{% url 'project-details' oldest_project.id %}">{{ oldest_project.project_name }}</a>
+                        {% if oldest_project.tender_date %}
+                        </br>
+                        ({{ oldest_project.tender_date }})
+                        {% endif %}
+                        {% else %} brak przetargów {% endif %}
+                    </td>
+                </tr>
+                <tr>
                     <th scope="col">Liczba wygranych</th>
                     <td scope="col">
                         {{ won_tenders.count }}
