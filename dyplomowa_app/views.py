@@ -2930,6 +2930,9 @@ class AddTenderDetails(StaffMemberCheck, View):
             tenderer.save()
             tender.tenderer.add(tenderer)
             tender.save()
+            status = Status.objects.get(status_name="przegrany")
+            project.status = status
+            project.save()
             return redirect(f"/add_tender_details/{project.id}/{tender.id}")
 
 
