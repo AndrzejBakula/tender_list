@@ -2325,7 +2325,10 @@ class DivisionDetails(ActivateUserCheck, View):
             exclused_projects = Project.objects.filter(division=division, status=7)
             oldest_project = None
             if bade_projects.count() > 0:
-                oldest_project = bade_projects.reverse()[0]
+                sorted_bade_projects = sorted(
+                    bade_projects, key=lambda x: x.tender_date
+                )
+                oldest_project = sorted_bade_projects[0]
             ctx = {
                 "division": division,
                 "divisions": divisions,
