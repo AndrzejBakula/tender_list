@@ -207,6 +207,30 @@ class AddCompanyForm(forms.Form):
         max_length=256,
         widget=forms.TextInput(attrs={"size": 38, "placeholder": "Adres Firmy"}),
     )
+    company_email = forms.EmailField(
+        label="",
+        max_length=128,
+        widget=forms.EmailInput(
+            attrs={"size": 34, "placeholder": "Adres email (opcjonalne)"}
+        ),
+        required=False,
+    )
+    company_phone = forms.CharField(
+        label="",
+        max_length=16,
+        widget=forms.TextInput(
+            attrs={"size": 24, "placeholder": "Telefon Kontaktowy (opcjonalnie)"}
+        ),
+        required=False,
+    )
+    company_contact = forms.CharField(
+        label="",
+        max_length=16,
+        widget=forms.TextInput(
+            attrs={"size": 34, "placeholder": "Osoba Kontaktowa (opcjonalnie)"}
+        ),
+        required=False,
+    )
     company_voivodeship = forms.ModelChoiceField(
         label="Województwo", queryset=Voivodeship.objects.all()
     )
@@ -242,6 +266,30 @@ class EditCompanyForm(forms.Form):
             label="",
             max_length=256,
             widget=forms.TextInput(attrs={"size": 38, "placeholder": "Adres Firmy"}),
+        )
+        self.fields["company_email"] = forms.EmailField(
+            label="",
+            max_length=128,
+            widget=forms.EmailInput(
+                attrs={"size": 34, "placeholder": "Adres email (opcjonalne)"}
+            ),
+            required=False,
+        )
+        self.fields["company_phone"] = forms.CharField(
+            label="",
+            max_length=16,
+            widget=forms.TextInput(
+                attrs={"size": 24, "placeholder": "Telefon Kontaktowy (opcjonalnie)"}
+            ),
+            required=False,
+        )
+        self.fields["company_contact"] = forms.CharField(
+            label="",
+            max_length=16,
+            widget=forms.TextInput(
+                attrs={"size": 34, "placeholder": "Osoba Kontaktowa (opcjonalnie)"}
+            ),
+            required=False,
         )
         self.fields["company_voivodeship"] = forms.ModelChoiceField(
             label="Województwo", queryset=Voivodeship.objects.all()

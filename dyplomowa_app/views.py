@@ -856,6 +856,9 @@ class AddCompany(StaffMemberCheck, View):
             data = form.cleaned_data
             company_name = data["company_name"]
             company_address = data["company_address"]
+            company_email = data["company_email"]
+            company_phone = data["company_phone"]
+            company_contact = data["company_contact"]
             company_voivodeship = data["company_voivodeship"]
             companies_names = [
                 i.company_name for i in Company.objects.filter(division=division)
@@ -865,6 +868,9 @@ class AddCompany(StaffMemberCheck, View):
                 company = Company.objects.create(
                     company_name=company_name,
                     company_address=company_address,
+                    company_email=company_email,
+                    company_phone=company_phone,
+                    company_contact=company_contact,
                     company_voivodeship=company_voivodeship,
                     company_added_by=user,
                 )
@@ -1091,6 +1097,9 @@ class EditCompany(StaffMemberCheck, View):
             initial_data = {
                 "company_name": company.company_name,
                 "company_address": company.company_address,
+                "company_email": company.company_email,
+                "company_phone": company.company_phone,
+                "company_contact": company.company_contact,
                 "company_voivodeship": company.company_voivodeship,
                 "company_poviat": company.company_poviat,
             }
@@ -1106,6 +1115,9 @@ class EditCompany(StaffMemberCheck, View):
             data = form.cleaned_data
             company.company_name = data["company_name"]
             company.company_address = data["company_address"]
+            company.company_email = data["company_email"]
+            company.company_phone = data["company_phone"]
+            company.company_contact = data["company_contact"]
             company.company_voivodeship = data["company_voivodeship"]
             company.save()
             ctx = {"company": company}

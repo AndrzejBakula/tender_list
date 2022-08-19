@@ -600,6 +600,9 @@ class Company(models.Model):
 
     company_name = models.CharField(max_length=64)
     company_address = models.CharField(max_length=128)
+    company_email = models.EmailField(max_length=64, null=True, default=None)
+    company_phone = models.CharField(max_length=16, null=True, default=None)
+    company_contact = models.CharField(max_length=64, null=True, default=None)
     company_voivodeship = models.ForeignKey(
         Voivodeship, on_delete=models.DO_NOTHING, default=Voivodeship.VOIVODESHIP[0][0]
     )

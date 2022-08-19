@@ -23,6 +23,21 @@
                     <td scope="col">{{ company.company_address }}</td>
                 </tr>
                 <tr>
+                    <th scope="col">Email kontaktowy</th>
+                    <td scope="col">{% if company.company_email %} {{ company.company_email }} {% else %} brak
+                        {% endif %}</td>
+                </tr>
+                <tr>
+                    <th scope="col">Telefon kontaktowy</th>
+                    <td scope="col">{% if company.company_phone %} {{ company.company_phone }} {% else %} brak
+                        {% endif %}</td>
+                </tr>
+                <tr>
+                    <th scope="col">Osoba kontaktowa</th>
+                    <td scope="col">{% if company.company_contact %} {{ company.company_contact }} {% else %} brak
+                        {% endif %}</td>
+                </tr>
+                <tr>
                     <th scope="col">Województwo</th>
                     <td scope="col">{{ company.company_voivodeship }}</td>
                 </tr>

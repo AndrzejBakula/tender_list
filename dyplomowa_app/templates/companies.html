@@ -45,6 +45,9 @@
     <tr>
       <th scope="col" style="text-align: center;">Nazwa</th>
       <th scope="col" style="text-align: center;">Adres</th>
+      <th scope="col" style="text-align: center;">Email</th>
+      <th scope="col" style="text-align: center;">Telefon</th>
+      <th scope="col" style="text-align: center;">Osoba kontaktowa</th>
       <th scope="col" style="text-align: center;">Województwo</th>
       <th scope="col" style="text-align: center;">Powiat</th>
       <th scope="col" style="text-align: center;">W ilu przetargach</th>
@@ -64,6 +67,12 @@
         {% endif %}
       </td>
       <td scope="col" style="text-align: center;">{{ i.company_address }}</td>
+      <td scope="col" style="text-align: center;">{% if i.company_email %} {{ i.company_email }} {% else %} brak
+        {% endif %}</td>
+      <td scope="col" style="text-align: center;">{% if i.company_phone %} {{ i.company_phone }} {% else %} brak
+        {% endif %}</td>
+      <td scope="col" style="text-align: center;">{% if i.company_contact %} {{ i.company_contact }} {% else %} brak
+        {% endif %}</td>
       <td scope="col" style="text-align: center;">{{ i.company_voivodeship }}</td>
       <td scope="col" style="text-align: center;">
         {% if i.company_poviat %} {{ i.company_poviat }} {% else %} nieokreślono {% endif %}
@@ -82,6 +91,12 @@
         {% endif %}
       </td>
       <td scope="col" style="text-align: center;">{{ i.company_address }}</td>
+      <td scope="col" style="text-align: center;">{% if i.company_email %} {{ i.company_email }} {% else %} brak
+        {% endif %}</td>
+      <td scope="col" style="text-align: center;">{% if i.company_phone %} {{ i.company_phone }} {% else %} brak
+        {% endif %}</td>
+      <td scope="col" style="text-align: center;">{% if i.company_contact %} {{ i.company_contact }} {% else %} brak
+        {% endif %}</td>
       <td scope="col" style="text-align: center;">{{ i.company_voivodeship }}</td>
       <td scope="col" style="text-align: center;">
         {% if i.company_poviat %} {{ i.company_poviat }} {% else %} nieokreślono {% endif %}
