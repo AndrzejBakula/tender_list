@@ -2173,7 +2173,7 @@ class ArchivesView(ActivateUserCheck, View):
             deposit_median = 0
             if archives.count() > 0:
                 deposit_median = round(median(deposit_list), 2)
-            value_list = 0
+            value_list = []
             if archives.count() > 0:
                 value_list = [
                     i.estimated_value for i in archives if i.estimated_value != None
