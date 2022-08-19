@@ -2217,7 +2217,7 @@ class ArchivesView(ActivateUserCheck, View):
             person_list = []
             if archives.count() > 0:
                 person_sets = [
-                    i.person.all() for i in archvies if i.person.all() != None
+                    i.person.all() for i in archives if i.person.all() != None
                 ]
                 for i in person_sets:
                     for j in i:
