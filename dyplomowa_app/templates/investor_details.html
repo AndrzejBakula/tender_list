@@ -23,6 +23,16 @@
                     <td scope="col">{{ investor.investor_address }}</td>
                 </tr>
                 <tr>
+                    <th scope="col">Email inwestora</th>
+                    <td scope="col">{% if investor.investor_email %} {{ investor.investor_email }} {% else %} brak
+                        {% endif %}</td>
+                </tr>
+                <tr>
+                    <th scope="col">Telefon kontaktowy</th>
+                    <td scope="col">{% if investor.investor_phone %} {{ investor.investor_phone }} {% else %} brak
+                        {% endif %}</td>
+                </tr>
+                <tr>
                     <th scope="col">Poziom adm.</th>
                     <td scope="col">{{ investor.investor_administration_level }}</td>
                 </tr>

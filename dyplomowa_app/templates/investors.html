@@ -46,6 +46,8 @@
     <tr>
       <th scope="col" style="text-align: center;">Nazwa</th>
       <th scope="col" style="text-align: center;">Adres</th>
+      <th scope="col" style="text-align: center;">Email</th>
+      <th scope="col" style="text-align: center;">Telefon</th>
       <th scope="col" style="text-align: center;">Poziom adm.</th>
       <th scope="col" style="text-align: center;">Województwo</th>
       <th scope="col" style="text-align: center;">Powiat</th>
@@ -59,6 +61,10 @@
       <td scope="col" style="text-align: center;"><a href="{% url 'investor-details' i.id %}">{{ i.investor_name }}</a>
       </td>
       <td scope="col" style="text-align: center;">{{ i.investor_address }}</td>
+      <td scope="col" style="text-align: center;">{% if i.investor_email %} {{ i.investor_email }} {% else %} brak
+        {% endif %}</td>
+      <td scope="col" style="text-align: center;">{% if i.investor_phone %} {{ i.investor_phone }} {% else %} brak
+        {% endif %}</td>
       <td scope="col" style="text-align: center;">{{ i.investor_administration_level }}</td>
       <td scope="col" style="text-align: center;">{{ i.investor_voivodeship }}</td>
       <td scope="col" style="text-align: center;">{% if i.investor_poviat %} {{ i.investor_poviat }} {% else %}

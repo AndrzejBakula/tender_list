@@ -513,6 +513,8 @@ class AddInvestor(StaffMemberCheck, View):
             data = form.cleaned_data
             investor_name = data["investor_name"]
             investor_address = data["investor_address"]
+            investor_email = data["investor_email"]
+            investor_phone = data["investor_phone"]
             investor_voivodeship = data["investor_voivodeship"]
             investor_administration_level = data["investor_administration_level"]
             investor_note = data["investor_note"]
@@ -523,6 +525,8 @@ class AddInvestor(StaffMemberCheck, View):
                 investor = Investor.objects.create(
                     investor_name=investor_name,
                     investor_address=investor_address,
+                    investor_email=investor_email,
+                    investor_phone=investor_phone,
                     investor_voivodeship=investor_voivodeship,
                     investor_administration_level=investor_administration_level,
                     investor_added_by=user,
@@ -751,6 +755,8 @@ class EditInvestor(StaffMemberCheck, View):
             initial_data = {
                 "investor_name": investor.investor_name,
                 "investor_address": investor.investor_address,
+                "investor_email": investor.investor_email,
+                "investor_phone": investor.investor_phone,
                 "investor_voivodeship": investor.investor_voivodeship,
                 "investor_administration_level": investor.investor_administration_level,
             }
@@ -766,6 +772,8 @@ class EditInvestor(StaffMemberCheck, View):
             investor = Investor.objects.get(id=investor_id)
             investor.investor_name = data["investor_name"]
             investor.investor_address = data["investor_address"]
+            investor.investor_email = data["investor_email"]
+            investor.investor_phone = data["investor_phone"]
             investor.investor_voivodeship = data["investor_voivodeship"]
             investor.investor_administration_level = data[
                 "investor_administration_level"
@@ -1391,6 +1399,8 @@ class EditDesigner(StaffMemberCheck, View):
                 "designer_name": designer.designer_name,
                 "designer_address": designer.designer_address,
                 "designer_email": designer.designer_email,
+                "designer_phone": designer.designer_phone,
+                "designer_email": designer.designer_email,
                 "designer_voivodeship": designer.designer_voivodeship,
             }
             form = EditDesignerForm(initial=initial_data)
@@ -1405,6 +1415,8 @@ class EditDesigner(StaffMemberCheck, View):
             data = form.cleaned_data
             designer.designer_name = data["designer_name"]
             designer.designer_address = data["designer_address"]
+            designer.designer_email = data["designer_email"]
+            designer.designer_phone = data["designer_phone"]
             designer.designer_email = data["designer_email"]
             designer.designer_voivodeship = data["designer_voivodeship"]
             designer.save()

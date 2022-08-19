@@ -98,6 +98,22 @@ class AddInvestorForm(forms.Form):
         max_length=256,
         widget=forms.TextInput(attrs={"size": 38, "placeholder": "Adres Inwestora"}),
     )
+    investor_email = forms.EmailField(
+        label="",
+        max_length=128,
+        widget=forms.EmailInput(
+            attrs={"size": 34, "placeholder": "Adres email (opcjonalne)"}
+        ),
+        required=False,
+    )
+    investor_phone = forms.CharField(
+        label="",
+        max_length=16,
+        widget=forms.TextInput(
+            attrs={"size": 24, "placeholder": "Telefon Kontaktowy (opcjonalnie)"}
+        ),
+        required=False,
+    )
     investor_voivodeship = forms.ModelChoiceField(
         label="Województwo", queryset=Voivodeship.objects.all()
     )
@@ -134,6 +150,22 @@ class EditInvestorForm(forms.Form):
         label="",
         max_length=256,
         widget=forms.TextInput(attrs={"size": 38, "placeholder": "Adres Inwestora"}),
+    )
+    investor_email = forms.EmailField(
+        label="",
+        max_length=128,
+        widget=forms.EmailInput(
+            attrs={"size": 34, "placeholder": "Adres email (opcjonalne)"}
+        ),
+        required=False,
+    )
+    investor_phone = forms.CharField(
+        label="",
+        max_length=16,
+        widget=forms.TextInput(
+            attrs={"size": 24, "placeholder": "Telefon Kontaktowy (opcjonalnie)"}
+        ),
+        required=False,
     )
     investor_voivodeship = forms.ModelChoiceField(
         label="Województwo", queryset=Voivodeship.objects.all()
@@ -248,6 +280,7 @@ class AddDesignerForm(forms.Form):
         widget=forms.EmailInput(
             attrs={"size": 34, "placeholder": "Adres email (opcjonalne)"}
         ),
+        required=False,
     )
     designer_phone = forms.CharField(
         label="",
@@ -255,6 +288,7 @@ class AddDesignerForm(forms.Form):
         widget=forms.TextInput(
             attrs={"size": 24, "placeholder": "Telefon Kontaktowy (opcjonalnie)"}
         ),
+        required=False,
     )
     designer_voivodeship = forms.ModelChoiceField(
         label="Województwo",
@@ -296,6 +330,22 @@ class EditDesignerForm(forms.Form):
         label="",
         max_length=256,
         widget=forms.TextInput(attrs={"size": 38, "placeholder": "Adres Projektanta"}),
+    )
+    designer_email = forms.EmailField(
+        label="",
+        max_length=128,
+        widget=forms.EmailInput(
+            attrs={"size": 34, "placeholder": "Adres email (opcjonalne)"}
+        ),
+        required=False,
+    )
+    designer_phone = forms.CharField(
+        label="",
+        max_length=16,
+        widget=forms.TextInput(
+            attrs={"size": 24, "placeholder": "Telefon Kontaktowy (opcjonalnie)"}
+        ),
+        required=False,
     )
     designer_email = forms.EmailField(
         label="",
