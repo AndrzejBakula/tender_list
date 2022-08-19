@@ -1976,6 +1976,15 @@ class ArchivesView(ActivateUserCheck, View):
                 if i.payment_method != None
             ]
         super_payment_method = max(payment_method_list, key=payment_method_list.count)
+        person_list = []
+        if archives.count() > 0:
+            person_sets = [i.person.all() for i in archives if i.person.all() != None]
+            for i in person_sets:
+                for j in i:
+                    person_list.append(j.username)
+        super_person = None
+        if len(person_list) > 0:
+            super_person = max(person_list, key=person_list.count)
 
         paginator = Paginator(archives, 15)
         page = request.GET.get("page")
@@ -1999,6 +2008,7 @@ class ArchivesView(ActivateUserCheck, View):
             "tenders": tenders,
             "super_investor": super_investor,
             "super_payment_method": super_payment_method,
+            "super_person": super_person,
         }
         return render(request, "archives.html", ctx)
 
@@ -2204,6 +2214,17 @@ class ArchivesView(ActivateUserCheck, View):
                 super_payment_method = max(
                     payment_method_list, key=payment_method_list.count
                 )
+            person_list = []
+            if archives.count() > 0:
+                person_sets = [
+                    i.person.all() for i in archvies if i.person.all() != None
+                ]
+                for i in person_sets:
+                    for j in i:
+                        person_list.append(j.username)
+            super_person = None
+            if len(person_list) > 0:
+                super_person = max(person_list, key=person_list.count)
 
             # paginator = Paginator(archives, 15)
             # page = request.GET.get("page")
@@ -2227,6 +2248,7 @@ class ArchivesView(ActivateUserCheck, View):
                 "tenders": tenders,
                 "super_investor": super_investor,
                 "super_payment_method": super_payment_method,
+                "super_person": super_person,
             }
             return render(request, "archives.html", ctx)
 
