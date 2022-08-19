@@ -2189,7 +2189,9 @@ class ArchivesView(ActivateUserCheck, View):
             investor_list = []
             if archives.count() > 0:
                 investor_list = [i.investor.investor_name for i in archives]
-            super_investor = max(investor_list, key=investor_list.count)
+            super_investor = None
+            if len(investor_list) > 0:
+                super_investor = max(investor_list, key=investor_list.count)
             payment_method_list = []
             if archives.count() > 0:
                 payment_method_list = [
