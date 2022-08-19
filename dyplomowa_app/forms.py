@@ -225,7 +225,7 @@ class AddCompanyForm(forms.Form):
     )
     company_contact = forms.CharField(
         label="",
-        max_length=16,
+        max_length=64,
         widget=forms.TextInput(
             attrs={"size": 34, "placeholder": "Osoba Kontaktowa (opcjonalnie)"}
         ),
@@ -285,7 +285,7 @@ class EditCompanyForm(forms.Form):
         )
         self.fields["company_contact"] = forms.CharField(
             label="",
-            max_length=16,
+            max_length=64,
             widget=forms.TextInput(
                 attrs={"size": 34, "placeholder": "Osoba Kontaktowa (opcjonalnie)"}
             ),
