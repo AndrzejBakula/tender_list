@@ -2099,7 +2099,7 @@ class ArchivesView(ActivateUserCheck, View):
             if status:
                 archives5 = (
                     Project.objects.filter(
-                        status=status,
+                        status__in=status,
                         division=division,
                     )
                     .exclude(status=2)

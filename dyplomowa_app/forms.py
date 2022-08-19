@@ -769,7 +769,7 @@ class SearchArchiveForm(forms.Form):
             queryset=User.objects.filter(division_person=division).order_by("username"),
             required=False,
         )
-        self.fields["status"] = forms.ModelChoiceField(
+        self.fields["status"] = forms.ModelMultipleChoiceField(
             label="status", queryset=Status.objects.all().exclude(id=2), required=False
         )
         self.fields["date_start"] = forms.DateField(
