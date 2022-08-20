@@ -15,7 +15,7 @@
   action="{% url 'companies' %}" method="POST">
   {% csrf_token %}
   {{ form.as_table }}
-  <button type="submit" id="submit">Szukaj</button>
+  &nbsp;<button type="submit" id="submit">Szukaj</button>
 </form>
 
 <div class="d-flex flex-row justify-content-center align-items-center">
@@ -50,6 +50,7 @@
       <th scope="col" style="text-align: center;">Osoba kontaktowa</th>
       <th scope="col" style="text-align: center;">Województwo</th>
       <th scope="col" style="text-align: center;">Powiat</th>
+      <th scope="col" style="text-align: center;">Podwykonawca</th>
       <th scope="col" style="text-align: center;">W ilu przetargach</th>
     </tr>
   </thead>
@@ -77,6 +78,7 @@
       <td scope="col" style="text-align: center;">
         {% if i.company_poviat %} {{ i.company_poviat }} {% else %} nieokreślono {% endif %}
       </td>
+      <td scope="col" style="text-align: center;">{% if i.is_subcontractor %} Tak {% else %} {% endif %}
       <td scope="col" style="text-align: center;">{{ i.tenderer_set.all.count }}</td>
     </tr>
     {% else %}
@@ -100,6 +102,8 @@
       <td scope="col" style="text-align: center;">{{ i.company_voivodeship }}</td>
       <td scope="col" style="text-align: center;">
         {% if i.company_poviat %} {{ i.company_poviat }} {% else %} nieokreślono {% endif %}
+      </td>
+      <td scope="col" style="text-align: center;">{% if i.is_subcontractor %} Tak {% else %} {% endif %}
       </td>
       <td scope="col" style="text-align: center;">{{ i.tenderer_set.all.count }}</td>
     </tr>

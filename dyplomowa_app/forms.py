@@ -231,6 +231,7 @@ class AddCompanyForm(forms.Form):
         ),
         required=False,
     )
+    is_subcontractor = forms.BooleanField(label="Podwykonawca?", required=False)
     company_voivodeship = forms.ModelChoiceField(
         label="Województwo", queryset=Voivodeship.objects.all()
     )
@@ -290,6 +291,9 @@ class EditCompanyForm(forms.Form):
                 attrs={"size": 34, "placeholder": "Osoba Kontaktowa (opcjonalnie)"}
             ),
             required=False,
+        )
+        self.fields["is_subcontractor"] = forms.BooleanField(
+            label="Podwykonawca?", required=False
         )
         self.fields["company_voivodeship"] = forms.ModelChoiceField(
             label="Województwo", queryset=Voivodeship.objects.all()
@@ -835,6 +839,7 @@ class SearchCompanyForm(forms.Form):
         queryset=Poviat.objects.all().order_by("poviat_name"),
         required=False,
     )
+    is_subcontractor = forms.BooleanField(label="Podwykonawca?", required=False)
 
 
 class SearchDesignerForm(forms.Form):

@@ -46,6 +46,11 @@
                     <td scope="col">{% if company.company_poviat %} {{ company.company_poviat }} {% else %} nieokreślono
                         {% endif %}</td>
                 </tr>
+                <tr>
+                    <th scope="col">Podwykonawca</th>
+                    <td scope="col">{% if company.is_subcontractor %} Tak {% else %} Nie
+                        {% endif %}</td>
+                </tr>
                 {% if company.division_company %}
                 <tr>
                     <th scope="col">Zespoły</th>
