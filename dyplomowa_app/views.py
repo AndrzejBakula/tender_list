@@ -998,7 +998,7 @@ class CompaniesView(ActivateUserCheck, View):
             )
             if branch:
                 companies4 = Company.objects.filter(
-                    division=division, branch__contains=branch
+                    division=division, branch__icontains=branch
                 )
             companies5 = Company.objects.filter(division=division).order_by(
                 "company_name"
