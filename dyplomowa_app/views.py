@@ -860,6 +860,7 @@ class AddCompany(StaffMemberCheck, View):
             company_phone = data["company_phone"]
             company_contact = data["company_contact"]
             is_subcontractor = data["is_subcontractor"]
+            branch = data["branch"].title()
             company_voivodeship = data["company_voivodeship"]
             companies_names = [
                 i.company_name for i in Company.objects.filter(division=division)
@@ -873,6 +874,7 @@ class AddCompany(StaffMemberCheck, View):
                     company_phone=company_phone,
                     company_contact=company_contact,
                     is_subcontractor=is_subcontractor,
+                    branch=branch,
                     company_voivodeship=company_voivodeship,
                     company_added_by=user,
                 )
@@ -965,6 +967,7 @@ class CompaniesView(ActivateUserCheck, View):
             text = data["text"]
             voivodeship = data["voivodeship"]
             poviat = data["poviat"]
+            branch = data["branch"].title()
             is_subcontractor = data["is_subcontractor"]
             companies = Company.objects.filter(division=division).order_by(
                 "company_name"
@@ -993,10 +996,21 @@ class CompaniesView(ActivateUserCheck, View):
             companies4 = Company.objects.filter(division=division).order_by(
                 "company_name"
             )
+            if branch:
+                companies4 = Company.objects.filter(
+                    division=division, branch__contains=branch
+                )
+            companies5 = Company.objects.filter(division=division).order_by(
+                "company_name"
+            )
             if is_subcontractor:
-                companies4 = Company.objects.filter(division=division, is_subcontractor=is_subcontractor)
-            if text or voivodeship or poviat or is_subcontractor:
-                companies = companies1 & companies2 & companies3 & companies4
+                companies5 = Company.objects.filter(
+                    division=division, is_subcontractor=is_subcontractor
+                )
+            if text or voivodeship or poviat or branch or is_subcontractor:
+                companies = (
+                    companies1 & companies2 & companies3 & companies4 & companies5
+                )
             division_company = None
             rest = None
             for i in companies:
@@ -1109,6 +1123,7 @@ class EditCompany(StaffMemberCheck, View):
                 "company_phone": company.company_phone,
                 "company_contact": company.company_contact,
                 "is_subcontractor": company.is_subcontractor,
+                "branch": company.branch,
                 "company_voivodeship": company.company_voivodeship,
                 "company_poviat": company.company_poviat,
             }
@@ -1128,6 +1143,7 @@ class EditCompany(StaffMemberCheck, View):
             company.company_phone = data["company_phone"]
             company.company_contact = data["company_contact"]
             company.is_subcontractor = data["is_subcontractor"]
+            company.branch = data["branch"].title()
             company.company_voivodeship = data["company_voivodeship"]
             company.save()
             ctx = {"company": company}

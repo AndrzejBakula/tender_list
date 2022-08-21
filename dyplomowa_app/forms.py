@@ -232,6 +232,17 @@ class AddCompanyForm(forms.Form):
         required=False,
     )
     is_subcontractor = forms.BooleanField(label="Podwykonawca?", required=False)
+    branch = forms.CharField(
+        label="Branża",
+        widget=forms.Textarea(
+            attrs={
+                "rows": 3,
+                "cols": 24,
+                "placeholder": "Poszczególne branże oddziel przecinkami",
+            }
+        ),
+        required=False,
+    )
     company_voivodeship = forms.ModelChoiceField(
         label="Województwo", queryset=Voivodeship.objects.all()
     )
@@ -294,6 +305,17 @@ class EditCompanyForm(forms.Form):
         )
         self.fields["is_subcontractor"] = forms.BooleanField(
             label="Podwykonawca?", required=False
+        )
+        self.fields["branch"] = forms.CharField(
+            label="Branża",
+            widget=forms.Textarea(
+                attrs={
+                    "rows": 3,
+                    "cols": 24,
+                    "placeholder": "Poszczególne branże oddziel przecinkami",
+                }
+            ),
+            required=False,
         )
         self.fields["company_voivodeship"] = forms.ModelChoiceField(
             label="Województwo", queryset=Voivodeship.objects.all()
@@ -818,28 +840,73 @@ class SearchInvestorForm(forms.Form):
 
 
 class SearchCompanyForm(forms.Form):
-    text = forms.CharField(
-        label="Szukany tekst",
-        max_length=64,
-        widget=forms.TextInput(
-            attrs={
-                "size": 34,
-                "placeholder": "Wprowadź fragment nazwy firmy",
-            }
-        ),
-        required=False,
-    )
-    voivodeship = forms.ModelChoiceField(
-        label="Województwo",
-        queryset=Voivodeship.objects.all().order_by("voivodeship_name"),
-        required=False,
-    )
-    poviat = forms.ModelChoiceField(
-        label="Powiat",
-        queryset=Poviat.objects.all().order_by("poviat_name"),
-        required=False,
-    )
-    is_subcontractor = forms.BooleanField(label="Podwykonawca?", required=False)
+    def __init__(self, *args, **kwargs):
+        super(SearchCompanyForm, self).__init__(*args, **kwargs)
+
+        # companies = Company.objects.all()
+        # branch_strings = [i.branch for i in companies if i.branch != None]
+        # branch_sets = []
+        # if len(branch_strings) > 0:
+        #     for i in range(len(branch_strings)):
+        #         branch_strings[i] = branch_strings[i]
+        #         "".join(branch_strings[i].split())
+        #         if "," in branch_strings[i]:
+        #             branch_sets.append(branch_strings[i].split(","))
+        #         else:
+        #             i_list = []
+        #             i_list.append(branch_strings[i])
+        #             branch_sets.append(i_list)
+        # all_branches = []
+        # for i in branch_sets:
+        #     for j in i:
+        #         "".join(j.split())
+        #         all_branches.append(j)
+        # branches = []
+        # for i in range(len(all_branches)):
+        #     if len(all_branches[i]) > 1:
+        #         branches.append("".join(all_branches[i].split()))
+        # branches = sorted(list(set(branches)))
+        # BRANCHES = [("", "----")]
+        # if len(branches) > 0:
+        #     for i in range(len(branches)):
+        #         BRANCHES.append((i + 1, branches[i]))
+        # BRANCHES = tuple(BRANCHES)
+
+        self.fields["text"] = forms.CharField(
+            label="Szukany tekst",
+            max_length=64,
+            widget=forms.TextInput(
+                attrs={
+                    "size": 34,
+                    "placeholder": "Wprowadź fragment nazwy firmy",
+                }
+            ),
+            required=False,
+        )
+        self.fields["voivodeship"] = forms.ModelChoiceField(
+            label="Województwo",
+            queryset=Voivodeship.objects.all().order_by("voivodeship_name"),
+            required=False,
+        )
+        self.fields["poviat"] = forms.ModelChoiceField(
+            label="Powiat",
+            queryset=Poviat.objects.all().order_by("poviat_name"),
+            required=False,
+        )
+        self.fields["branch"] = forms.CharField(
+            label="Branża",
+            max_length=64,
+            widget=forms.TextInput(
+                attrs={
+                    "size": 24,
+                    "placeholder": "Wpisz branżę",
+                }
+            ),
+            required=False,
+        )
+        self.fields["is_subcontractor"] = forms.BooleanField(
+            label="Podwykonawca?", required=False
+        )
 
 
 class SearchDesignerForm(forms.Form):

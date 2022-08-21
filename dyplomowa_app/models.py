@@ -610,6 +610,7 @@ class Company(models.Model):
         Poviat, on_delete=models.DO_NOTHING, null=True, default=None
     )
     is_subcontractor = models.BooleanField(null=True, default=False)
+    branch = models.CharField(max_length=128, null=True, default=None)
     company_added_by = models.ForeignKey(User, on_delete=models.DO_NOTHING)
     division = models.ManyToManyField(Division, related_name="division")
     division_company = models.ForeignKey(

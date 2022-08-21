@@ -51,6 +51,7 @@
       <th scope="col" style="text-align: center;">Województwo</th>
       <th scope="col" style="text-align: center;">Powiat</th>
       <th scope="col" style="text-align: center;">Podwykonawca</th>
+      <th scope="col" style="text-align: center;">Branża</th>
       <th scope="col" style="text-align: center;">W ilu przetargach</th>
     </tr>
   </thead>
@@ -79,6 +80,7 @@
         {% if i.company_poviat %} {{ i.company_poviat }} {% else %} nieokreślono {% endif %}
       </td>
       <td scope="col" style="text-align: center;">{% if i.is_subcontractor %} Tak {% else %} {% endif %}
+      <td scope="col" style="text-align: center;">{% if i.branch %} {{ i.branch }}{% else %} {% endif %}
       <td scope="col" style="text-align: center;">{{ i.tenderer_set.all.count }}</td>
     </tr>
     {% else %}
@@ -105,6 +107,7 @@
       </td>
       <td scope="col" style="text-align: center;">{% if i.is_subcontractor %} Tak {% else %} {% endif %}
       </td>
+      <td scope="col" style="text-align: center;">{% if i.branch %} {{ i.branch }}{% else %} {% endif %}
       <td scope="col" style="text-align: center;">{{ i.tenderer_set.all.count }}</td>
     </tr>
     {% endif %}
